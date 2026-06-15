@@ -7,7 +7,7 @@ const settingsSections = ["General", "Security", "Users", "Templates", "Ai Integ
 
 function SettingsNav({ active, setActive }) {
   return (
-    <div className="w-[220px] shrink-0 rounded-xl overflow-hidden" style={{ backgroundColor: "#161616", border: "1px solid #222" }}>
+    <div className="w-[220px] shrink-0 rounded-xl overflow-hidden" style={{ backgroundColor: "#1a1a1a", border: "1px solid #252525" }}>
       {settingsSections.map((s, i) => (
         <button key={s} onClick={() => setActive(s)}
           className="w-full text-left px-4 py-3 text-sm transition-colors"
@@ -28,7 +28,7 @@ function Field({ label, type = "text", placeholder = "" }) {
     <div>
       <label className="block text-xs mb-1.5" style={{ color: "#888" }}>{label}</label>
       <div className="relative">
-        <input type={type} placeholder={placeholder} className="w-full px-3 py-2.5 rounded-lg text-sm outline-none" style={{ backgroundColor: "#111", border: "1px solid #1e1e1e", color: "#fff" }} />
+        <input type={type} placeholder={placeholder} className="w-full px-3 py-2.5 rounded-lg text-sm outline-none" style={{ backgroundColor: "#111", border: "1px solid #252525", color: "#fff" }} />
         {type === "password" && (
           <button className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: "#444" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -43,7 +43,7 @@ function Field({ label, type = "text", placeholder = "" }) {
 
 function ContentPanel({ title, subtitle, children }) {
   return (
-    <div className="flex-1 rounded-xl overflow-hidden" style={{ backgroundColor: "#161616", border: "1px solid #222" }}>
+    <div className="flex-1 rounded-xl overflow-hidden" style={{ backgroundColor: "#1a1a1a", border: "1px solid #252525" }}>
       <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid #1e1e1e" }}>
         <div>
           <h2 className="text-sm font-semibold text-white">{title}</h2>
@@ -60,7 +60,7 @@ function ContentPanel({ title, subtitle, children }) {
 
 function ImageUploadItem({ label, description }) {
   return (
-    <div className="flex items-center justify-between p-4 rounded-xl" style={{ backgroundColor: "#111", border: "1px solid #1e1e1e" }}>
+    <div className="flex items-center justify-between p-4 rounded-xl" style={{ backgroundColor: "#111", border: "1px solid #252525" }}>
       <div className="flex items-center gap-4">
         <div className="w-16 h-16 rounded-xl" style={{ backgroundColor: "#1e1e1e", border: "1px solid #262626" }} />
         <div>
@@ -69,12 +69,12 @@ function ImageUploadItem({ label, description }) {
         </div>
       </div>
       <div className="flex gap-2">
-        <button className="p-2 rounded-lg" style={{ backgroundColor: "#181818", border: "1px solid #262626", color: "#666" }}>
+        <button className="p-2 rounded-lg" style={{ backgroundColor: "#1a1a1a", border: "1px solid #262626", color: "#666" }}>
           <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
           </svg>
         </button>
-        <button className="p-2 rounded-lg" style={{ backgroundColor: "#181818", border: "1px solid #262626", color: "#666" }}>
+        <button className="p-2 rounded-lg" style={{ backgroundColor: "#1a1a1a", border: "1px solid #262626", color: "#666" }}>
           <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
           </svg>
@@ -159,7 +159,7 @@ export default function SettingsPage() {
                   <svg className="absolute left-3 top-1/2 -translate-y-1/2" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#666" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
-                  <input className="pl-9 pr-3 py-2 rounded-lg text-sm outline-none placeholder-gray-600 w-48" style={{ backgroundColor: "#111", border: "1px solid #1e1e1e", color: "#fff" }} placeholder="Find Company" />
+                  <input className="pl-9 pr-3 py-2 rounded-lg text-sm outline-none placeholder-gray-600 w-48" style={{ backgroundColor: "#111", border: "1px solid #252525", color: "#fff" }} placeholder="Find Company" />
                 </div>
                 <button className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ backgroundColor: "#2563eb" }}>Create User</button>
               </div>
@@ -167,7 +167,7 @@ export default function SettingsPage() {
                 <thead>
                   <tr style={{ borderBottom: "1px solid #1e1e1e" }}>
                     {["Name", "Email", "Phone", "Type", "Actions"].map(h => (
-                      <th key={h} className="text-left py-2 pr-4 text-xs font-medium" style={{ color: "#505050" }}>{h}</th>
+                      <th key={h} className="text-left py-2 pr-4 text-xs font-medium" style={{ color: "#3a3a3a" }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -180,12 +180,12 @@ export default function SettingsPage() {
                       <td className="py-3 pr-4 text-xs" style={{ color: "#888" }}>{u.type}</td>
                       <td className="py-3">
                         <div className="flex gap-1">
-                          <button className="p-1.5 rounded-lg" style={{ backgroundColor: "#111", border: "1px solid #1e1e1e", color: "#666" }}>
+                          <button className="p-1.5 rounded-lg" style={{ backgroundColor: "#111", border: "1px solid #252525", color: "#666" }}>
                             <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                             </svg>
                           </button>
-                          <button className="p-1.5 rounded-lg" style={{ backgroundColor: "#111", border: "1px solid #1e1e1e", color: "#666" }}>
+                          <button className="p-1.5 rounded-lg" style={{ backgroundColor: "#111", border: "1px solid #252525", color: "#666" }}>
                             <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
@@ -199,8 +199,8 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between pt-4 mt-2" style={{ borderTop: "1px solid #1e1e1e" }}>
                 <span className="text-xs" style={{ color: "#555" }}>Showing 7 of 62 orders</span>
                 <div className="flex gap-1">
-                  <button className="flex items-center gap-1 text-xs px-3 py-1 rounded" style={{ color: "#888", backgroundColor: "#111", border: "1px solid #1e1e1e" }}>â€¹ Prev</button>
-                  <button className="flex items-center gap-1 text-xs px-3 py-1 rounded" style={{ color: "#888", backgroundColor: "#111", border: "1px solid #1e1e1e" }}>Next â€º</button>
+                  <button className="flex items-center gap-1 text-xs px-3 py-1 rounded" style={{ color: "#888", backgroundColor: "#111", border: "1px solid #252525" }}>â€¹ Prev</button>
+                  <button className="flex items-center gap-1 text-xs px-3 py-1 rounded" style={{ color: "#888", backgroundColor: "#111", border: "1px solid #252525" }}>Next â€º</button>
                 </div>
               </div>
             </div>
@@ -244,6 +244,7 @@ export default function SettingsPage() {
     </div>
   );
 }
+
 
 
 

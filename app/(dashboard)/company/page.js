@@ -22,12 +22,12 @@ export default function CompanyPage() {
 
       <div className="flex gap-5">
         {/* Table */}
-        <div className="flex-1 rounded-xl overflow-hidden" style={{ backgroundColor: "#161616", border: "1px solid #222" }}>
+        <div className="flex-1 rounded-xl overflow-hidden" style={{ backgroundColor: "#1a1a1a", border: "1px solid #252525" }}>
           <table className="w-full text-sm">
             <thead>
               <tr style={{ borderBottom: "1px solid #1e1e1e" }}>
                 {["Company", "Country", "Registration", "Top Share Holders", "Last Revenue", "Last Inquired", "Report Date", "Actions"].map(h => (
-                  <th key={h} className="text-left px-5 py-3 text-xs font-medium whitespace-nowrap" style={{ color: "#505050" }}>{h}</th>
+                  <th key={h} className="text-left px-5 py-3 text-xs font-medium whitespace-nowrap" style={{ color: "#3a3a3a" }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -43,17 +43,17 @@ export default function CompanyPage() {
                   <td className="px-5 py-3 text-xs" style={{ color: "#888" }}>{c.reportDate}</td>
                   <td className="px-5 py-3">
                     <div className="flex gap-1">
-                      <button className="p-1.5 rounded-lg" style={{ backgroundColor: "#111", border: "1px solid #1e1e1e", color: "#666" }}>
+                      <button className="p-1.5 rounded-lg" style={{ backgroundColor: "#111", border: "1px solid #252525", color: "#666" }}>
                         <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
                       </button>
-                      <button className="p-1.5 rounded-lg" style={{ backgroundColor: "#111", border: "1px solid #1e1e1e", color: "#666" }}>
+                      <button className="p-1.5 rounded-lg" style={{ backgroundColor: "#111", border: "1px solid #252525", color: "#666" }}>
                         <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
                       </button>
-                      <button className="p-1.5 rounded-lg" style={{ backgroundColor: "#111", border: "1px solid #1e1e1e", color: "#666" }}>
+                      <button className="p-1.5 rounded-lg" style={{ backgroundColor: "#111", border: "1px solid #252525", color: "#666" }}>
                         <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
@@ -71,7 +71,7 @@ export default function CompanyPage() {
 
         {/* Company Detail Panel */}
         {selectedCompany && (
-          <div className="w-[480px] shrink-0 rounded-xl overflow-y-auto" style={{ backgroundColor: "#161616", border: "1px solid #222", maxHeight: "calc(100vh - 150px)" }}>
+          <div className="w-[480px] shrink-0 rounded-xl overflow-y-auto" style={{ backgroundColor: "#1a1a1a", border: "1px solid #252525", maxHeight: "calc(100vh - 150px)" }}>
             <div className="flex items-center justify-between px-5 py-3 sticky top-0" style={{ borderBottom: "1px solid #1e1e1e", backgroundColor: "#1a1a1a" }}>
               <div className="flex items-center gap-2 text-xs" style={{ color: "#888" }}>
                 <span>â†’</span>
@@ -169,6 +169,7 @@ export default function CompanyPage() {
     </div>
   );
 }
+
 
 
 

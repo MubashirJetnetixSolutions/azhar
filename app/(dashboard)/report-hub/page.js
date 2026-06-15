@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { reports } from "@/data/mockData";
@@ -6,8 +6,8 @@ import Pagination from "@/components/ui/Pagination";
 import SearchInput from "@/components/ui/SearchInput";
 import CreateReportModal from "@/components/modals/CreateReportModal";
 
-const CARD = { backgroundColor: "#161616", border: "1px solid #222", borderRadius: "14px" };
-const BTN_GHOST = { backgroundColor: "#161616", border: "1px solid #222", borderRadius: "8px", color: "#666", fontSize: "13px", padding: "7px 14px", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" };
+const CARD = { backgroundColor: "#1a1a1a", border: "1px solid #252525", borderRadius: "14px" };
+const BTN_GHOST = { backgroundColor: "#1a1a1a", border: "1px solid #252525", borderRadius: "8px", color: "#666", fontSize: "13px", padding: "7px 14px", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" };
 
 export default function ReportHubPage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -41,7 +41,7 @@ export default function ReportHubPage() {
         {filtersOpen && (
           <div style={{ display: "flex", gap: "10px" }}>
             {["Bank","Company","Type","Country","Date"].map(f => (
-              <select key={f} style={{ flex: 1, backgroundColor: "#161616", border: "1px solid #222", borderRadius: "8px", color: "#555", fontSize: "12px", padding: "8px 12px", outline: "none" }}>
+              <select key={f} style={{ flex: 1, backgroundColor: "#1a1a1a", border: "1px solid #252525", borderRadius: "8px", color: "#555", fontSize: "12px", padding: "8px 12px", outline: "none" }}>
                 <option>{f}</option>
               </select>
             ))}
@@ -63,7 +63,7 @@ export default function ReportHubPage() {
                   <tr key={i} style={{ borderBottom: "1px solid #1a1a1a" }}>
                     <td style={{ padding: "13px 16px 13px 20px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <div style={{ width: "30px", height: "30px", borderRadius: "8px", backgroundColor: "#111", border: "1px solid #1e1e1e", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <div style={{ width: "30px", height: "30px", borderRadius: "8px", backgroundColor: "#111", border: "1px solid #252525", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                           <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#555" strokeWidth={1.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                           </svg>
@@ -81,12 +81,12 @@ export default function ReportHubPage() {
                     <td style={{ padding: "13px 16px 13px 0", color: "#666", fontSize: "12px", whiteSpace: "nowrap" }}>{r.date}</td>
                     <td style={{ padding: "13px 20px 13px 0" }}>
                       <div style={{ display: "flex", gap: "4px" }}>
-                        <button style={{ padding: "6px", borderRadius: "6px", backgroundColor: "#111", border: "1px solid #1e1e1e", color: "#555", cursor: "pointer" }}>
+                        <button style={{ padding: "6px", borderRadius: "6px", backgroundColor: "#111", border: "1px solid #252525", color: "#555", cursor: "pointer" }}>
                           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                           </svg>
                         </button>
-                        <button style={{ padding: "6px", borderRadius: "6px", backgroundColor: "#111", border: "1px solid #1e1e1e", color: "#555", cursor: "pointer" }}>
+                        <button style={{ padding: "6px", borderRadius: "6px", backgroundColor: "#111", border: "1px solid #252525", color: "#555", cursor: "pointer" }}>
                           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
@@ -108,3 +108,4 @@ export default function ReportHubPage() {
     </>
   );
 }
+

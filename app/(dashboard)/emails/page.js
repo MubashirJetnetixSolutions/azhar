@@ -1,11 +1,11 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { emails } from "@/data/mockData";
 import Pagination from "@/components/ui/Pagination";
 import SearchInput from "@/components/ui/SearchInput";
 
-const CARD = { backgroundColor: "#161616", border: "1px solid #222", borderRadius: "14px" };
+const CARD = { backgroundColor: "#1a1a1a", border: "1px solid #252525", borderRadius: "14px" };
 
 export default function EmailsPage() {
   const [selectedEmail, setSelectedEmail] = useState(null);
@@ -26,7 +26,7 @@ export default function EmailsPage() {
                 <svg style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)" }} width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="#444" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <input placeholder="Find Email" style={{ width: "100%", paddingLeft: "30px", paddingRight: "10px", paddingTop: "7px", paddingBottom: "7px", backgroundColor: "#111", border: "1px solid #1e1e1e", borderRadius: "8px", color: "#fff", fontSize: "12px", outline: "none" }} />
+                <input placeholder="Find Email" style={{ width: "100%", paddingLeft: "30px", paddingRight: "10px", paddingTop: "7px", paddingBottom: "7px", backgroundColor: "#111", border: "1px solid #252525", borderRadius: "8px", color: "#fff", fontSize: "12px", outline: "none" }} />
               </div>
             </div>
             <div>
@@ -114,7 +114,7 @@ export default function EmailsPage() {
               </div>
 
               {/* Attachment */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 16px", borderRadius: "12px", backgroundColor: "#111", border: "1px solid #1e1e1e" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 16px", borderRadius: "12px", backgroundColor: "#111", border: "1px solid #252525" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                   <div style={{ width: "34px", height: "34px", borderRadius: "8px", backgroundColor: "#1a1a1a", border: "1px solid #222", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#555" strokeWidth={1.5}>
@@ -142,3 +142,4 @@ export default function EmailsPage() {
     </div>
   );
 }
+

@@ -33,8 +33,14 @@ export default function OrderDetailPanel({ order, onClose }) {
           <h3 className="text-sm font-semibold text-white mb-3">Verification Status</h3>
           <div className="grid grid-cols-2 gap-2">
             {checks.map((c, i) => (
-              <div key={i} className="flex items-center gap-2 p-2 rounded-lg" style={{ backgroundColor: "#111" }}>
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: c.color }} />
+              <div key={i} className="flex items-start gap-2 p-2 rounded-lg" style={{ backgroundColor: "#111" }}>
+                <div style={{ width: "14px", height: "14px", borderRadius: "50%", backgroundColor: c.color === "#22c55e" ? "rgba(34,197,94,0.15)" : c.color === "#f97316" ? "rgba(249,115,22,0.15)" : "#1e1e1e", border: `1px solid ${c.color === "#22c55e" ? "rgba(34,197,94,0.4)" : c.color === "#f97316" ? "rgba(249,115,22,0.4)" : "#2a2a2a"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "1px" }}>
+                  {c.color === "#22c55e" && (
+                    <svg width="8" height="8" fill="none" viewBox="0 0 24 24" stroke="#22c55e" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </div>
                 <div>
                   <p className="text-[10px]" style={{ color: "#666" }}>{c.label}</p>
                   <p className="text-[10px] font-medium" style={{ color: c.color }}>{c.status}</p>
@@ -42,7 +48,7 @@ export default function OrderDetailPanel({ order, onClose }) {
               </div>
             ))}
           </div>
-          <button className="mt-3 w-full py-2 rounded-lg text-xs font-medium text-white" style={{ backgroundColor: "#7c3aed" }}>
+          <button className="mt-3 w-full py-2 rounded-lg text-xs font-medium text-white" style={{ backgroundColor: "#3b82f6" }}>
             Pursue Report
           </button>
         </div>
