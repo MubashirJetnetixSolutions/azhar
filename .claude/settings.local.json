@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.figma.com)",
+      "mcp__Claude_in_Chrome__navigate"
+    ]
+  }
+}
