@@ -9,21 +9,23 @@ function StatCard({ label, value }) {
     <div style={{
       backgroundColor: "#1a1a1a",
       border: "1px solid #252525",
+      borderLeft: "3px solid #3b82f6",
       borderRadius: "10px",
       padding: "14px 16px",
       display: "flex",
       flexDirection: "column",
       justifyContent: "space-between",
+      height: "100%",
     }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
         <p style={{ color: "#666", fontSize: "11px", fontWeight: 400 }}>{label}</p>
-        <div style={{ backgroundColor: "#222", border: "1px solid #2a2a2a", borderRadius: "6px", padding: "5px", color: "#3a3a3a", display: "flex" }}>
-          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <div style={{ backgroundColor: "#1e1e1e", border: "1px solid #2a2a2a", borderRadius: "6px", padding: "5px", color: "#3a3a3a", display: "flex" }}>
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         </div>
       </div>
-      <p style={{ color: "#fff", fontSize: "22px", fontWeight: 700, letterSpacing: "-0.02em", marginTop: "8px" }}>{value}</p>
+      <p style={{ color: "#fff", fontSize: "22px", fontWeight: 700, letterSpacing: "-0.02em", marginTop: "10px" }}>{value}</p>
     </div>
   );
 }
@@ -32,47 +34,80 @@ function BarChart({ data }) {
   const max = Math.max(...data);
   return (
     <div style={{ backgroundColor: "#1a1a1a", border: "1px solid #252525", borderRadius: "10px", padding: "16px 18px", height: "100%", display: "flex", flexDirection: "column" }}>
-      <p style={{ color: "#666", fontSize: "11px", marginBottom: "14px" }}>Reports per month</p>
-      <div style={{ flex: 1, display: "flex", alignItems: "flex-end", gap: "5px", minHeight: 0 }}>
+      <p style={{ color: "#999", fontSize: "11px", marginBottom: "12px" }}>Reports per month</p>
+      <div style={{ flex: 1, display: "flex", alignItems: "flex-end", gap: "4px", minHeight: 0 }}>
         {data.map((v, i) => (
           <div key={i} style={{
             flex: 1,
             borderRadius: "3px 3px 0 0",
-            height: `${Math.max((v / max) * 100, 8)}%`,
-            backgroundColor: i === 9 ? "#3b82f6" : "#2a2a2a",
+            height: `${Math.max((v / max) * 100, 6)}%`,
+            backgroundColor: i === 9 ? "#3b82f6" : "#252525",
           }} />
         ))}
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "6px" }}>
-        {months.map(m => <span key={m} style={{ color: "#2e2e2e", fontSize: "8px" }}>{m}</span>)}
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "7px" }}>
+        {months.map(m => <span key={m} style={{ color: "#333", fontSize: "8px" }}>{m}</span>)}
       </div>
     </div>
   );
 }
 
-function DonutChart({ percentage }) {
-  const r = 40;
-  const circ = 2 * Math.PI * r;
-  const offset = circ - (percentage / 100) * circ;
+function GaugeChart({ percentage }) {
+  // Half-circle gauge (speedometer / dome shape)
+  const cx = 90, cy = 90;
+  const r1 = 50, r2 = 80; // inner and outer radius
+  const total = 40;
+  const filled = Math.round((percentage / 100) * total);
+
+  const segments = Array.from({ length: total }, (_, i) => {
+    // Angles from π (left=180°) down to 0 (right=0°)
+    const angle = Math.PI * (1 - i / (total - 1));
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    return {
+      x1: cx + r1 * cos,
+      y1: cy - r1 * sin,
+      x2: cx + r2 * cos,
+      y2: cy - r2 * sin,
+      blue: i < filled,
+    };
+  });
+
   return (
     <div style={{ backgroundColor: "#1a1a1a", border: "1px solid #252525", borderRadius: "10px", padding: "16px 18px", height: "100%", display: "flex", flexDirection: "column" }}>
-      <p style={{ color: "#666", fontSize: "11px", marginBottom: "10px" }}>Reports Conversion</p>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", minHeight: 0 }}>
-        <div style={{ position: "relative", width: "100px", height: "100px", flexShrink: 0 }}>
-          <svg viewBox="0 0 100 100" style={{ width: "100%", height: "100%", transform: "rotate(-90deg)" }}>
-            <circle cx="50" cy="50" r={r} fill="none" stroke="#252525" strokeWidth="12" />
-            <circle cx="50" cy="50" r={r} fill="none" stroke="#3b82f6" strokeWidth="12"
-              strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round" />
+      <p style={{ color: "#999", fontSize: "11px", marginBottom: "4px" }}>Reports Conversion</p>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 0 }}>
+        <div style={{ position: "relative", width: "100%" }}>
+          <svg viewBox="0 0 180 100" style={{ width: "100%", height: "auto", overflow: "visible" }}>
+            {segments.map((seg, i) => (
+              <line
+                key={i}
+                x1={seg.x1} y1={seg.y1}
+                x2={seg.x2} y2={seg.y2}
+                stroke={seg.blue ? "#3b82f6" : "#1e1e1e"}
+                strokeWidth="5.5"
+                strokeLinecap="round"
+              />
+            ))}
+            <text x={cx} y={cy + 10} textAnchor="middle" fill="#fff" fontSize="13" fontWeight="bold" fontFamily="system-ui, -apple-system, sans-serif">
+              {percentage}%
+            </text>
           </svg>
-          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span style={{ fontSize: "14px", fontWeight: 700, color: "#fff" }}>{percentage}%</span>
-          </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "4px", width: "100%", textAlign: "center" }}>
-          {[["Requests","168"],["Reports Generated","100"],["Availability","100"]].map(([lbl,val]) => (
-            <div key={lbl}>
-              <p style={{ color: "#3a3a3a", fontSize: "8px", lineHeight: 1.3, marginBottom: "3px" }}>{lbl}</p>
-              <p style={{ color: "#fff", fontSize: "16px", fontWeight: 700 }}>{val}</p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "5px", width: "100%", marginTop: "6px" }}>
+          {[["Requests","168"],["Reports Generated","100"],["Availability","100"]].map(([lbl,val], idx) => (
+            <div key={lbl} style={{ backgroundColor: "#111", borderRadius: "7px", padding: "6px 6px 5px", textAlign: "center", position: "relative" }}>
+              <p style={{ color: "#3a3a3a", fontSize: "7px", lineHeight: 1.3, marginBottom: "3px" }}>{lbl}</p>
+              <p style={{ color: "#fff", fontSize: "15px", fontWeight: 700 }}>{val}</p>
+              {idx === 2 && (
+                <div style={{
+                  position: "absolute", bottom: "4px", right: "4px",
+                  width: "14px", height: "14px", borderRadius: "50%",
+                  backgroundColor: "#3b82f6", display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <span style={{ color: "#fff", fontSize: "7px", fontWeight: 700 }}>M</span>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -88,7 +123,6 @@ const AVL_STYLE = {
   Send:    { color: "#f97316" },
   Recall:  { color: "#ef4444" },
   Review:  { color: "#888" },
-  Offline: { color: "#ef4444" },
 };
 
 const ROW_ACTIONS = ["Review","Start","Reuse","Online","Send","Review"];
@@ -109,26 +143,22 @@ export default function DashboardPage() {
         </select>
       </div>
 
-      {/* ONE ROW: stats (left 2 cols) + bar chart + donut — all same height */}
+      {/* ONE ROW: stats (left 2 cols) + bar chart + gauge — all same height */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "1fr 1fr 2.3fr 1.15fr",
+        gridTemplateColumns: "1fr 1fr 2.3fr 1.2fr",
         gridTemplateRows: "1fr 1fr",
         gap: "10px",
-        height: "210px",
+        height: "215px",
       }}>
-        {/* stat row 1 */}
         <StatCard label="Total Orders" value={s.totalOrders} />
         <StatCard label="Total Reports" value={s.totalReports} />
-        {/* bar chart spans both rows, explicitly in col 3 */}
         <div style={{ gridColumn: "3", gridRow: "1 / 3" }}>
           <BarChart data={s.monthlyReports} />
         </div>
-        {/* donut spans both rows, explicitly in col 4 */}
         <div style={{ gridColumn: "4", gridRow: "1 / 3" }}>
-          <DonutChart percentage={s.reportsConversion} />
+          <GaugeChart percentage={s.reportsConversion} />
         </div>
-        {/* stat row 2 */}
         <StatCard label="Total Pending Invoice" value={s.totalPendingInvoice} />
         <StatCard label="Total Revenue" value={s.totalRevenue} />
       </div>

@@ -59,8 +59,8 @@ export default function Sidebar() {
               borderBottom: qa.label === "Create Order" || qa.label === "Create Report" ? "1px solid #1c1c1c" : "none",
               cursor: "pointer",
             }}>
-              <span style={{ color: "#555" }}>{qa.icon}</span>
-              <span style={{ color: "#4a4a4a", fontSize: "9px", textAlign: "center", lineHeight: 1.2 }}>{qa.label}</span>
+              <span style={{ color: "#666" }}>{qa.icon}</span>
+              <span style={{ color: "#555", fontSize: "9px", textAlign: "center", lineHeight: 1.2 }}>{qa.label}</span>
             </button>
           ))}
         </div>
@@ -82,10 +82,10 @@ export default function Sidebar() {
                 padding: "8px 10px", borderRadius: "7px", marginBottom: "1px",
                 textDecoration: "none",
                 backgroundColor: isActive ? "#3b82f6" : "transparent",
-                color: isActive ? "#fff" : "#5a5a5a",
+                color: isActive ? "#fff" : "#777",
                 fontSize: "13px", fontWeight: isActive ? 500 : 400,
               }}>
-                <span style={{ color: isActive ? "#fff" : "#444", flexShrink: 0 }}>{item.icon}</span>
+                <span style={{ color: isActive ? "#fff" : "#555", flexShrink: 0 }}>{item.icon}</span>
                 <span style={{ flex: 1 }}>{item.label}</span>
                 {item.badge && (
                   <span style={{

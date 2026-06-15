@@ -84,7 +84,7 @@ export const dashboardStats = {
   totalRevenue: "231.2 K",
   reportsConversion: 62.3,
   conversionNumbers: { a: 168, b: 100, c: 100 },
-  monthlyReports: [40, 55, 45, 60, 80, 75, 90, 100, 85, 70, 95, 65],
+  monthlyReports: [55, 30, 35, 50, 65, 60, 75, 80, 70, 110, 72, 58],
 };
 
 export const recentOrders = [
