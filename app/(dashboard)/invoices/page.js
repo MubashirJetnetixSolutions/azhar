@@ -254,8 +254,8 @@ export default function InvoicesPage() {
                 {[
                   { label: "Invoice Number", key: "id" },
                   { label: "Bank", key: "bank" },
-                  { label: "Type", key: "type" },
                   { label: "Branch", key: "branch" },
+                  { label: "Type", key: "type" },
                   { label: "Company", key: "company" },
                   { label: "Creation Date", key: "creationDate" },
                   { label: "Amount", key: "amount" },
