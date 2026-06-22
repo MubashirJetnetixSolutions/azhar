@@ -2,6 +2,30 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { emails as initialEmails } from "@/data/mockData";
+import DeleteConfirmModal from "@/components/modals/DeleteConfirmModal";
+
+function Toast({ message, type, onDismiss }) {
+  useEffect(() => {
+    const t = setTimeout(onDismiss, 3500);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const ok = type === "success";
+  return (
+    <div className="fixed bottom-[24px] right-[24px] z-[200] flex items-center gap-[12px] px-[18px] py-[14px] bg-[#1c1d22] border border-[#212328] rounded-[12px] shadow-2xl animate-[toastIn_0.2s_ease-out_forwards]">
+      <style>{`@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`}</style>
+      <div className={`w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-[rgba(34,197,94,0.15)]" : "bg-[rgba(239,68,68,0.15)]"}`}>
+        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke={ok ? "#22c55e" : "#ef4444"} strokeWidth={3}>
+          {ok ? <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/> : <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>}
+        </svg>
+      </div>
+      <span className="text-[13px] text-[#cdd0d6] font-normal leading-none">{message}</span>
+      <button onClick={onDismiss} className="ml-[4px] text-[#545659] hover:text-white transition-colors cursor-pointer shrink-0">
+        <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+  );
+}
 
 export default function EmailsPage() {
   const [emailList, setEmailList] = useState(initialEmails);
@@ -10,6 +34,8 @@ export default function EmailsPage() {
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [scrollPos, setScrollPos] = useState(0);
   const [previewAttachment, setPreviewAttachment] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null); // { type: "email"|"attachment", value: string }
+  const [toast, setToast] = useState(null);
 
   // Restore scroll position when returning to list view
   useEffect(() => {
@@ -544,7 +570,7 @@ export default function EmailsPage() {
                     </button>
                     {/* Delete Email */}
                     <button
-                      onClick={() => handleDeleteEmail(selectedEmail.email)}
+                      onClick={() => setDeleteTarget({ type: "email", value: selectedEmail.email })}
                       title="Delete Email"
                       className="p-[6px] rounded-[6px] border border-[#212328] bg-[#111215] text-[#74757b] hover:text-red-400 hover:border-red-900/50 transition-colors duration-120 hover:bg-[rgba(239,68,68,0.05)]"
                     >
@@ -685,7 +711,7 @@ export default function EmailsPage() {
                           </button>
                           {/* Delete Attachment */}
                           <button
-                            onClick={() => handleDeleteAttachment(att.name)}
+                            onClick={() => setDeleteTarget({ type: "attachment", value: att.name })}
                             title="Delete Attachment"
                             className="p-[6px] rounded-[6px] border border-[#212328] bg-[#151619] hover:bg-[#1c1e22] text-[#9ea0a6] hover:text-red-400 transition-colors duration-120"
                           >
@@ -901,7 +927,23 @@ export default function EmailsPage() {
           </div>
         </div>
       )}
+      <DeleteConfirmModal
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={() => {
+          if (deleteTarget?.type === "email") {
+            handleDeleteEmail(deleteTarget.value);
+            setToast({ type: "success", message: "Email deleted successfully.", id: Date.now() });
+          } else if (deleteTarget?.type === "attachment") {
+            handleDeleteAttachment(deleteTarget.value);
+            setToast({ type: "success", message: "Attachment deleted successfully.", id: Date.now() });
+          }
+          setDeleteTarget(null);
+        }}
+      />
+      {toast && (
+        <Toast key={toast.id} type={toast.type} message={toast.message} onDismiss={() => setToast(null)} />
+      )}
     </div>
   );
 }
-

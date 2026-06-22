@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
+import AppSelect from "@/components/ui/AppSelect";
+import AppDatePicker from "@/components/ui/AppDatePicker";
 
 const BANKS = [
   { code: "MBL", name: "MBL" },
@@ -30,13 +32,13 @@ const COUNTRIES = [
   "Spain"
 ];
 
-const getTodayFormatted = () => {
-  const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-  const d = new Date();
-  const day = d.getDate();
-  const month = months[d.getMonth()];
-  const year = d.getFullYear();
-  return `${day} ${month} ${year}`;
+const BANK_SELECT_OPTIONS = BANKS.map((b) => ({ value: b.code, label: b.name }));
+const COUNTRY_OPTIONS = COUNTRIES.map((c) => ({ value: c, label: c }));
+
+const formatDateStr = (d) => {
+  if (!d) return "";
+  const months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 };
 
 const formatFileSize = (bytes) => {
@@ -49,10 +51,10 @@ const formatFileSize = (bytes) => {
 export default function UploadReportsModal({ open, onClose, onUpload }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [companyName, setCompanyName] = useState("");
-  const [bank, setBank] = useState("");
-  const [branch, setBranch] = useState("");
-  const [country, setCountry] = useState("");
-  const [date, setDate] = useState(getTodayFormatted());
+  const [bank, setBank] = useState(null);
+  const [branch, setBranch] = useState(null);
+  const [country, setCountry] = useState(null);
+  const [date, setDate] = useState(new Date());
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState("");
 
@@ -108,24 +110,26 @@ export default function UploadReportsModal({ open, onClose, onUpload }) {
         name: selectedFile.name,
         size: formatFileSize(selectedFile.size),
         company: companyName,
-        bank: bank,
-        branch: branch,
-        country: country,
-        date: date
+        bank: bank?.value ?? "",
+        branch: branch?.value ?? "",
+        country: country?.value ?? "",
+        date: formatDateStr(date),
       });
     }
     // Reset state and close
     setSelectedFile(null);
     setCompanyName("");
-    setBank("");
-    setBranch("");
-    setCountry("");
-    setDate(getTodayFormatted());
+    setBank(null);
+    setBranch(null);
+    setCountry(null);
+    setDate(new Date());
     setError("");
     onClose();
   };
 
-  const availableBranches = bank ? (BANK_BRANCHES[bank] || []) : [];
+  const availableBranchOptions = bank
+    ? (BANK_BRANCHES[bank.value] || []).map((b) => ({ value: b, label: b }))
+    : [];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -237,90 +241,58 @@ export default function UploadReportsModal({ open, onClose, onUpload }) {
             {/* Bank */}
             <div>
               <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Bank</label>
-              <div className="relative">
-                <select
-                  value={bank}
-                  onChange={(e) => {
-                    setBank(e.target.value);
-                    setBranch("");
-                  }}
-                  className="w-full h-[34px] bg-[#111215] border border-[#24252a] rounded-[6px] text-[#cdd0d6] text-[11px] px-[10px] outline-none appearance-none cursor-pointer pr-[24px]"
-                >
-                  <option value="">Select Bank</option>
-                  {BANKS.map((b) => (
-                    <option key={b.code} value={b.code}>{b.name}</option>
-                  ))}
-                </select>
-                <div className="absolute right-[8px] top-1/2 -translate-y-1/2 pointer-events-none text-[#74757b]">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                  </svg>
-                </div>
-              </div>
+              <AppSelect
+                variant="default"
+                size="md"
+                value={bank}
+                onChange={(opt) => { setBank(opt); setBranch(null); }}
+                options={BANK_SELECT_OPTIONS}
+                placeholder="Select Bank"
+                isSearchable
+                isClearable
+              />
             </div>
 
             {/* Branch */}
             <div>
               <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Branch</label>
-              <div className="relative">
-                <select
-                  value={branch}
-                  onChange={(e) => setBranch(e.target.value)}
-                  disabled={!bank}
-                  className="w-full h-[34px] bg-[#111215] border border-[#24252a] rounded-[6px] text-[#cdd0d6] text-[11px] px-[10px] outline-none appearance-none cursor-pointer pr-[24px] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <option value="">Select Branch</option>
-                  {availableBranches.map((br) => (
-                    <option key={br} value={br}>{br}</option>
-                  ))}
-                </select>
-                <div className="absolute right-[8px] top-1/2 -translate-y-1/2 pointer-events-none text-[#74757b]">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                  </svg>
-                </div>
-              </div>
+              <AppSelect
+                variant="default"
+                size="md"
+                value={branch}
+                onChange={setBranch}
+                options={availableBranchOptions}
+                placeholder="Select Branch"
+                isDisabled={!bank}
+                isSearchable
+              />
             </div>
 
             {/* Country */}
             <div>
               <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Country</label>
-              <div className="relative">
-                <select
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  className="w-full h-[34px] bg-[#111215] border border-[#24252a] rounded-[6px] text-[#cdd0d6] text-[11px] px-[10px] outline-none appearance-none cursor-pointer pr-[24px]"
-                >
-                  <option value="">Select Country</option>
-                  {COUNTRIES.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-                <div className="absolute right-[8px] top-1/2 -translate-y-1/2 pointer-events-none text-[#74757b]">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                  </svg>
-                </div>
-              </div>
+              <AppSelect
+                variant="default"
+                size="md"
+                value={country}
+                onChange={setCountry}
+                options={COUNTRY_OPTIONS}
+                placeholder="Select Country"
+                isSearchable
+              />
             </div>
 
             {/* Date */}
             <div>
               <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Date</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="e.g. 19 JUN 2026"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full h-[34px] pl-[12px] pr-[34px] rounded-[6px] bg-[#111215] border border-[#24252a] text-white text-[12px] focus:border-[#3e4047] outline-none placeholder-[#545659]"
-                />
-                <div className="absolute right-[10px] top-1/2 -translate-y-1/2 pointer-events-none text-[#74757b]">
-                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-              </div>
+              <AppDatePicker
+                variant="default"
+                size="md"
+                selected={date}
+                onChange={setDate}
+                placeholder="Select date"
+                isClearable
+              />
             </div>
           </div>
         </div>

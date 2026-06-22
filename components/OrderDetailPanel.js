@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { companies } from "@/data/mockData";
+import AppSelect from "@/components/ui/AppSelect";
 
 function statusClasses(status) {
   switch (status) {
@@ -62,7 +64,15 @@ const SHAREHOLDERS = [
   { name: "Chen Feng", role: "Shareholder", pct: "10%" },
 ];
 
+const ASSIGNEE_OPTIONS = [
+  { value: "Sufyan Rehan", label: "Sufyan Rehan" },
+  { value: "Usama Aslam",  label: "Usama Aslam"  },
+  { value: "Arslan",       label: "Arslan"        },
+];
+
 export default function OrderDetailPanel({ order, onClose }) {
+  const [assignedTo, setAssignedTo] = useState(null);
+
   if (!order) return null;
 
   const company = companies.find((c) => c.name === order.company) || {};
@@ -153,15 +163,18 @@ export default function OrderDetailPanel({ order, onClose }) {
           <h2 className="text-[14px] font-semibold text-white leading-none">Verification Status</h2>
           <div className="flex items-center gap-[8px]">
             <span className="text-[11px] text-[#74757b]">Assigned to</span>
-            <select
-              defaultValue={order.assignedTo}
-              className="h-[26px] px-[8px] rounded-[6px] bg-[#111215] text-[#cdd0d6] text-[11px] outline-none border border-[#24252a] focus:border-[#3e4047] cursor-pointer"
-            >
-              <option>{order.assignedTo}</option>
-              <option>Sufyan Rehan</option>
-              <option>Usama Aslam</option>
-              <option>Arslan</option>
-            </select>
+            <div className="w-[140px]">
+              <AppSelect
+                variant="default"
+                size="sm"
+                value={assignedTo ?? (order.assignedTo ? { value: order.assignedTo, label: order.assignedTo } : null)}
+                onChange={setAssignedTo}
+                options={[
+                  { value: order.assignedTo, label: order.assignedTo },
+                  ...ASSIGNEE_OPTIONS.filter((o) => o.value !== order.assignedTo),
+                ]}
+              />
+            </div>
           </div>
         </div>
 

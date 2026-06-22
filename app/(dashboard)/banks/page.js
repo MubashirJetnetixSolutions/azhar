@@ -4,6 +4,31 @@ import { useState, useMemo, useEffect } from "react";
 import { banks, reports, orders, invoices } from "@/data/mockData";
 import CreateBankModal from "@/components/modals/CreateBankModal";
 import DeleteConfirmModal from "@/components/modals/DeleteConfirmModal";
+import AppSelect from "@/components/ui/AppSelect";
+import StatusBadgeSelect from "@/components/ui/StatusBadgeSelect";
+
+function Toast({ message, type, onDismiss }) {
+  useEffect(() => {
+    const t = setTimeout(onDismiss, 3500);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const ok = type === "success";
+  return (
+    <div className="fixed bottom-[24px] right-[24px] z-[200] flex items-center gap-[12px] px-[18px] py-[14px] bg-[#1c1d22] border border-[#212328] rounded-[12px] shadow-2xl animate-[toastIn_0.2s_ease-out_forwards]">
+      <style>{`@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`}</style>
+      <div className={`w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-[rgba(34,197,94,0.15)]" : "bg-[rgba(239,68,68,0.15)]"}`}>
+        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke={ok ? "#22c55e" : "#ef4444"} strokeWidth={3}>
+          {ok ? <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/> : <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>}
+        </svg>
+      </div>
+      <span className="text-[13px] text-[#cdd0d6] font-normal leading-none">{message}</span>
+      <button onClick={onDismiss} className="ml-[4px] text-[#545659] hover:text-white transition-colors cursor-pointer shrink-0">
+        <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+  );
+}
 
 function ActionButtons({ onEdit, onDelete }) {
   return (
@@ -61,6 +86,153 @@ function StatusBadge({ status }) {
   );
 }
 
+function SendModal({ open, onClose, sendTarget, onToast }) {
+  const [recipientEmail, setRecipientEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
+
+  useEffect(() => {
+    if (!sendTarget) return;
+    if (sendTarget.type === "report") {
+      setSubject(`Report - ${sendTarget.item.name}`);
+      setMessage(`Dear Recipient,\n\nPlease find attached the report "${sendTarget.item.name}" from ${sendTarget.item.branch}.\n\nBest regards`);
+    } else {
+      setSubject(`Invoice - ${sendTarget.item.id}`);
+      setMessage(`Dear Recipient,\n\nPlease find attached Invoice ${sendTarget.item.id} for ${sendTarget.item.company}.\n\nAmount: ${sendTarget.item.amount}\nDue Date: ${sendTarget.item.dueDate}\n\nBest regards`);
+    }
+    setRecipientEmail("");
+  }, [sendTarget]);
+
+  if (!open) return null;
+
+  const handleSend = async () => {
+    if (!recipientEmail.trim()) return;
+    setSending(true);
+    try {
+      await new Promise((r) => setTimeout(r, 800));
+      onToast({
+        type: "success",
+        message: sendTarget.type === "report" ? "Report sent successfully." : "Invoice sent successfully.",
+        id: Date.now(),
+      });
+      onClose();
+    } catch {
+      onToast({ type: "error", message: "Failed to send. Please try again.", id: Date.now() });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const attachmentName =
+    sendTarget?.type === "report" ? sendTarget.item.name : `Invoice_${sendTarget?.item?.id}.pdf`;
+  const title = sendTarget?.type === "report" ? "Send Report" : "Send Invoice";
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+      <div className="relative rounded-2xl w-[480px] max-w-full mx-4 bg-[#161616] border border-[#262626] max-h-[90vh] flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-[#1e1e1e] shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#1e1e1e]">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#888" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+              </svg>
+            </div>
+            <span className="font-semibold text-white">{title}</span>
+          </div>
+          <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors cursor-pointer">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 py-5 space-y-4 overflow-y-auto">
+          {/* Attachment chip */}
+          <div className="flex items-center gap-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-4 py-3">
+            <svg className="text-[#545659] shrink-0" width={14} height={14} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <div className="min-w-0">
+              <p className="text-[10px] text-[#888] uppercase tracking-wider font-medium">Attachment</p>
+              <p className="text-[13px] text-white truncate mt-[2px]">{attachmentName}</p>
+            </div>
+          </div>
+
+          {/* Recipient Email */}
+          <div>
+            <label className="block text-xs mb-1.5 text-[#888]">Recipient Email</label>
+            <input
+              type="email"
+              placeholder="email@example.com"
+              value={recipientEmail}
+              onChange={(e) => setRecipientEmail(e.target.value)}
+              className="w-full px-3 py-2.5 rounded-lg text-sm outline-none bg-[#1e1e1e] border border-[#2a2a2a] text-white placeholder-[#3a3a3a] focus:border-[#3a3a3a] transition-colors"
+            />
+          </div>
+
+          {/* Subject */}
+          <div>
+            <label className="block text-xs mb-1.5 text-[#888]">Subject</label>
+            <input
+              type="text"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              className="w-full px-3 py-2.5 rounded-lg text-sm outline-none bg-[#1e1e1e] border border-[#2a2a2a] text-white focus:border-[#3a3a3a] transition-colors"
+            />
+          </div>
+
+          {/* Message */}
+          <div>
+            <label className="block text-xs mb-1.5 text-[#888]">Message</label>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              rows={5}
+              className="w-full px-3 py-2.5 rounded-lg text-sm outline-none bg-[#1e1e1e] border border-[#2a2a2a] text-white resize-none focus:border-[#3a3a3a] transition-colors leading-relaxed"
+            />
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex justify-end gap-3 px-6 py-4 border-t border-[#1e1e1e] shrink-0">
+          <button
+            onClick={onClose}
+            className="px-5 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1e1e1e] text-[#888] border border-[#2a2a2a] hover:text-white cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSend}
+            disabled={sending || !recipientEmail.trim()}
+            className="px-5 py-2 rounded-lg text-sm font-medium text-white transition-colors bg-[#2563eb] hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-[6px]"
+          >
+            {sending ? (
+              <>
+                <svg className="animate-spin" width={12} height={12} fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={3} />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Sending...
+              </>
+            ) : (
+              <>
+                <svg width={12} height={12} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+                Send
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function EmptyState({ message, cols = 10 }) {
   return (
     <tr>
@@ -83,8 +255,12 @@ export default function BanksPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [drawerBranch, setDrawerBranch] = useState(null);
   const [drawerParentBank, setDrawerParentBank] = useState(null);
+  const [drawerBranchStatus, setDrawerBranchStatus] = useState(null);
+  const [subTablePeriod, setSubTablePeriod] = useState({ value: "Daily", label: "Daily" });
   const [activeTab, setActiveTab] = useState("All Reports");
   const [tabSearch, setTabSearch] = useState("");
+  const [toast, setToast] = useState(null);
+  const [sendTarget, setSendTarget] = useState(null);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -96,6 +272,10 @@ export default function BanksPage() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
+
+  useEffect(() => {
+    if (drawerBranch) setDrawerBranchStatus(drawerBranch.status ?? "Active");
+  }, [drawerBranch]);
 
   const filteredBanks = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -180,7 +360,22 @@ export default function BanksPage() {
               className="w-full sm:w-[240px] h-[34px] pl-[34px] pr-[12px] rounded-[6px] bg-[#111215] text-[#9ea0a6] text-[12px] leading-none outline-none border border-[#24252a] focus:border-[#3e4047] transition-colors duration-120 placeholder-[#545659]"
             />
           </div>
-
+                      {/* Period Dropdown */}
+                      <div className="w-[110px]">
+                        <AppSelect
+                          variant="default"
+                          size="sm"
+                          value={subTablePeriod}
+                          onChange={setSubTablePeriod}
+                          options={[
+                            { value: "Daily",   label: "Daily"   },
+                            { value: "Weekly",  label: "Weekly"  },
+                            { value: "Monthly", label: "Monthly" },
+                            { value: "Quarterly", label: "Quarterly" },
+                            { value: "Yearly", label: "Yearly" },
+                          ]}
+                        />
+                      </div>
           <button
             onClick={() => setCreateOpen(true)}
             className="h-[34px] px-[16px] rounded-[6px] bg-[#2563eb] text-white text-[12px] font-medium hover:brightness-110 shadow-lg transition-all"
@@ -406,10 +601,19 @@ export default function BanksPage() {
         open={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={() => {
-          alert(`Deleting ${deleteTarget}`);
           setDeleteTarget(null);
+          setToast({ type: "success", message: "Bank deleted successfully.", id: Date.now() });
         }}
       />
+      <SendModal
+        open={!!sendTarget}
+        onClose={() => setSendTarget(null)}
+        sendTarget={sendTarget}
+        onToast={(t) => { setSendTarget(null); setToast(t); }}
+      />
+      {toast && (
+        <Toast key={toast.id} type={toast.type} message={toast.message} onDismiss={() => setToast(null)} />
+      )}
 
       {/* Right-Side Drawer — opens on child row (branch) click */}
       {isDrawerOpen && (
@@ -458,17 +662,17 @@ export default function BanksPage() {
               <div className="flex items-center gap-[10px] shrink-0">
                 <div className="flex items-center gap-[6px]">
                   <span className="text-[11px] text-[#545659] font-medium uppercase tracking-wider">Status</span>
-                  <div className="relative">
-                    <select
-                      defaultValue={drawerBranch?.status}
-                      className="appearance-none bg-[#111215] border border-[#212328] rounded-[6px] text-white text-[12px] font-medium pl-[12px] pr-[28px] h-[32px] outline-none cursor-pointer hover:border-[#3e4047] transition-all"
-                    >
-                      <option value="Active">Active</option>
-                      <option value="Inactive">Inactive</option>
-                    </select>
-                    <svg className="absolute right-[8px] top-1/2 -translate-y-1/2 pointer-events-none text-[#545659]" width={12} height={12} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
+                  <div className="w-[120px]">
+                    <AppSelect
+                      variant="default"
+                      size="sm"
+                      value={drawerBranchStatus ? { value: drawerBranchStatus, label: drawerBranchStatus } : null}
+                      onChange={(opt) => setDrawerBranchStatus(opt?.value ?? "Active")}
+                      options={[
+                        { value: "Active",   label: "Active"   },
+                        { value: "Inactive", label: "Inactive" },
+                      ]}
+                    />
                   </div>
                 </div>
 
@@ -615,14 +819,20 @@ export default function BanksPage() {
                 <div className="flex items-center justify-between gap-[16px] flex-wrap">
                   <h4 className="text-[13px] font-bold text-white">{tabLabel}</h4>
                   <div className="flex items-center gap-[10px]">
-                    <div className="relative">
-                      <select className="appearance-none bg-[#111215] border border-[#212328] rounded-[6px] text-[#9ea0a6] text-[11px] font-medium pl-[10px] pr-[24px] h-[28px] outline-none cursor-pointer hover:border-[#3e4047] transition-all">
-                        <option value="Daily">Daily</option>
-                        <option value="Weekly">Weekly</option>
-                      </select>
-                      <svg className="absolute right-[6px] top-1/2 -translate-y-1/2 pointer-events-none text-[#545659]" width={10} height={10} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
+                    <div className="w-[90px]">
+                      <AppSelect
+                        variant="default"
+                        size="xs"
+                        value={subTablePeriod}
+                        onChange={setSubTablePeriod}
+                        options={[
+                          { value: "Daily",  label: "Daily"  },
+                          { value: "Weekly", label: "Weekly" },
+                          { value: "Monthly", label: "Monthly" },
+                          { value: "Quarterly", label: "Quarterly" },
+                          { value: "Yearly", label: "Yearly" },
+                        ]}
+                      />
                     </div>
                     <div className="relative">
                       <svg className="absolute left-[8px] top-1/2 -translate-y-1/2 text-[#545659]" width={10} height={10} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -645,10 +855,10 @@ export default function BanksPage() {
                     <table className="w-full border-collapse table-fixed">
                       <thead>
                         <tr className="border-b border-[#212328] bg-[#16171c]/30 h-[36px]">
-                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[45%]">File Name</th>
-                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[20%]">Branch</th>
-                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[20%]">Company</th>
-                          <th className="px-[16px] text-right text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[15%]">Actions</th>
+                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[38%]">File Name</th>
+                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[18%]">Branch</th>
+                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[18%]">Company</th>
+                          <th className="px-[16px] text-right text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[14%]">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[#212328]/40">
@@ -677,6 +887,15 @@ export default function BanksPage() {
                                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
                                   </button>
+                                  <button
+                                  onClick={(e) => { e.stopPropagation(); setSendTarget({ type: "report", item }); }}
+                                  className="p-[4px] rounded-[4px] border border-[#212328] bg-[#111215] text-[#9ea0a6] hover:text-[#2563eb] hover:border-[rgba(37,99,235,0.3)] transition-colors cursor-pointer"
+                                  title="Send Report"
+                                >
+                                  <svg width={10} height={10} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                                  </svg>
+                                </button>
                                 </div>
                               </td>
                             </tr>
@@ -722,21 +941,20 @@ export default function BanksPage() {
                     <table className="w-full border-collapse table-fixed">
                       <thead>
                         <tr className="border-b border-[#212328] bg-[#16171c]/30 h-[36px]">
-                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[16%]">Invoice Number</th>
-                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[24%]">Company</th>
-                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[16%]">Creation Date</th>
-                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[14%]">Amount</th>
-                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[14%]">Due Date</th>
-                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[16%]">Status</th>
+                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[14%]">Invoice Number</th>
+                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[21%]">Company</th>
+                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[14%]">Creation Date</th>
+                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[12%]">Amount</th>
+                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[12%]">Due Date</th>
+                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[14%]">Status</th>
+                          <th className="px-[16px] text-right text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[13%]">Send</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[#212328]/40">
                         {activeTabRows.length === 0 ? (
                           <EmptyState message={emptyStateMessage} />
                         ) : (
-                          activeTabRows.map((item, idx) => {
-                            const isPaid = item.status === "Paid";
-                            return (
+                          activeTabRows.map((item, idx) => (
                               <tr key={idx} className="h-[46px] hover:bg-[rgba(255,255,255,0.01)] transition-colors duration-100">
                                 <td className="px-[16px] text-[#9ea0a6] text-[11px] font-mono align-middle">{item.id}</td>
                                 <td className="px-[16px] text-[#cdd0d6] text-[12px] truncate align-middle">{item.company}</td>
@@ -744,29 +962,21 @@ export default function BanksPage() {
                                 <td className="px-[16px] text-[#cdd0d6] text-[12px] align-middle">{item.amount}</td>
                                 <td className="px-[16px] text-[#9ea0a6] text-[11px] align-middle">{item.dueDate}</td>
                                 <td className="px-[16px] align-middle">
-                                  <div className="relative inline-flex">
-                                    <select
-                                      defaultValue={item.status}
-                                      className={`appearance-none text-[10px] font-medium pl-[8px] pr-[20px] h-[22px] rounded-[4px] border outline-none cursor-pointer transition-all ${
-                                        isPaid
-                                          ? "bg-[rgba(34,197,94,0.08)] text-[#22c55e] border-[rgba(34,197,94,0.2)]"
-                                          : "bg-[rgba(239,68,68,0.08)] text-[#ef4444] border-[rgba(239,68,68,0.2)]"
-                                      }`}
-                                    >
-                                      <option value="Paid">Paid</option>
-                                      <option value="Unpaid">Unpaid</option>
-                                    </select>
-                                    <svg
-                                      className={`absolute right-[5px] top-1/2 -translate-y-1/2 pointer-events-none ${isPaid ? "text-[#22c55e]" : "text-[#ef4444]"}`}
-                                      width={8} height={8} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
-                                    >
-                                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                  <StatusBadgeSelect value={item.status ?? "Paid"} onChange={() => {}} />
+                                </td>
+                                <td className="px-[16px] text-right align-middle">
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); setSendTarget({ type: "invoice", item }); }}
+                                    className="p-[4px] rounded-[4px] border border-[#212328] bg-[#111215] text-[#9ea0a6] hover:text-[#2563eb] hover:border-[rgba(37,99,235,0.3)] transition-colors cursor-pointer"
+                                    title="Send Invoice"
+                                  >
+                                    <svg width={10} height={10} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                                     </svg>
-                                  </div>
+                                  </button>
                                 </td>
                               </tr>
-                            );
-                          })
+                          ))
                         )}
                       </tbody>
                     </table>

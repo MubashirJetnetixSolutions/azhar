@@ -1,31 +1,31 @@
 export const orders = [
-  { id: "JI456M9", company: "S&P Credit Mkt SVCS Eurpoe Ltd", country: "Russian Federation", bank: "MBL", branch: "Hyderi Branch", requestDate: "26 MAR 2026", startTime: "10:30 am", assignedTo: "Zaki Javed", availability: "Online", status: "In Verification", action: "Review" },
-  { id: "JI456M9", company: "Pharma International", country: "Italy", bank: "UBL", branch: "Gulshan Branch", requestDate: "15 MAR 2026", startTime: "10:30 am", assignedTo: "Asad Chaudhry", availability: "Online", status: "New", action: "Start" },
-  { id: "JI456M9", company: "Credit Suisse (Hong Kong) Limited", country: "Australia", bank: "MCB", branch: "Ii Chundrigar Branch", requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Khalil Rizvi", availability: "Online", status: "Reusable", action: "Reuse" },
-  { id: "4P078N", company: "Targaryen Restoration", country: "China", bank: "MBL", branch: "Johar Branch", requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Tariq Javed", availability: "Online", status: "Complete", action: "Send" },
-  { id: "Y98MYO", company: "Master Facility", country: "Hong Kong", bank: "HBL", branch: "3 Talwar Branch", requestDate: "19 FEB 2026", startTime: "10:30 am", assignedTo: "Zain Raza", availability: "Offline", status: "Flagged", action: "Review" },
-  { id: "123RE63", company: "RiverStone Insurance Limited", country: "Germany", bank: "BAHL", branch: "Hyderi Branch", requestDate: "12 FEB 2026", startTime: "10:30 am", assignedTo: "Shujaat Khan", availability: "Offline", status: "Flagged", action: "Review" },
-  { id: "BN234T", company: "Parallax Company", country: "Spain", bank: "ABL", branch: "Bahadurabad Branch", requestDate: "10 MAR 2026", startTime: "10:30 am", assignedTo: "Wajid Farooq", availability: "Offline", status: "New", action: "Start" },
+  { id: "JI456M9", company: "S&P Credit Mkt SVCS Eurpoe Ltd", country: "Russian Federation", bank: "MBL", type: "SMEs", branch: "Hyderi Branch", requestDate: "26 MAR 2026", startTime: "10:30 am", assignedTo: "Zaki Javed", availability: "Online", status: "In Verification", action: "Review" },
+  { id: "JI456M9", company: "Pharma International", country: "Italy", bank: "UBL", type: "Normal", branch: "Gulshan Branch", requestDate: "15 MAR 2026", startTime: "10:30 am", assignedTo: "Asad Chaudhry", availability: "Online", status: "New", action: "Start" },
+  { id: "JI456M9", company: "Credit Suisse (Hong Kong) Limited", country: "Australia", bank: "MCB", type: "SMEs", branch: "Ii Chundrigar Branch", requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Khalil Rizvi", availability: "Online", status: "Reusable", action: "Reuse" },
+  { id: "4P078N", company: "Targaryen Restoration", country: "China", bank: "MBL", type: "Normal", branch: "Johar Branch", requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Tariq Javed", availability: "Online", status: "Complete", action: "Send" },
+  { id: "Y98MYO", company: "Master Facility", country: "Hong Kong", bank: "HBL", type: "SMEs", branch: "3 Talwar Branch", requestDate: "19 FEB 2026", startTime: "10:30 am", assignedTo: "Zain Raza", availability: "Offline", status: "Flagged", action: "Review" },
+  { id: "123RE63", company: "RiverStone Insurance Limited", country: "Germany", bank: "BAHL", type: "SMEs", branch: "Hyderi Branch", requestDate: "12 FEB 2026", startTime: "10:30 am", assignedTo: "Shujaat Khan", availability: "Offline", status: "Flagged", action: "Review" },
+  { id: "BN234T", company: "Parallax Company", country: "Spain", bank: "ABL", type: "Normal", branch: "Bahadurabad Branch", requestDate: "10 MAR 2026", startTime: "10:30 am", assignedTo: "Wajid Farooq", availability: "Offline", status: "New", action: "Start" },
 ];
 
 export const invoices = [
-  { id: "JI456M9", bank: "MBL", branch: "Hyderi Branch", company: "S&P Credit Mkt SVCS Eurpoe Ltd", creationDate: "26 MAR 2026", amount: "PKR 40,000", dueDate: "26 MAR 2026", status: "Paid" },
-  { id: "JI456M9", bank: "UBL", branch: "Gulshan Branch", company: "Pharma International", creationDate: "15 MAR 2026", amount: "PKR 37,000", dueDate: "15 MAR 2026", status: "Paid" },
-  { id: "JI456M9", bank: "MCB", branch: "U Chundrigarh Branch", company: "Credit Suisse (Hong Kong) Limited", creationDate: "24 FEB 2026", amount: "PKR 40,000", dueDate: "24 FEB 2026", status: "Unpaid" },
-  { id: "4PO78N", bank: "HBL", branch: "3 Talwar Branch", company: "Targaryen Restoration", creationDate: "24 FEB 2026", amount: "PKR 40,000", dueDate: "24 FEB 2026", status: "Paid" },
-  { id: "Y98MYO", bank: "BAHL", branch: "Hyderi Branch", company: "Master Facility", creationDate: "19 FEB 2026", amount: "PKR 2000", dueDate: "19 FEB 2026", status: "Paid" },
-  { id: "BN234T", bank: "ABL", branch: "Bahadurabad Branch", company: "Parallax Company", creationDate: "10 MAR 2026", amount: "PKR 1000", dueDate: "10 MAR 2026", status: "Unpaid" },
+  { id: "JI456M9", bank: "MBL", branch: "Hyderi Branch", type: "SMEs", company: "S&P Credit Mkt SVCS Eurpoe Ltd", creationDate: "26 MAR 2026", amount: "PKR 40,000", dueDate: "26 MAR 2026", status: "Paid" },
+  { id: "JI456M9", bank: "UBL", branch: "Gulshan Branch", type: "Normal", company: "Pharma International", creationDate: "15 MAR 2026", amount: "PKR 37,000", dueDate: "15 MAR 2026", status: "Paid" },
+  { id: "JI456M9", bank: "MCB", branch: "U Chundrigarh Branch", type: "SMEs", company: "Credit Suisse (Hong Kong) Limited", creationDate: "24 FEB 2026", amount: "PKR 40,000", dueDate: "24 FEB 2026", status: "Unpaid" },
+  { id: "4PO78N", bank: "HBL", branch: "3 Talwar Branch", type: "Normal", company: "Targaryen Restoration", creationDate: "24 FEB 2026", amount: "PKR 40,000", dueDate: "24 FEB 2026", status: "Paid" },
+  { id: "Y98MYO", bank: "BAHL", branch: "Hyderi Branch", type: "SMEs", company: "Master Facility", creationDate: "19 FEB 2026", amount: "PKR 2000", dueDate: "19 FEB 2026", status: "Paid" },
+  { id: "BN234T", bank: "ABL", branch: "Bahadurabad Branch", type: "Normal", company: "Parallax Company", creationDate: "10 MAR 2026", amount: "PKR 1000", dueDate: "10 MAR 2026", status: "Unpaid" },
 ];
 
 export const reports = [
-  { name: "Report name_T1.pdf", size: "18 Mb", company: "S&P Credit Mkt SVCS Eurpoe Ltd", bank: "MBL", branch: "Hyderi Branch", country: "Russian Federation", date: "26 MAR 2026", orderNumber: "JI456M9", assignedTo: "Zaki Javed", status: "Complete" },
-  { name: "Report name_T1.pdf", size: "25 Mb", company: "Pharma International", bank: "UBL", branch: "Gulshan Branch", country: "Italy", date: "15 MAR 2026", orderNumber: "JI456M9", assignedTo: "Asad Chaudhry", status: "Complete" },
-  { name: "Report name_T1.pdf", size: "19 Kb", company: "Credit Suisse (Hong Kong) Limited", bank: "MCB", branch: "U Chundrigarh Branch", country: "Australia", date: "24 FEB 2026", orderNumber: "JI456M9", assignedTo: "Khalil Rizvi", status: "Pending" },
-  { name: "Report name_T1.pdf", size: "1 Mb", company: "Targaryen Restoration", bank: "MBL", branch: "Johar Branch", country: "China", date: "24 FEB 2026", orderNumber: "4PO78N", assignedTo: "Tariq Javed", status: "In Progress" },
-  { name: "Report name_T1.pdf", size: "10 Kb", company: "Master Facility", bank: "HBL", branch: "3 Talwar Branch", country: "Hong Kong", date: "19 FEB 2026", orderNumber: "Y98MYO", assignedTo: "Zain Raza", status: "Cancelled" },
-  { name: "Report name_T1.pdf", size: "3 Mb", company: "RiverStone Insurance Limited", bank: "BAHL", branch: "Hyderi Branch", country: "Germany", date: "12 FEB 2026", orderNumber: "123RE63", assignedTo: "Shujaat Khan", status: "Pending" },
-  { name: "Report name_T1.pdf", size: "12 Mb", company: "Parallax Company", bank: "ABL", branch: "Bahadurabad Branch", country: "Spain", date: "10 MAR 2026", orderNumber: "BN234T", assignedTo: "Wajid Farooq", status: "Complete" },
-  { name: "Report name_T1.pdf", size: "12 Mb", company: "Parallax Company", bank: "ABL", branch: "Bahadurabad Branch", country: "Spain", date: "10 MAR 2026", orderNumber: "BN234T", assignedTo: "Wajid Farooq", status: "Complete" },
+  { name: "Report name_T1.pdf", size: "18 Mb", type: "SMEs", company: "S&P Credit Mkt SVCS Eurpoe Ltd", bank: "MBL", branch: "Hyderi Branch", country: "Russian Federation", date: "26 MAR 2026", orderNumber: "JI456M9", assignedTo: "Zaki Javed", status: "Complete" },
+  { name: "Report name_T1.pdf", size: "25 Mb", type: "Normal", company: "Pharma International", bank: "UBL", branch: "Gulshan Branch", country: "Italy", date: "15 MAR 2026", orderNumber: "JI456M9", assignedTo: "Asad Chaudhry", status: "Complete" },
+  { name: "Report name_T1.pdf", size: "19 Kb", type: "SMEs", company: "Credit Suisse (Hong Kong) Limited", bank: "MCB", branch: "U Chundrigarh Branch", country: "Australia", date: "24 FEB 2026", orderNumber: "JI456M9", assignedTo: "Khalil Rizvi", status: "Pending" },
+  { name: "Report name_T1.pdf", size: "1 Mb", type: "Normal", company: "Targaryen Restoration", bank: "MBL", branch: "Johar Branch", country: "China", date: "24 FEB 2026", orderNumber: "4PO78N", assignedTo: "Tariq Javed", status: "In Progress" },
+  { name: "Report name_T1.pdf", size: "10 Kb", type: "SMEs", company: "Master Facility", bank: "HBL", branch: "3 Talwar Branch", country: "Hong Kong", date: "19 FEB 2026", orderNumber: "Y98MYO", assignedTo: "Zain Raza", status: "Cancelled" },
+  { name: "Report name_T1.pdf", size: "3 Mb", type: "SMEs", company: "RiverStone Insurance Limited", bank: "BAHL", branch: "Hyderi Branch", country: "Germany", date: "12 FEB 2026", orderNumber: "123RE63", assignedTo: "Shujaat Khan", status: "Pending" },
+  { name: "Report name_T1.pdf", size: "12 Mb", type: "Normal", company: "Parallax Company", bank: "ABL", branch: "Bahadurabad Branch", country: "Spain", date: "10 MAR 2026", orderNumber: "BN234T", assignedTo: "Wajid Farooq", status: "Complete" },
+  { name: "Report name_T1.pdf", size: "12 Mb", type: "Normal", company: "Parallax Company", bank: "ABL", branch: "Bahadurabad Branch", country: "Spain", date: "10 MAR 2026", orderNumber: "BN234T", assignedTo: "Wajid Farooq", status: "Complete" },
 ];
 
 export const emails = [
@@ -317,10 +317,10 @@ export const dashboardStats = {
 };
 
 export const recentOrders = [
-  { id: "JI456M9", company: "S&P Credit Mkt SVCS Eurpoe Ltd", country: "Russian Federation", bank: "MBL", branch: "Hyderi Branch",        requestDate: "26 MAR 2026", startTime: "10:30 am", assignedTo: "Zaki Javed",     availability: "Online"  },
-  { id: "JI456M9", company: "Pharma International",           country: "Italy",              bank: "UBL", branch: "Gulshan Branch",        requestDate: "15 MAR 2026", startTime: "10:30 am", assignedTo: "Asad Chaudhry",  availability: "Online"  },
-  { id: "JI456M9", company: "Credit Suisse (Hong Kong) Limited", country: "Australia",       bank: "MCB", branch: "I.I Chundrigarh Branch", requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Khalil Rizvi",  availability: "Online"  },
-  { id: "4PO78N",  company: "Targaryen Restoration",          country: "China",              bank: "MBL", branch: "Johar Branch",          requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Tariq Javed",   availability: "Online"  },
-  { id: "Y98MYO",  company: "Master Facility",                country: "Hong Kong",          bank: "HBL", branch: "3 Talwar Branch",       requestDate: "19 FEB 2026", startTime: "10:30 am", assignedTo: "Zain Raza",     availability: "Offline" },
-  { id: "123RE63", company: "RiverStone Insurance Limited",   country: "Germany",            bank: "BAHL",branch: "Hyderi Branch",         requestDate: "12 FEB 2026", startTime: "10:30 am", assignedTo: "Shujaat Khan",  availability: "Online"  },
+  { id: "JI456M9", company: "S&P Credit Mkt SVCS Eurpoe Ltd", country: "Russian Federation", bank: "MBL", branch: "Hyderi Branch", type: "SMEs", requestDate: "26 MAR 2026", startTime: "10:30 am", assignedTo: "Zaki Javed", availability: "Online" },
+  { id: "JI456M9", company: "Pharma International", country: "Italy", bank: "UBL", branch: "Gulshan Branch", type: "Normal", requestDate: "15 MAR 2026", startTime: "10:30 am", assignedTo: "Asad Chaudhry", availability: "Online" },
+  { id: "JI456M9", company: "Credit Suisse (Hong Kong) Limited", country: "Australia", type: "SMEs", bank: "MCB", branch: "I.I Chundrigarh Branch", requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Khalil Rizvi", availability: "Online" },
+  { id: "4PO78N", company: "Targaryen Restoration", country: "China", bank: "MBL", branch: "Johar Branch", type: "Normal", requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Tariq Javed", availability: "Online" },
+  { id: "Y98MYO", company: "Master Facility", country: "Hong Kong", bank: "HBL", branch: "3 Talwar Branch", type: "SMEs", requestDate: "19 FEB 2026", startTime: "10:30 am", assignedTo: "Zain Raza", availability: "Offline" },
+  { id: "123RE63", company: "RiverStone Insurance Limited", country: "Germany", type: "SMEs", bank: "BAHL", branch: "Hyderi Branch", requestDate: "12 FEB 2026", startTime: "10:30 am", assignedTo: "Shujaat Khan", availability: "Online" },
 ];

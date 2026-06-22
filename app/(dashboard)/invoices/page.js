@@ -3,6 +3,9 @@
 import { useState, useMemo, useEffect } from "react";
 import { invoices } from "@/data/mockData";
 import CreateInvoiceModal from "@/components/modals/CreateInvoiceModal";
+import DeleteConfirmModal from "@/components/modals/DeleteConfirmModal";
+import AppSelect from "@/components/ui/AppSelect";
+import StatusBadgeSelect from "@/components/ui/StatusBadgeSelect";
 
 // ── Toast ─────────────────────────────────────────────────
 function Toast({ message, type, onDismiss }) {
@@ -50,10 +53,13 @@ export default function InvoicesPage() {
   const [sortKey, setSortKey] = useState(null);
   const [sortDir, setSortDir] = useState("asc");
   const [createInvoiceOpen, setCreateInvoiceOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const [toast, setToast] = useState(null);
 
   // State-driven additions
-  const [invoiceType, setInvoiceType] = useState("Normal");
+  const [invoiceType, setInvoiceType] = useState({ value: "Normal", label: "Normal" });
+  const [period, setPeriod] = useState({ value: "Daily", label: "Daily" });
+  const [tags, setTags] = useState(null);
 
   // Enrich mock data with originalIndex to reliably update individual rows
   const initialInvoices = useMemo(() => {
@@ -104,36 +110,18 @@ export default function InvoicesPage() {
 
   // Active Summary Cards based on Invoice Type Selector
   const activeSummaryCards = useMemo(() => {
-    if (invoiceType === "SMEs") {
+    if (invoiceType?.value === "SMEs") {
       return summaryCards.filter(c => c.label !== "Total Texes" && c.label !== "Total Taxes");
     }
     return summaryCards;
   }, [invoiceType]);
 
-  // Render Status Badge as Dropdown Select
   function renderStatusBadge(row) {
-    const value = row.status ?? "Paid";
-    const isPaid = value === "Paid";
     return (
-      <div className="relative inline-block">
-        <span className={`inline-flex items-center gap-[6px] text-[10px] font-medium leading-none py-[4px] px-[8px] rounded-[4px] border transition-colors duration-100 ${
-          isPaid
-            ? "bg-[rgba(34,197,94,0.08)] text-[#22c55e] border-[rgba(34,197,94,0.2)]"
-            : "bg-[rgba(239,68,68,0.08)] text-[#ef4444] border-[rgba(239,68,68,0.2)]"
-        }`}>
-          {value}
-          <svg width="8" height="8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-          </svg>
-        </span>
-        <select
-          value={value}
-          onChange={(e) => handleStatusChange(row.originalIndex, e.target.value)}
-          className="absolute inset-0 w-full bg-[#111215] h-full opacity-0 cursor-pointer">
-          <option value="Paid">Paid</option>
-          <option value="Unpaid">Unpaid</option>
-        </select>
-      </div>
+      <StatusBadgeSelect
+        value={row.status ?? "Paid"}
+        onChange={(newVal) => handleStatusChange(row.originalIndex, newVal)}
+      />
     );
   }
 
@@ -144,42 +132,39 @@ export default function InvoicesPage() {
         <h1 className="text-[22px] font-bold text-white tracking-[-0.019em]">Invoices</h1>
         <div className="flex items-center gap-[8px]">
           {/* Invoice Type Dropdown Selector */}
-          <div className="relative">
-            <select
+          <div className="w-[110px]">
+            <AppSelect
+              variant="default"
+              size="sm"
               value={invoiceType}
-              onChange={(e) => setInvoiceType(e.target.value)}
-              className="w-[102px] h-[30px] bg-[#111215] border border-[#24252a] rounded-[6px] text-[#74757b] text-[11px] px-[10px] outline-none appearance-none cursor-pointer pr-[24px]"
-            >
-              <option value="Normal">Normal</option>
-              <option value="SMEs">SMEs</option>
-            </select>
-            <div className="absolute right-[8px] top-1/2 -translate-y-1/2 pointer-events-none text-[#74757b]">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-              </svg>
-            </div>
+              onChange={setInvoiceType}
+              options={[
+                { value: "Normal", label: "Normal" },
+                { value: "SMEs",   label: "SMEs"   },
+              ]}
+            />
           </div>
-          {/* Daily Dropdown */}
-          <div className="relative">
-            <select
-              defaultValue="Daily"
-              className="w-[102px] h-[30px] bg-[#111215] border border-[#24252a] rounded-[6px] text-[#74757b] text-[11px] px-[10px] outline-none appearance-none cursor-pointer pr-[24px]"
-            >
-              <option>Daily</option>
-              <option>Weekly</option>
-              <option>Monthly</option>
-            </select>
-            <div className="absolute right-[8px] top-1/2 -translate-y-1/2 pointer-events-none text-[#74757b]">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-              </svg>
-            </div>
+          {/* Period Dropdown */}
+          <div className="w-[110px]">
+            <AppSelect
+              variant="default"
+              size="sm"
+              value={period}
+              onChange={setPeriod}
+              options={[
+                { value: "Daily",   label: "Daily"   },
+                { value: "Weekly",  label: "Weekly"  },
+                { value: "Monthly", label: "Monthly" },
+                { value: "Quarterly", label: "Quarterly" },
+                { value: "Yearly", label: "Yearly" },
+              ]}
+            />
           </div>
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className={`grid gap-[16px] transition-all duration-300 ${invoiceType === "SMEs" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"}`}>
+      <div className={`grid gap-[16px] transition-all duration-300 ${invoiceType?.value === "SMEs" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"}`}>
         {activeSummaryCards.map((card) => (
           <div
             key={card.label}
@@ -213,17 +198,16 @@ export default function InvoicesPage() {
           </div>
           <div className="flex items-center gap-[12px]">
             {/* Tags Select */}
-            <div className="relative">
-              <select
-                defaultValue="Tags"
-                className="w-[102px] h-[34px] bg-[#111215] border border-[#24252a] rounded-[6px] text-[#74757b] text-[12px] px-[10px] outline-none appearance-none cursor-pointer pr-[24px]">
-                <option>Tags</option>
-              </select>
-              <div className="absolute right-[8px] top-1/2 -translate-y-1/2 pointer-events-none text-[#74757b]">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                </svg>
-              </div>
+            <div className="w-[110px]">
+              <AppSelect
+                variant="default"
+                size="md"
+                value={tags}
+                onChange={setTags}
+                placeholder="Tags"
+                isClearable
+                options={[{ value: "Tags", label: "Tags" }]}
+              />
             </div>
             {/* Search Input */}
             <div className="relative">
@@ -270,6 +254,7 @@ export default function InvoicesPage() {
                 {[
                   { label: "Invoice Number", key: "id" },
                   { label: "Bank", key: "bank" },
+                  { label: "Type", key: "type" },
                   { label: "Branch", key: "branch" },
                   { label: "Company", key: "company" },
                   { label: "Creation Date", key: "creationDate" },
@@ -319,6 +304,9 @@ export default function InvoicesPage() {
                     <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
                       {row.branch}
                     </td>
+                    <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#cdd0d6] whitespace-nowrap align-middle">
+                      {row.type}
+                    </td>
                     <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#cdd0d6] whitespace-nowrap max-w-[200px] truncate align-middle">
                       {row.company}
                     </td>
@@ -349,7 +337,10 @@ export default function InvoicesPage() {
                           </svg>
                         </button>
                         {/* Delete Button */}
-                        <button className="w-[32px] h-[32px] rounded-[6px] border border-[#373a42] bg-[#1e2027] hover:border-[#484b54] hover:bg-[#272b34] flex items-center justify-center text-[#cdd0d6] hover:text-white cursor-pointer transition-colors duration-100">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setDeleteTarget(row); }}
+                          className="w-[32px] h-[32px] rounded-[6px] border border-[#373a42] bg-[#1e2027] hover:border-red-900/50 hover:bg-[rgba(239,68,68,0.06)] flex items-center justify-center text-[#cdd0d6] hover:text-red-400 cursor-pointer transition-colors duration-100"
+                        >
                           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
@@ -401,6 +392,15 @@ export default function InvoicesPage() {
         open={createInvoiceOpen}
         onClose={() => setCreateInvoiceOpen(false)}
         onSuccess={() => setToast({ type: "success", message: "Invoice created successfully.", id: Date.now() })}
+      />
+      <DeleteConfirmModal
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={() => {
+          setInvoiceList((prev) => prev.filter((r) => r.originalIndex !== deleteTarget?.originalIndex));
+          setDeleteTarget(null);
+          setToast({ type: "success", message: "Invoice deleted successfully.", id: Date.now() });
+        }}
       />
 
       {toast && (

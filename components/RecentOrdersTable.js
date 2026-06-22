@@ -9,12 +9,17 @@ const COLS = [
   "Company",
   "Country",
   "Bank",
+  "Type",
   "Request Date",
   "Start Time",
   "Assigned to",
   "Availability",
   "Actions",
 ];
+
+// Shared 10-column template — must match COLS length and OrderRow child count
+const GRID =
+  "grid-cols-[minmax(88px,0.85fr)_minmax(160px,1.65fr)_minmax(110px,1fr)_minmax(96px,0.9fr)_minmax(100px,0.95fr)_minmax(100px,0.95fr)_minmax(96px,0.9fr)_minmax(88px,0.8fr)_minmax(72px,0.75fr)_minmax(80px,0.7fr)]";
 
 function SearchBar({ value, onChange }) {
   const [focused, setFocused] = useState(false);
@@ -92,41 +97,57 @@ function TwoLineCell({ primary, secondary }) {
 function OrderRow({ row, action }) {
   return (
     <div
-      className="grid gap-x-[16px] transition-colors duration-100 bg-transparent hover:bg-[rgba(255,255,255,0.018)] grid-cols-[minmax(88px,0.85fr)_minmax(160px,1.65fr)_minmax(110px,1fr)_minmax(96px,0.9fr)_minmax(100px,0.95fr)_minmax(100px,0.95fr)_minmax(96px,0.9fr)_minmax(88px,0.8fr)_minmax(72px,0.75fr)]"
+      className={`grid gap-x-[16px] ${GRID} transition-colors duration-100 bg-transparent hover:bg-[rgba(255,255,255,0.018)] border-b border-[#1f1f1f] last:border-b-0`}
     >
-      <div className="flex items-center py-[12px] text-[#727479] text-[12px] font-medium leading-[16px]">
+      {/* Order Number */}
+      <div className="flex items-center py-[14px] text-[#727479] text-[12px] font-medium leading-[16px] whitespace-nowrap">
         {row.id}
       </div>
 
-      <div className="flex items-center py-[12px] text-[#cdd0d6] text-[12px] font-normal leading-[16px] overflow-hidden text-ellipsis whitespace-nowrap">
-        {row.company}
+      {/* Company */}
+      <div className="flex items-center py-[14px] min-w-0">
+        <span className="text-[#cdd0d6] text-[12px] font-normal leading-[16px] truncate">
+          {row.company}
+        </span>
       </div>
 
-      <div className="flex items-center py-[12px] text-[#727479] text-[12px] font-normal leading-[16px]">
+      {/* Country */}
+      <div className="flex items-center py-[14px] text-[#727479] text-[12px] font-normal leading-[16px]">
         {row.country}
       </div>
 
-      <div className="flex items-center py-[12px]">
+      {/* Bank */}
+      <div className="flex items-center py-[14px]">
         <TwoLineCell primary={row.bank} secondary={row.branch} />
       </div>
 
-      <div className="flex items-center py-[12px] text-[#727479] text-[12px] font-normal leading-[16px]">
+      {/* Type */}
+      <div className="flex items-center py-[14px] text-[#727479] text-[12px] font-normal leading-[16px]">
+        {row.type}
+      </div>
+
+      {/* Request Date */}
+      <div className="flex items-center py-[14px] text-[#727479] text-[12px] font-normal leading-[16px] whitespace-nowrap">
         {row.requestDate}
       </div>
 
-      <div className="flex items-center py-[12px]">
+      {/* Start Time */}
+      <div className="flex items-center py-[14px]">
         <TwoLineCell primary={row.startTime} secondary={row.requestDate} />
       </div>
 
-      <div className="flex items-center py-[12px] text-[#9ea0a6] text-[12px] font-normal leading-[16px]">
+      {/* Assigned to */}
+      <div className="flex items-center py-[14px] text-[#9ea0a6] text-[12px] font-normal leading-[16px]">
         {row.assignedTo}
       </div>
 
-      <div className="flex items-center py-[12px]">
+      {/* Availability */}
+      <div className="flex items-center py-[14px]">
         <AvailBadge value={row.availability ?? "Online"} />
       </div>
 
-      <div className="flex items-center py-[12px]">
+      {/* Actions */}
+      <div className="flex items-center py-[14px]">
         <ActionBtn label={action} />
       </div>
     </div>
@@ -135,10 +156,10 @@ function OrderRow({ row, action }) {
 
 export default function RecentOrdersTable({ data = [], searchTerm, onSearchChange }) {
   return (
-    <div className="bg-[#1a1a1a] rounded-[12px] pt-[20px] pr-[24px] pl-[24px] pb-[16px] w-full min-w-0 box-border">
+    <div className="bg-[#1a1a1a] rounded-[12px] pt-[20px] pr-[24px] pl-[24px] pb-[4px] w-full min-w-0 box-border">
       {/* Card header */}
-      <div className="flex flex-wrap items-start justify-between gap-[16px] mb-0">
-        <div className="mb-4">
+      <div className="flex flex-wrap items-start justify-between gap-[16px] mb-[20px]">
+        <div>
           <h2 className="m-0 text-[#d9d9db] text-[22px] font-normal leading-[24px] tracking-[-0.01em]">
             Recent Orders
           </h2>
@@ -149,42 +170,41 @@ export default function RecentOrdersTable({ data = [], searchTerm, onSearchChang
         <SearchBar value={searchTerm} onChange={onSearchChange} />
       </div>
 
-      {/* Column headers */}
-      <div
-        className="-mx-[24px] px-[24px] py-[14px] border-t border-[#1f1f1f] border-b border-[#1f1f1f] bg-[#111111]"
-      >
-        <div className="overflow-x-auto scrolling-touch">
-          <div
-            className="grid gap-x-[16px] min-w-[960px] grid-cols-[minmax(88px,0.85fr)_minmax(160px,1.65fr)_minmax(110px,1fr)_minmax(96px,0.9fr)_minmax(100px,0.95fr)_minmax(100px,0.95fr)_minmax(96px,0.9fr)_minmax(88px,0.8fr)_minmax(72px,0.75fr)]"
-          >
-            {COLS.map((label) => (
-              <div
-                key={label}
-                className="text-[#888888] text-[12px] font-normal leading-[16px] whitespace-nowrap"
-              >
-                {label}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* Single scroll container — header + rows scroll together */}
+      <div className="-mx-[24px] overflow-x-auto scrolling-touch">
+        <div className="min-w-[1020px]">
 
-      {/* Data rows */}
-      <div className="overflow-x-auto scrolling-touch">
-        <div className="min-w-[960px]">
-          {data.length === 0 ? (
-            <div className="py-[40px] text-center text-[#424549] text-[12px]">
-              No orders match your search.
+          {/* Column headers */}
+          <div className="px-[24px] py-[12px] border-t border-[#1f1f1f] border-b border-[#1f1f1f] bg-[#111111]">
+            <div className={`grid gap-x-[16px] ${GRID}`}>
+              {COLS.map((label) => (
+                <div
+                  key={label}
+                  className="text-[#888888] text-[11px] font-normal leading-[16px] whitespace-nowrap uppercase tracking-[0.02em]"
+                >
+                  {label}
+                </div>
+              ))}
             </div>
-          ) : (
-            data.map((row, i) => (
-              <OrderRow
-                key={`${row.id}-${i}`}
-                row={row}
-                action={ROW_ACTIONS[i] ?? "Review"}
-              />
-            ))
-          )}
+          </div>
+
+          {/* Data rows */}
+          <div className="px-[24px]">
+            {data.length === 0 ? (
+              <div className="py-[40px] text-center text-[#424549] text-[12px]">
+                No orders match your search.
+              </div>
+            ) : (
+              data.map((row, i) => (
+                <OrderRow
+                  key={`${row.id}-${i}`}
+                  row={row}
+                  action={ROW_ACTIONS[i] ?? "Review"}
+                />
+              ))
+            )}
+          </div>
+
         </div>
       </div>
     </div>

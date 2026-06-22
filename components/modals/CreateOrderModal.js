@@ -1,9 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import AppSelect from "@/components/ui/AppSelect";
+import AppDatePicker from "@/components/ui/AppDatePicker";
+
+const SOURCE_OPTIONS = [
+  { value: "Manual", label: "Manual" },
+  { value: "PDF",    label: "PDF"    },
+];
 
 export default function CreateOrderModal({ open, onClose }) {
-  const [source, setSource] = useState("Manual");
+  const [source, setSource] = useState({ value: "Manual", label: "Manual" });
+  const [bank,   setBank]   = useState(null);
+  const [date,   setDate]   = useState(null);
 
   if (!open) return null;
 
@@ -33,22 +42,16 @@ export default function CreateOrderModal({ open, onClose }) {
           {/* Source */}
           <div>
             <label className="block text-xs mb-1.5 text-[#888]">Source</label>
-            <div className="relative">
-              <select
-                value={source}
-                onChange={(e) => setSource(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg text-sm appearance-none outline-none bg-[#1e1e1e] border border-[#2a2a2a] text-white"
-              >
-                <option value="Manual">Manual</option>
-                <option value="PDF">PDF</option>
-              </select>
-              <svg className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#666" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
+            <AppSelect
+              variant="dark"
+              size="lg"
+              value={source}
+              onChange={setSource}
+              options={SOURCE_OPTIONS}
+            />
           </div>
 
-          {source === "PDF" && (
+          {source?.value === "PDF" && (
             <div>
               <label className="block text-xs mb-1.5 text-[#888]">Upload File</label>
               <div className="rounded-xl p-6 flex flex-col items-center gap-3 border-[1.5px] border-dashed border-[#333] bg-[#1a1a1a]">
@@ -82,14 +85,14 @@ export default function CreateOrderModal({ open, onClose }) {
             </div>
             <div>
               <label className="block text-xs mb-1.5 text-[#888]">Bank</label>
-              <div className="relative">
-                <select className="w-full px-3 py-2.5 rounded-lg text-sm appearance-none outline-none bg-[#1e1e1e] border border-[#2a2a2a] text-white">
-                  <option value=""></option>
-                </select>
-                <svg className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#666" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
+              <AppSelect
+                variant="dark"
+                size="lg"
+                value={bank}
+                onChange={setBank}
+                options={[]}
+                placeholder="Select bank"
+              />
             </div>
             <div>
               <label className="block text-xs mb-1.5 text-[#888]">Branch</label>
@@ -97,12 +100,14 @@ export default function CreateOrderModal({ open, onClose }) {
             </div>
             <div>
               <label className="block text-xs mb-1.5 text-[#888]">Date</label>
-              <div className="relative">
-                <input type="text" className="w-full px-3 py-2.5 rounded-lg text-sm outline-none bg-[#1e1e1e] border border-[#2a2a2a] text-white" />
-                <svg className="absolute right-3 top-1/2 -translate-y-1/2" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#666" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
+              <AppDatePicker
+                variant="dark"
+                size="lg"
+                selected={date}
+                onChange={setDate}
+                placeholder="Select date"
+                isClearable
+              />
             </div>
           </div>
         </div>

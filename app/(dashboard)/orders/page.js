@@ -276,6 +276,7 @@ export default function OrdersPage() {
                   { label: "Company", key: "company" },
                   { label: "Country", key: "country" },
                   { label: "Bank", key: null },
+                  { label: "Type", key: 'type' },
                   { label: "Request Date", key: "requestDate" },
                   { label: "Start Time", key: null },
                   { label: "Assigned to", key: "assignedTo" },
@@ -330,6 +331,9 @@ export default function OrdersPage() {
                         <p className="text-[12px] text-[#cdd0d6] leading-[15px] font-normal">{row.bank}</p>
                         <p className="text-[10px] text-[#74757b] leading-[13px] mt-[1px] font-normal">{row.branch}</p>
                       </div>
+                    </td>
+                    <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
+                      {row.type}
                     </td>
                     <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
                       {row.requestDate}

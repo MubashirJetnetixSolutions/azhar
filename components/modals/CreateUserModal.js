@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import AppSelect from "@/components/ui/AppSelect";
 
 const ORDER_SUBPERMS = ["View", "Edit", "Delete", "Download"];
 const OTHER_SECTIONS = ["Report Hub", "Invoice", "Emails", "Banks", "Company"];
@@ -23,7 +24,15 @@ function Toggle({ checked, onChange }) {
   );
 }
 
+const ROLE_OPTIONS = [
+  { value: "Admin",      label: "Admin"      },
+  { value: "Data Entry", label: "Data Entry" },
+  { value: "Track",      label: "Track"      },
+  { value: "Account",    label: "Account"    },
+];
+
 export default function CreateUserModal({ open, onClose }) {
+  const [role, setRole] = useState(null);
   const [orderSection, setOrderSection] = useState(true);
   const [orderPerms, setOrderPerms] = useState({
     View: true,
@@ -89,21 +98,15 @@ export default function CreateUserModal({ open, onClose }) {
           {/* Role */}
           <div>
             <label className="block text-[12px] text-[#74757b] mb-[8px]">Role</label>
-            <div className="relative">
-              <select className="w-full h-[42px] px-[12px] pr-[36px] rounded-[6px] text-[13px] text-white bg-[#111215] border border-[#212328] outline-none appearance-none cursor-pointer focus:border-[#3e4047] transition-colors">
-                <option value=""></option>
-                <option value="Admin">Admin</option>
-                <option value="Data Entry">Data Entry</option>
-                <option value="Track">Track</option>
-                <option value="Account">Account</option>
-              </select>
-              <svg
-                className="absolute right-[12px] top-1/2 -translate-y-1/2 pointer-events-none"
-                width={14} height={14} fill="none" viewBox="0 0 24 24" stroke="#545659" strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
+            <AppSelect
+              variant="default"
+              size="lg"
+              value={role}
+              onChange={setRole}
+              options={ROLE_OPTIONS}
+              placeholder="Select role"
+              isSearchable={false}
+            />
           </div>
 
           {/* Divider */}

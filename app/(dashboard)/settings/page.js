@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { users } from "@/data/mockData";
 import CreateUserModal from "@/components/modals/CreateUserModal";
+import DeleteConfirmModal from "@/components/modals/DeleteConfirmModal";
 
 const TABS = ["General", "Security", "Users", "Templates", "Ai Integration", "Invoice Templates"];
 
@@ -426,6 +427,7 @@ const PANEL_META = {
 export default function SettingsPage() {
   const [active, setActive] = useState("General");
   const [createUserOpen, setCreateUserOpen] = useState(false);
+  const [deleteImgOpen, setDeleteImgOpen] = useState(false);
   const [toast, setToast] = useState(null);
 
   // General tab state — lifted here so Save Changes can read them
@@ -474,7 +476,7 @@ export default function SettingsPage() {
             <GeneralTab
               profileImg={profileImg}
               onImageChange={setProfileImg}
-              onImageDelete={() => setProfileImg(null)}
+              onImageDelete={() => setDeleteImgOpen(true)}
               onInvalidFile={() => showToast("error", "Invalid file type. Please use JPG, PNG, or WEBP.")}
               form={form}
               onFormChange={(field, val) => setForm((prev) => ({ ...prev, [field]: val }))}
@@ -498,6 +500,15 @@ export default function SettingsPage() {
       )}
 
       <CreateUserModal open={createUserOpen} onClose={() => setCreateUserOpen(false)} />
+      <DeleteConfirmModal
+        open={deleteImgOpen}
+        onClose={() => setDeleteImgOpen(false)}
+        onConfirm={() => {
+          setProfileImg(null);
+          setDeleteImgOpen(false);
+          showToast("success", "Profile picture removed.");
+        }}
+      />
     </div>
   );
 }

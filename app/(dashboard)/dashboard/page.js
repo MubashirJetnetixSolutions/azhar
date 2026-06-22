@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { dashboardStats, recentOrders } from "@/data/mockData";
+import AppSelect from "@/components/ui/AppSelect";
 import {
   BarChart, Bar, XAxis, Cell, ResponsiveContainer, Tooltip,
 } from "recharts";
@@ -87,9 +88,18 @@ function ReportsBarChart({ data }) {
   );
 }
 
+const PERIOD_OPTIONS = [
+  { value: "Daily",   label: "Daily"   },
+  { value: "Weekly",  label: "Weekly"  },
+  { value: "Monthly", label: "Monthly" },
+  { value: "Quarterly", label: "Quarterly" },
+  { value: "Yearly", label: "Yearly" },
+];
+
 export default function DashboardPage() {
   const s = dashboardStats;
   const [searchTerm, setSearchTerm] = useState("");
+  const [period, setPeriod] = useState("Daily");
   const filteredOrders = searchTerm
     ? recentOrders.filter(row =>
         ["id","company","country","bank","branch","assignedTo"].some(k =>
@@ -110,13 +120,15 @@ export default function DashboardPage() {
             Review and manage your analytics here.
           </p>
         </div>
-        <select
-          className="shrink-0 bg-[#1a1a1a] border border-[#252525] rounded-[8px] text-[#666] text-[12px] py-[6px] px-[14px] outline-none cursor-pointer"
-        >
-          <option>Daily</option>
-          <option>Weekly</option>
-          <option>Monthly</option>
-        </select>
+        <div className="shrink-0 w-[110px]">
+          <AppSelect
+            variant="dash"
+            size="sm"
+            value={{ value: period, label: period }}
+            onChange={(opt) => setPeriod(opt?.value ?? "Daily")}
+            options={PERIOD_OPTIONS}
+          />
+        </div>
       </div>
 
       {/* Stat cards + bar chart + gauge */}

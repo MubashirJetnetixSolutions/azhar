@@ -1,9 +1,36 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { reports } from "@/data/mockData";
 import CreateReportModal from "@/components/modals/CreateReportModal";
 import UploadReportsModal from "@/components/modals/UploadReportsModal";
+import DeleteConfirmModal from "@/components/modals/DeleteConfirmModal";
+import AppSelect from "@/components/ui/AppSelect";
+
+function Toast({ message, type, onDismiss }) {
+  useEffect(() => {
+    const t = setTimeout(onDismiss, 3500);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const ok = type === "success";
+  return (
+    <div className="fixed bottom-[24px] right-[24px] z-[200] flex items-center gap-[12px] px-[18px] py-[14px] bg-[#1c1d22] border border-[#212328] rounded-[12px] shadow-2xl animate-[toastIn_0.2s_ease-out_forwards]">
+      <style>{`@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`}</style>
+      <div className={`w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0 ${ok ? "bg-[rgba(34,197,94,0.15)]" : "bg-[rgba(239,68,68,0.15)]"}`}>
+        {ok ? (
+          <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke={ok ? "#22c55e" : "#ef4444"} strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+        ) : (
+          <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="#ef4444" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        )}
+      </div>
+      <span className="text-[13px] text-[#cdd0d6] font-normal leading-none">{message}</span>
+      <button onClick={onDismiss} className="ml-[4px] text-[#545659] hover:text-white transition-colors cursor-pointer shrink-0">
+        <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+  );
+}
 
 const PER_PAGE = 8; // Showing 8 rows as in the mockup screenshot
 
@@ -33,13 +60,15 @@ export default function ReportHubPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
 
-  // Filter States
+  // Filter States (react-select options: { value, label } | null)
   const [orderNumberFilter, setOrderNumberFilter] = useState("");
-  const [bankFilter, setBankFilter] = useState("");
-  const [assignedToFilter, setAssignedToFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [countryFilter, setCountryFilter] = useState("");
-  const [dateFilter, setDateFilter] = useState("");
+  const [bankFilter, setBankFilter] = useState(null);
+  const [assignedToFilter, setAssignedToFilter] = useState(null);
+  const [statusFilter, setStatusFilter] = useState(null);
+  const [countryFilter, setCountryFilter] = useState(null);
+  const [dateFilter, setDateFilter] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [toast, setToast] = useState(null);
 
   const handleUploadReport = (newReport) => {
     const enrichedReport = {
@@ -54,11 +83,11 @@ export default function ReportHubPage() {
 
   const handleResetFilters = () => {
     setOrderNumberFilter("");
-    setBankFilter("");
-    setAssignedToFilter("");
-    setStatusFilter("");
-    setCountryFilter("");
-    setDateFilter("");
+    setBankFilter(null);
+    setAssignedToFilter(null);
+    setStatusFilter(null);
+    setCountryFilter(null);
+    setDateFilter(null);
     setPage(1);
   };
 
@@ -88,29 +117,30 @@ export default function ReportHubPage() {
 
     if (bankFilter) {
       result = result.filter(row =>
-        String(row.bank ?? "").toUpperCase() === bankFilter.toUpperCase()
+        String(row.bank ?? "").toUpperCase() === bankFilter.value.toUpperCase()
       );
     }
 
     if (assignedToFilter) {
       result = result.filter(row =>
-        String(row.assignedTo ?? "").toLowerCase() === assignedToFilter.toLowerCase()
+        String(row.assignedTo ?? "").toLowerCase() === assignedToFilter.value.toLowerCase()
       );
     }
 
     if (statusFilter) {
       result = result.filter(row =>
-        String(row.status ?? "").toLowerCase() === statusFilter.toLowerCase()
+        String(row.status ?? "").toLowerCase() === statusFilter.value.toLowerCase()
       );
     }
 
     if (countryFilter) {
       result = result.filter(row =>
-        String(row.country ?? "").toLowerCase() === countryFilter.toLowerCase()
+        String(row.country ?? "").toLowerCase() === countryFilter.value.toLowerCase()
       );
     }
 
     if (dateFilter) {
+      const df = dateFilter.value;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -121,13 +151,13 @@ export default function ReportHubPage() {
         const diffTime = today.getTime() - rowDate.getTime();
         const diffDays = Math.floor(diffTime / (1024 * 60 * 60 * 24));
 
-        if (dateFilter === "Today") {
+        if (df === "Today") {
           return diffDays === 0;
-        } else if (dateFilter === "Last 7 Days") {
+        } else if (df === "Last 7 Days") {
           return diffDays >= 0 && diffDays <= 7;
-        } else if (dateFilter === "Last 30 Days") {
+        } else if (df === "Last 30 Days") {
           return diffDays >= 0 && diffDays <= 30;
-        } else if (dateFilter === "This Month") {
+        } else if (df === "This Month") {
           return rowDate.getMonth() === today.getMonth() && rowDate.getFullYear() === today.getFullYear();
         }
         return true;
@@ -227,142 +257,109 @@ export default function ReportHubPage() {
               {/* Bank Filter */}
               <div className="flex-1">
                 <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Bank</label>
-                <div className="relative">
-                  <select
-                    value={bankFilter}
-                    onChange={(e) => {
-                      setBankFilter(e.target.value);
-                      setPage(1);
-                    }}
-                    className="w-full h-[34px] bg-[#111215] border border-[#24252a] rounded-[6px] text-[#cdd0d6] text-[11px] px-[10px] outline-none appearance-none cursor-pointer pr-[24px] focus:border-[#3e4047]"
-                  >
-                    <option value="">All Banks</option>
-                    <option value="MBL">MBL</option>
-                    <option value="UBL">UBL</option>
-                    <option value="HBL">HBL</option>
-                    <option value="ABL">ABL</option>
-                    <option value="BAHL">BAHL</option>
-                    <option value="MCB">MCB</option>
-                  </select>
-                  <div className="absolute right-[8px] top-1/2 -translate-y-1/2 pointer-events-none text-[#74757b]">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </div>
-                </div>
+                <AppSelect
+                  variant="default"
+                  size="md"
+                  value={bankFilter}
+                  onChange={(opt) => { setBankFilter(opt); setPage(1); }}
+                  placeholder="All Banks"
+                  isClearable
+                  options={[
+                    { value: "MBL",  label: "MBL"  },
+                    { value: "UBL",  label: "UBL"  },
+                    { value: "HBL",  label: "HBL"  },
+                    { value: "ABL",  label: "ABL"  },
+                    { value: "BAHL", label: "BAHL" },
+                    { value: "MCB",  label: "MCB"  },
+                  ]}
+                />
               </div>
 
               {/* Assigned To Filter */}
               <div className="flex-1">
                 <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Assigned To</label>
-                <div className="relative">
-                  <select
-                    value={assignedToFilter}
-                    onChange={(e) => {
-                      setAssignedToFilter(e.target.value);
-                      setPage(1);
-                    }}
-                    className="w-full h-[34px] bg-[#111215] border border-[#24252a] rounded-[6px] text-[#cdd0d6] text-[11px] px-[10px] outline-none appearance-none cursor-pointer pr-[24px] focus:border-[#3e4047]"
-                  >
-                    <option value="">All Assignees</option>
-                    <option value="Zaki Javed">Zaki Javed</option>
-                    <option value="Asad Chaudhry">Asad Chaudhry</option>
-                    <option value="Khalil Rizvi">Khalil Rizvi</option>
-                    <option value="Tariq Javed">Tariq Javed</option>
-                    <option value="Zain Raza">Zain Raza</option>
-                    <option value="Shujaat Khan">Shujaat Khan</option>
-                    <option value="Wajid Farooq">Wajid Farooq</option>
-                  </select>
-                  <div className="absolute right-[8px] top-1/2 -translate-y-1/2 pointer-events-none text-[#74757b]">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </div>
-                </div>
+                <AppSelect
+                  variant="default"
+                  size="md"
+                  value={assignedToFilter}
+                  onChange={(opt) => { setAssignedToFilter(opt); setPage(1); }}
+                  placeholder="All Assignees"
+                  isClearable
+                  isSearchable
+                  options={[
+                    { value: "Zaki Javed",    label: "Zaki Javed"    },
+                    { value: "Asad Chaudhry", label: "Asad Chaudhry" },
+                    { value: "Khalil Rizvi",  label: "Khalil Rizvi"  },
+                    { value: "Tariq Javed",   label: "Tariq Javed"   },
+                    { value: "Zain Raza",     label: "Zain Raza"     },
+                    { value: "Shujaat Khan",  label: "Shujaat Khan"  },
+                    { value: "Wajid Farooq",  label: "Wajid Farooq"  },
+                  ]}
+                />
               </div>
 
               {/* Status Filter */}
               <div className="flex-1">
                 <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Status</label>
-                <div className="relative">
-                  <select
-                    value={statusFilter}
-                    onChange={(e) => {
-                      setStatusFilter(e.target.value);
-                      setPage(1);
-                    }}
-                    className="w-full h-[34px] bg-[#111215] border border-[#24252a] rounded-[6px] text-[#cdd0d6] text-[11px] px-[10px] outline-none appearance-none cursor-pointer pr-[24px] focus:border-[#3e4047]"
-                  >
-                    <option value="">All Statuses</option>
-                    <option value="Complete">Complete</option>
-                    <option value="Pending">Pending</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Cancelled">Cancelled</option>
-                  </select>
-                  <div className="absolute right-[8px] top-1/2 -translate-y-1/2 pointer-events-none text-[#74757b]">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </div>
-                </div>
+                <AppSelect
+                  variant="default"
+                  size="md"
+                  value={statusFilter}
+                  onChange={(opt) => { setStatusFilter(opt); setPage(1); }}
+                  placeholder="All Statuses"
+                  isClearable
+                  options={[
+                    { value: "Complete",    label: "Complete"    },
+                    { value: "Pending",     label: "Pending"     },
+                    { value: "In Progress", label: "In Progress" },
+                    { value: "Cancelled",   label: "Cancelled"   },
+                  ]}
+                />
               </div>
 
               {/* Country Filter */}
               <div className="flex-1">
                 <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Country</label>
-                <div className="relative">
-                  <select
-                    value={countryFilter}
-                    onChange={(e) => {
-                      setCountryFilter(e.target.value);
-                      setPage(1);
-                    }}
-                    className="w-full h-[34px] bg-[#111215] border border-[#24252a] rounded-[6px] text-[#cdd0d6] text-[11px] px-[10px] outline-none appearance-none cursor-pointer pr-[24px] focus:border-[#3e4047]"
-                  >
-                    <option value="">All Countries</option>
-                    <option value="Pakistan">Pakistan</option>
-                    <option value="UAE">UAE</option>
-                    <option value="Saudi Arabia">Saudi Arabia</option>
-                    <option value="Germany">Germany</option>
-                    <option value="Italy">Italy</option>
-                    <option value="China">China</option>
-                    <option value="Australia">Australia</option>
-                    <option value="Spain">Spain</option>
-                    <option value="Russian Federation">Russian Federation</option>
-                  </select>
-                  <div className="absolute right-[8px] top-1/2 -translate-y-1/2 pointer-events-none text-[#74757b]">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </div>
-                </div>
+                <AppSelect
+                  variant="default"
+                  size="md"
+                  value={countryFilter}
+                  onChange={(opt) => { setCountryFilter(opt); setPage(1); }}
+                  placeholder="All Countries"
+                  isClearable
+                  isSearchable
+                  options={[
+                    { value: "Pakistan",           label: "Pakistan"           },
+                    { value: "UAE",                label: "UAE"                },
+                    { value: "Saudi Arabia",       label: "Saudi Arabia"       },
+                    { value: "Germany",            label: "Germany"            },
+                    { value: "Italy",              label: "Italy"              },
+                    { value: "China",              label: "China"              },
+                    { value: "Australia",          label: "Australia"          },
+                    { value: "Spain",              label: "Spain"              },
+                    { value: "Russian Federation", label: "Russian Federation" },
+                  ]}
+                />
               </div>
 
               {/* Date Filter */}
               <div className="flex-1">
                 <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Date</label>
-                <div className="relative">
-                  <select
-                    value={dateFilter}
-                    onChange={(e) => {
-                      setDateFilter(e.target.value);
-                      setPage(1);
-                    }}
-                    className="w-full h-[34px] bg-[#111215] border border-[#24252a] rounded-[6px] text-[#cdd0d6] text-[11px] px-[10px] outline-none appearance-none cursor-pointer pr-[24px] focus:border-[#3e4047]"
-                  >
-                    <option value="">All Dates</option>
-                    <option value="Today">Today</option>
-                    <option value="Last 7 Days">Last 7 Days</option>
-                    <option value="Last 30 Days">Last 30 Days</option>
-                    <option value="This Month">This Month</option>
-                    <option value="Custom Range">Custom Range</option>
-                  </select>
-                  <div className="absolute right-[8px] top-1/2 -translate-y-1/2 pointer-events-none text-[#74757b]">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </div>
-                </div>
+                <AppSelect
+                  variant="default"
+                  size="md"
+                  value={dateFilter}
+                  onChange={(opt) => { setDateFilter(opt); setPage(1); }}
+                  placeholder="All Dates"
+                  isClearable
+                  options={[
+                    { value: "Today",         label: "Today"         },
+                    { value: "Last 7 Days",   label: "Last 7 Days"   },
+                    { value: "Last 30 Days",  label: "Last 30 Days"  },
+                    { value: "This Month",    label: "This Month"    },
+                    { value: "Custom Range",  label: "Custom Range"  },
+                  ]}
+                />
               </div>
             </div>
 
@@ -395,6 +392,7 @@ export default function ReportHubPage() {
                     "File Size",
                     "Company",
                     "Bank",
+                    "Type",
                     "Country",
                     "Report Date",
                     "Actions"
@@ -449,6 +447,10 @@ export default function ReportHubPage() {
                           <p className="text-[10px] text-[#74757b] leading-[13px] mt-[1px] font-normal">{row.branch}</p>
                         </div>
                       </td>
+                      {/* Type */}
+                      <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] align-middle whitespace-nowrap">
+                        {row.type}
+                      </td>
                       {/* Country */}
                       <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] align-middle whitespace-nowrap">
                         {row.country}
@@ -467,7 +469,10 @@ export default function ReportHubPage() {
                             </svg>
                           </button>
                           {/* Delete */}
-                          <button className="w-[32px] h-[32px] rounded-[6px] border border-[#373a42] bg-[#1e2027] hover:border-[#484b54] hover:bg-[#272b34] flex items-center justify-center text-[#cdd0d6] hover:text-white cursor-pointer transition-colors duration-100">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setDeleteTarget(row); }}
+                            className="w-[32px] h-[32px] rounded-[6px] border border-[#373a42] bg-[#1e2027] hover:border-red-900/50 hover:bg-[rgba(239,68,68,0.06)] flex items-center justify-center text-[#cdd0d6] hover:text-red-400 cursor-pointer transition-colors duration-100"
+                          >
                             <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
@@ -518,6 +523,18 @@ export default function ReportHubPage() {
 
       <CreateReportModal open={modalOpen} onClose={() => setModalOpen(false)} />
       <UploadReportsModal open={uploadOpen} onClose={() => setUploadOpen(false)} onUpload={handleUploadReport} />
+      <DeleteConfirmModal
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={() => {
+          setReportsList((prev) => prev.filter((r) => r !== deleteTarget));
+          setDeleteTarget(null);
+          setToast({ type: "success", message: "Report deleted successfully.", id: Date.now() });
+        }}
+      />
+      {toast && (
+        <Toast key={toast.id} type={toast.type} message={toast.message} onDismiss={() => setToast(null)} />
+      )}
     </>
   );
 }
