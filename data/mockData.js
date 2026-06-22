@@ -1,11 +1,11 @@
 export const orders = [
-  { id: "JI456M9", company: "S&P Credit Mkt SVCS Eurpoe Ltd", country: "Russian Federation", bank: "MBL", branch: "Hyderi Branch", requestDate: "26 MAR 2026", startTime: "10:30 am", assignedTo: "San Javed", status: "Online", availability: "Online" },
-  { id: "JI456M9", company: "Pharma International", country: "Italy", bank: "UBL", branch: "Gulshan Branch", requestDate: "15 MAR 2026", startTime: "10:30 am", assignedTo: "Asad Chaudhry", status: "Online", availability: "Online" },
-  { id: "JI456M9", company: "Credit Suisse (Hong Kong) Limited", country: "Australia", bank: "MCB", branch: "U Chundrigarh Branch", requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Khalil Rizvi", status: "Online", availability: "Online" },
-  { id: "4PO78N", company: "Targaryen Restoration", country: "China", bank: "MBL", branch: "Johar Branch", requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Tariq Javed", status: "Online", availability: "Online" },
-  { id: "Y98MYO", company: "Master Facility", country: "Hong Kong", bank: "HBL", branch: "3 Talwar Branch", requestDate: "19 FEB 2026", startTime: "10:30 am", assignedTo: "Zain Raza", status: "Online", availability: "Online" },
-  { id: "123RE63", company: "RiverStone Insurance Limited", country: "Germany", bank: "BAHL", branch: "Hyderi Branch", requestDate: "12 FEB 2026", startTime: "10:30 am", assignedTo: "Shujaat Khan", status: "Online", availability: "Online" },
-  { id: "BN234T", company: "Parallax Company", country: "Spain", bank: "ABL", branch: "Bahadurabad Branch", requestDate: "10 MAR 2026", startTime: "10:30 am", assignedTo: "Wajid Farooq", status: "Online", availability: "Online" },
+  { id: "JI456M9", company: "S&P Credit Mkt SVCS Eurpoe Ltd", country: "Russian Federation", bank: "MBL", branch: "Hyderi Branch", requestDate: "26 MAR 2026", startTime: "10:30 am", assignedTo: "Zaki Javed", availability: "Online", status: "In Verification", action: "Review" },
+  { id: "JI456M9", company: "Pharma International", country: "Italy", bank: "UBL", branch: "Gulshan Branch", requestDate: "15 MAR 2026", startTime: "10:30 am", assignedTo: "Asad Chaudhry", availability: "Online", status: "New", action: "Start" },
+  { id: "JI456M9", company: "Credit Suisse (Hong Kong) Limited", country: "Australia", bank: "MCB", branch: "Ii Chundrigar Branch", requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Khalil Rizvi", availability: "Online", status: "Reusable", action: "Reuse" },
+  { id: "4P078N", company: "Targaryen Restoration", country: "China", bank: "MBL", branch: "Johar Branch", requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Tariq Javed", availability: "Online", status: "Complete", action: "Send" },
+  { id: "Y98MYO", company: "Master Facility", country: "Hong Kong", bank: "HBL", branch: "3 Talwar Branch", requestDate: "19 FEB 2026", startTime: "10:30 am", assignedTo: "Zain Raza", availability: "Offline", status: "Flagged", action: "Review" },
+  { id: "123RE63", company: "RiverStone Insurance Limited", country: "Germany", bank: "BAHL", branch: "Hyderi Branch", requestDate: "12 FEB 2026", startTime: "10:30 am", assignedTo: "Shujaat Khan", availability: "Offline", status: "Flagged", action: "Review" },
+  { id: "BN234T", company: "Parallax Company", country: "Spain", bank: "ABL", branch: "Bahadurabad Branch", requestDate: "10 MAR 2026", startTime: "10:30 am", assignedTo: "Wajid Farooq", availability: "Offline", status: "New", action: "Start" },
 ];
 
 export const invoices = [
@@ -18,43 +18,272 @@ export const invoices = [
 ];
 
 export const reports = [
-  { name: "Report name_T1.pdf", size: "18 Mb", company: "S&P Credit Mkt SVCS Eurpoe Ltd", bank: "MBL", branch: "Hyderi Branch", country: "Russian Federation", date: "26 MAR 2026" },
-  { name: "Report name_T1.pdf", size: "25 Mb", company: "Pharma International", bank: "UBL", branch: "Gulshan Branch", country: "Italy", date: "15 MAR 2026" },
-  { name: "Report name_T1.pdf", size: "19 Kb", company: "Credit Suisse (Hong Kong) Limited", bank: "MCB", branch: "U Chundrigarh Branch", country: "Australia", date: "24 FEB 2026" },
-  { name: "Report name_T1.pdf", size: "1 Mb", company: "Targaryen Restoration", bank: "MBL", branch: "Johar Branch", country: "China", date: "24 FEB 2026" },
-  { name: "Report name_T1.pdf", size: "10 Kb", company: "Master Facility", bank: "HBL", branch: "3 Talwar Branch", country: "Hong Kong", date: "19 FEB 2026" },
-  { name: "Report name_T1.pdf", size: "3 Mb", company: "RiverStone Insurance Limited", bank: "BAHL", branch: "Hyderi Branch", country: "Germany", date: "12 FEB 2026" },
-  { name: "Report name_T1.pdf", size: "12 Mb", company: "Parallax Company", bank: "ABL", branch: "Bahadurabad Branch", country: "Spain", date: "10 MAR 2026" },
-  { name: "Report name_T1.pdf", size: "12 Mb", company: "Parallax Company", bank: "ABL", branch: "Bahadurabad Branch", country: "Spain", date: "10 MAR 2026" },
+  { name: "Report name_T1.pdf", size: "18 Mb", company: "S&P Credit Mkt SVCS Eurpoe Ltd", bank: "MBL", branch: "Hyderi Branch", country: "Russian Federation", date: "26 MAR 2026", orderNumber: "JI456M9", assignedTo: "Zaki Javed", status: "Complete" },
+  { name: "Report name_T1.pdf", size: "25 Mb", company: "Pharma International", bank: "UBL", branch: "Gulshan Branch", country: "Italy", date: "15 MAR 2026", orderNumber: "JI456M9", assignedTo: "Asad Chaudhry", status: "Complete" },
+  { name: "Report name_T1.pdf", size: "19 Kb", company: "Credit Suisse (Hong Kong) Limited", bank: "MCB", branch: "U Chundrigarh Branch", country: "Australia", date: "24 FEB 2026", orderNumber: "JI456M9", assignedTo: "Khalil Rizvi", status: "Pending" },
+  { name: "Report name_T1.pdf", size: "1 Mb", company: "Targaryen Restoration", bank: "MBL", branch: "Johar Branch", country: "China", date: "24 FEB 2026", orderNumber: "4PO78N", assignedTo: "Tariq Javed", status: "In Progress" },
+  { name: "Report name_T1.pdf", size: "10 Kb", company: "Master Facility", bank: "HBL", branch: "3 Talwar Branch", country: "Hong Kong", date: "19 FEB 2026", orderNumber: "Y98MYO", assignedTo: "Zain Raza", status: "Cancelled" },
+  { name: "Report name_T1.pdf", size: "3 Mb", company: "RiverStone Insurance Limited", bank: "BAHL", branch: "Hyderi Branch", country: "Germany", date: "12 FEB 2026", orderNumber: "123RE63", assignedTo: "Shujaat Khan", status: "Pending" },
+  { name: "Report name_T1.pdf", size: "12 Mb", company: "Parallax Company", bank: "ABL", branch: "Bahadurabad Branch", country: "Spain", date: "10 MAR 2026", orderNumber: "BN234T", assignedTo: "Wajid Farooq", status: "Complete" },
+  { name: "Report name_T1.pdf", size: "12 Mb", company: "Parallax Company", bank: "ABL", branch: "Bahadurabad Branch", country: "Spain", date: "10 MAR 2026", orderNumber: "BN234T", assignedTo: "Wajid Farooq", status: "Complete" },
 ];
 
 export const emails = [
-  { sender: "Tariq Iqbal", email: "TariqIqbal@bahl.com", highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.", time: "10:41 PM" },
-  { sender: "Abdurrehman", email: "Abdurrehman@Mbl.com", highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.", time: "10:41 PM" },
-  { sender: "Qasim Muneer", email: "QasimMuneer@ubl.com", highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.", time: "10:41 PM" },
-  { sender: "Yasir Hafeez", email: "YasirHafeez@ubl.com", highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.", time: "10:41 PM" },
-  { sender: "Muhammad Raheem Chuadry", email: "Raheem@Mbl.com", highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.", time: "Jun 26" },
-  { sender: "Shabir Jan", email: "ShabirJan@bahl.com", highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.", time: "Jun 26" },
-  { sender: "Muhammed Saeed", email: "Saeed@hbl.com", highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.", time: "Jun 26" },
-  { sender: "Touseef Ahmed", email: "TouseefAhmed@Mbl.com", highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.", time: "Jun 26" },
-  { sender: "Junaid Akhtar Butt", email: "JunaidAkhtar@bahl.com", highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.", time: "30 Mar 2025" },
-  { sender: "Irfan Naeem", email: "IrfanNaeem@Mbl.com", highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.", time: "30 Mar 2025" },
+  {
+    sender: "Tariq Iqbal",
+    email: "TariqIqbal@bahl.com",
+    subject: "Check out my templates",
+    recipient: "Audrey Lay <audrey.lay@autosystem.com>",
+    date: "June 25, 2018, 3:26PM",
+    body: "Hello,\nThis is the company we need data for please check the file and start working\n\nRegards,",
+    attachments: [
+      { name: "Report name_T1.pdf", size: "23.5MB", type: "PDF" }
+    ],
+    status: "read",
+    starred: false,
+    highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+    time: "10:41 PM"
+  },
+  {
+    sender: "Abdurrehman",
+    email: "Abdurrehman@Mbl.com",
+    subject: "Financial audit report for Q2",
+    recipient: "Audrey Lay <audrey.lay@autosystem.com>",
+    date: "June 24, 2018, 10:41PM",
+    body: "Hi Audrey,\n\nPlease find attached the financial audit report for Q2. Let me know if you need any adjustments.\n\nBest regards,\nAbdurrehman",
+    attachments: [
+      { name: "Q2_Audit_Report.xlsx", size: "12.4MB", type: "XLSX" }
+    ],
+    status: "unread",
+    starred: true,
+    highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+    time: "10:41 PM"
+  },
+  {
+    sender: "Qasim Muneer",
+    email: "QasimMuneer@ubl.com",
+    subject: "Project presentation slides",
+    recipient: "Audrey Lay <audrey.lay@autosystem.com>",
+    date: "June 23, 2018, 5:12PM",
+    body: "Hello Team,\n\nI have prepared the slides for our upcoming client meeting. Please review them and share your feedback.\n\nThanks,\nQasim",
+    attachments: [
+      { name: "Client_Presentation.docx", size: "4.8MB", type: "DOCX" }
+    ],
+    status: "read",
+    starred: false,
+    highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+    time: "10:41 PM"
+  },
+  {
+    sender: "Yasir Hafeez",
+    email: "YasirHafeez@ubl.com",
+    subject: "Urgent: System credentials update",
+    recipient: "Audrey Lay <audrey.lay@autosystem.com>",
+    date: "June 22, 2018, 9:30AM",
+    body: "Hi Audrey,\n\nWe need to update the system credentials before the end of the day. Please follow the instructions attached.\n\nRegards,\nYasir",
+    attachments: [],
+    status: "unread",
+    starred: false,
+    highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+    time: "10:41 PM"
+  },
+  {
+    sender: "Muhammad Raheem Chuadry",
+    email: "Raheem@Mbl.com",
+    subject: "Signed contract copy",
+    recipient: "Audrey Lay <audrey.lay@autosystem.com>",
+    date: "June 21, 2018, 12:15PM",
+    body: "Hi Audrey,\n\nAttached is the signed contract for the new project. Let's schedule the kickoff meeting next week.\n\nThanks,\nRaheem",
+    attachments: [
+      { name: "Signed_Contract.pdf", size: "8.2MB", type: "PDF" }
+    ],
+    status: "read",
+    starred: false,
+    highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+    time: "Jun 26"
+  },
+  {
+    sender: "Shabir Jan",
+    email: "ShabirJan@bahl.com",
+    subject: "Monthly performance review",
+    recipient: "Audrey Lay <audrey.lay@autosystem.com>",
+    date: "June 20, 2018, 4:00PM",
+    body: "Hi Audrey,\n\nHere is the performance review for the last month. Overall, we have met our targets.\n\nRegards,\nShabir",
+    attachments: [],
+    status: "read",
+    starred: false,
+    highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+    time: "Jun 26"
+  },
+  {
+    sender: "Muhammed Saeed",
+    email: "Saeed@hbl.com",
+    subject: "Revised budget approval",
+    recipient: "Audrey Lay <audrey.lay@autosystem.com>",
+    date: "June 19, 2018, 2:10PM",
+    body: "Hello,\n\nPlease review and approve the revised budget figures attached below.\n\nRegards,\nSaeed",
+    attachments: [
+      { name: "Revised_Budget.xlsx", size: "1.5MB", type: "XLSX" }
+    ],
+    status: "read",
+    starred: true,
+    highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+    time: "Jun 26"
+  },
+  {
+    sender: "Touseef Ahmed",
+    email: "TouseefAhmed@Mbl.com",
+    subject: "Weekly activity report",
+    recipient: "Audrey Lay <audrey.lay@autosystem.com>",
+    date: "June 18, 2018, 6:00PM",
+    body: "Hi Audrey,\n\nHere is the summary of activities performed by the data team this week.\n\nBest,\nTouseef",
+    attachments: [],
+    status: "read",
+    starred: false,
+    highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+    time: "Jun 26"
+  },
+  {
+    sender: "Junaid Akhtar Butt",
+    email: "JunaidAkhtar@bahl.com",
+    subject: "Technical specifications document",
+    recipient: "Audrey Lay <audrey.lay@autosystem.com>",
+    date: "June 17, 2018, 11:45AM",
+    body: "Hi Audrey,\n\nI have uploaded the specs for the new integration. Let me know if you have any questions.\n\nRegards,\nJunaid",
+    attachments: [
+      { name: "Integration_Specs.docx", size: "3.2MB", type: "DOCX" }
+    ],
+    status: "read",
+    starred: false,
+    highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+    time: "30 Mar 2025"
+  },
+  {
+    sender: "Irfan Naeem",
+    email: "IrfanNaeem@Mbl.com",
+    subject: "Site visit photos and notes",
+    recipient: "Audrey Lay <audrey.lay@autosystem.com>",
+    date: "June 16, 2018, 3:30PM",
+    body: "Hi Audrey,\n\nHere are the photos from our recent bank site visit along with some quick notes.\n\nBest,\nIrfan",
+    attachments: [
+      { name: "Site_Photos.zip", size: "45.1MB", type: "ZIP" }
+    ],
+    status: "read",
+    starred: false,
+    highlight: "Hiya -Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+    time: "30 Mar 2025"
+  },
 ];
 
 export const banks = [
   {
-    id: 1, name: "Meezan Bank Limited", address: "Meezan House, C-25, Estate Avenue, SITE, Karachi",
-    totalReports: 561, totalRequests: 444, totalRevenue: "PKR 40,000", creationDate: "26 MAR 2026", status: "Active",
+    id: 1,
+    name: "Meezan Bank Limited",
+    bankCode: "MBL",
+    address: "Meezan House, C-25, Estate Avenue, SITE, Karachi",
+    totalReports: 561,
+    totalRequests: 444,
+    totalRevenue: "PKR 40,000",
+    creationDate: "26 MAR 2026",
+    status: "Active",
+    code: "#12341",
+    email: "info@meezan.com",
+    phone: "0300-09008645",
     branches: [
       { name: "Hyderi Branch", address: "Block G, North Nazimabad, Karachi", totalReports: 220, totalRequests: 100, totalRevenue: "PKR 20,000", creationDate: "26 MAR 2026", status: "Active" },
       { name: "Nagan Chorangi Branch", address: "F-123, karsaz tower, North Karachi.", totalReports: 441, totalRequests: 344, totalRevenue: "PKR 20,000", creationDate: "26 MAR 2026", status: "Active" },
     ]
   },
-  { id: 2, name: "United Bank Limited", address: "Statelife building, 1 City Railway Colony, Karachi", totalReports: 536, totalRequests: 846, totalRevenue: "PKR 40,000", creationDate: "15 MAR 2026", status: "Inactive" },
-  { id: 3, name: "Muslim Commercial Bank", address: "Main Gulberg, Jail Road, Lahore", totalReports: 583, totalRequests: 846, totalRevenue: "PKR 37,000", creationDate: "15 MAR 2026", status: "Inactive" },
-  { id: 4, name: "Habib Bank Limited", address: "Teen Talwar Zone A, Karachi", totalReports: 583, totalRequests: 546, totalRevenue: "PKR 40,000", creationDate: "24 FEB 2026", status: "Active" },
-  { id: 5, name: "Bank Al Habib Limited", address: "14 Khayaban-e-Shamsheer, DHA Phase 5, Karachi", totalReports: 738, totalRequests: 234, totalRevenue: "PKR 2000", creationDate: "19 FEB 2026", status: "Active" },
-  { id: 6, name: "Allied Bank Limited", address: "3 Tipu Block, Main Boulevard, Lahore", totalReports: 738, totalRequests: 234, totalRevenue: "PKR 2000", creationDate: "19 FEB 2026", status: "Active" },
+  {
+    id: 2,
+    name: "United Bank Limited",
+    bankCode: "UBL",
+    address: "Statelife building, 1 City Railway Colony, Karachi",
+    totalReports: 536,
+    totalRequests: 846,
+    totalRevenue: "PKR 40,000",
+    creationDate: "15 MAR 2026",
+    status: "Inactive",
+    code: "#12342",
+    email: "contact@ubl.com.pk",
+    phone: "021-111-825-888",
+    branches: [
+      { name: "Gulshan Branch", address: "Block 3, Gulshan-e-Iqbal, Karachi", totalReports: 280, totalRequests: 400, totalRevenue: "PKR 25,000", creationDate: "15 MAR 2026", status: "Active" },
+      { name: "I.I. Chundrigar Branch", address: "UBL Building, I.I. Chundrigar Road, Karachi", totalReports: 256, totalRequests: 446, totalRevenue: "PKR 15,000", creationDate: "15 MAR 2026", status: "Inactive" }
+    ]
+  },
+  {
+    id: 3,
+    name: "Muslim Commercial Bank",
+    bankCode: "MCB",
+    address: "Main Gulberg, Jail Road, Lahore",
+    totalReports: 583,
+    totalRequests: 846,
+    totalRevenue: "PKR 37,000",
+    creationDate: "15 MAR 2026",
+    status: "Inactive",
+    code: "#12343",
+    email: "info@mcb.com.pk",
+    phone: "042-111-000-622",
+    branches: [
+      { name: "Jail Road Branch", address: "Main Gulberg, Jail Road, Lahore", totalReports: 300, totalRequests: 500, totalRevenue: "PKR 20,000", creationDate: "15 MAR 2026", status: "Inactive" },
+      { name: "Mall Road Branch", address: "Mall Road, Lahore", totalReports: 283, totalRequests: 346, totalRevenue: "PKR 17,000", creationDate: "15 MAR 2026", status: "Active" }
+    ]
+  },
+  {
+    id: 4,
+    name: "Habib Bank Limited",
+    bankCode: "HBL",
+    address: "Teen Talwar Zone A, Karachi",
+    totalReports: 583,
+    totalRequests: 546,
+    totalRevenue: "PKR 40,000",
+    creationDate: "24 FEB 2026",
+    status: "Active",
+    code: "#12344",
+    email: "customer.care@hbl.com",
+    phone: "021-111-111-425",
+    branches: [
+      { name: "Teen Talwar Branch", address: "Teen Talwar, Clifton, Karachi", totalReports: 383, totalRequests: 300, totalRevenue: "PKR 25,000", creationDate: "24 FEB 2026", status: "Active" },
+      { name: "Karsaz Branch", address: "Shahrah-e-Faisal, Karsaz, Karachi", totalReports: 200, totalRequests: 246, totalRevenue: "PKR 15,000", creationDate: "24 FEB 2026", status: "Active" }
+    ]
+  },
+  {
+    id: 5,
+    name: "Bank Al Habib Limited",
+    bankCode: "BAHL",
+    address: "14 Khayaban-e-Shamsheer, DHA Phase 5, Karachi",
+    totalReports: 738,
+    totalRequests: 234,
+    totalRevenue: "PKR 2000",
+    creationDate: "19 FEB 2026",
+    status: "Active",
+    code: "#12345",
+    email: "support@bankalhabib.com",
+    phone: "021-111-014-014",
+    branches: [
+      { name: "DHA Phase 5 Branch", address: "Khayaban-e-Shamsheer, DHA, Karachi", totalReports: 400, totalRequests: 100, totalRevenue: "PKR 1,200", creationDate: "19 FEB 2026", status: "Active" },
+      { name: "Bahadurabad Branch", address: "Bahadur Yar Jang Society, Karachi", totalReports: 338, totalRequests: 134, totalRevenue: "PKR 800", creationDate: "19 FEB 2026", status: "Active" }
+    ]
+  },
+  {
+    id: 6,
+    name: "Allied Bank Limited",
+    bankCode: "ABL",
+    address: "3 Tipu Block, Main Boulevard, Lahore",
+    totalReports: 738,
+    totalRequests: 234,
+    totalRevenue: "PKR 2000",
+    creationDate: "19 FEB 2026",
+    status: "Active",
+    code: "#12346",
+    email: "info@abl.com",
+    phone: "042-111-225-225",
+    branches: [
+      { name: "Main Boulevard Branch", address: "Tipu Block, Gulberg III, Lahore", totalReports: 500, totalRequests: 120, totalRevenue: "PKR 1,500", creationDate: "19 FEB 2026", status: "Active" },
+      { name: "Model Town Branch", address: "Model Town Circular Road, Lahore", totalReports: 238, totalRequests: 114, totalRevenue: "PKR 500", creationDate: "19 FEB 2026", status: "Active" }
+    ]
+  },
 ];
 
 export const companies = [
@@ -88,10 +317,10 @@ export const dashboardStats = {
 };
 
 export const recentOrders = [
-  { id: "JI456M9", company: "S&P Credit Mkt SVCS Eurpoe Ltd", country: "Russian Federation", bank: "UBL", requestDate: "26 MAR 2026", startTime: "10:30 am 26 MAR 2026", assignedTo: "Zaki Javed", status: "Complete" },
-  { id: "JI456M9", company: "Pharma International", country: "Italy", bank: "UBL", requestDate: "15 MAR 2026", startTime: "10:30 am 15 MAR 2026", assignedTo: "Asad Chaudhry", status: "Online" },
-  { id: "JI456M9", company: "Credit Suisse (Hong Kong) Limited", country: "Australia", bank: "MCB", requestDate: "24 FEB 2026", startTime: "10:30 am 24 FEB 2026", assignedTo: "Khalil Rizvi", status: "Reuse" },
-  { id: "4PO78N", company: "Targaryen Restoration", country: "China", bank: "MBL", requestDate: "24 FEB 2026", startTime: "10:30 am 24 FEB 2026", assignedTo: "Tariq Javed", status: "Online" },
-  { id: "Y98MYO", company: "Master Facility", country: "Hong Kong", bank: "HBL", requestDate: "19 FEB 2026", startTime: "10:30 am 19 FEB 2026", assignedTo: "Zain Raza", status: "Send" },
-  { id: "123RE63", company: "RiverStone Insurance Limited", country: "Germany", bank: "BAHL", requestDate: "12 FEB 2026", startTime: "10:30 am 12 FEB 2026", assignedTo: "Shujaat Khan", status: "Review" },
+  { id: "JI456M9", company: "S&P Credit Mkt SVCS Eurpoe Ltd", country: "Russian Federation", bank: "MBL", branch: "Hyderi Branch",        requestDate: "26 MAR 2026", startTime: "10:30 am", assignedTo: "Zaki Javed",     availability: "Online"  },
+  { id: "JI456M9", company: "Pharma International",           country: "Italy",              bank: "UBL", branch: "Gulshan Branch",        requestDate: "15 MAR 2026", startTime: "10:30 am", assignedTo: "Asad Chaudhry",  availability: "Online"  },
+  { id: "JI456M9", company: "Credit Suisse (Hong Kong) Limited", country: "Australia",       bank: "MCB", branch: "I.I Chundrigarh Branch", requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Khalil Rizvi",  availability: "Online"  },
+  { id: "4PO78N",  company: "Targaryen Restoration",          country: "China",              bank: "MBL", branch: "Johar Branch",          requestDate: "24 FEB 2026", startTime: "10:30 am", assignedTo: "Tariq Javed",   availability: "Online"  },
+  { id: "Y98MYO",  company: "Master Facility",                country: "Hong Kong",          bank: "HBL", branch: "3 Talwar Branch",       requestDate: "19 FEB 2026", startTime: "10:30 am", assignedTo: "Zain Raza",     availability: "Offline" },
+  { id: "123RE63", company: "RiverStone Insurance Limited",   country: "Germany",            bank: "BAHL",branch: "Hyderi Branch",         requestDate: "12 FEB 2026", startTime: "10:30 am", assignedTo: "Shujaat Khan",  availability: "Online"  },
 ];

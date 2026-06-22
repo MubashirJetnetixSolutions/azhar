@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { orders } from "@/data/mockData";
-import StatusBadge from "@/components/ui/StatusBadge";
 
 export default function CreateReportModal({ open, onClose }) {
   const [step, setStep] = useState(1);
@@ -23,60 +22,110 @@ export default function CreateReportModal({ open, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/70" onClick={onClose} />
+      {/* Backdrop Overlay */}
+      <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]" onClick={onClose} />
 
       {step === 1 && (
-        <div className="relative rounded-2xl w-[760px] max-w-full mx-4" style={{ backgroundColor: "#161616", border: "1px solid #262626" }}>
-          <div className="flex items-center gap-3 px-6 py-4" style={{ borderBottom: "1px solid #1e1e1e" }}>
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#1e1e1e" }}>
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#888" strokeWidth={1.5}>
+        <div className="relative rounded-[12px] w-[95vw] max-w-[1100px] max-h-[90vh] bg-[#151619] border border-[#212328] shadow-2xl flex flex-col overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center gap-[12px] p-[20px_24px] border-b border-[#212328]">
+            <div className="w-[32px] h-[32px] rounded-[6px] border border-[#212328] bg-[#111215] flex items-center justify-center shrink-0">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#74757b" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <span className="font-semibold text-white">Create Report</span>
-            <button onClick={onClose} className="ml-auto text-gray-500 hover:text-white">
+            <span className="text-[16px] font-semibold text-white">Create Report</span>
+            <button onClick={onClose} className="ml-auto text-[#74757b] hover:text-white cursor-pointer transition-colors duration-100">
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
-          {/* Search */}
-          <div className="px-6 py-4">
+          {/* Search bar */}
+          <div className="p-[20px_24px_16px_24px]">
             <div className="relative">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#666" strokeWidth={2}>
+              <svg className="absolute left-[12px] top-1/2 -translate-y-1/2 pointer-events-none" width={13} height={13} fill="none" viewBox="0 0 24 24" stroke="#545659" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              <input className="w-full pl-9 pr-4 py-2 rounded-lg text-sm outline-none placeholder-gray-600" style={{ backgroundColor: "#1e1e1e", border: "1px solid #262626", color: "#fff" }} placeholder="Find Orders" />
+              <input
+                type="text"
+                placeholder="Find Orders"
+                className="w-full h-[34px] pl-[34px] pr-[12px] rounded-[6px] bg-[#111215] text-[#9ea0a6] text-[12px] leading-none outline-none border border-[#24252a] focus:border-[#3e4047] transition-colors duration-120"
+              />
             </div>
           </div>
 
           {/* Table */}
-          <div className="px-6 pb-4 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr style={{ borderBottom: "1px solid #1e1e1e" }}>
-                  {["Order Number", "Company", "Country", "Bank", "Request Date", "Start Time", "Assigned to", "Status", "Actions"].map(h => (
-                    <th key={h} className="text-left py-2 pr-4 text-xs font-medium" style={{ color: "#555" }}>{h}</th>
+          <div className="px-[24px] pb-[24px] overflow-x-auto">
+            <table className="w-full border-collapse min-w-[950px]">
+              <thead className="bg-[#18191d] border-t border-b border-[#212328]">
+                <tr>
+                  {[
+                    "Order Number",
+                    "Company",
+                    "Country",
+                    "Bank",
+                    "Request Date",
+                    "Start Time",
+                    "Assigned to",
+                    "Status",
+                    "Actions"
+                  ].map((h, idx) => (
+                    <th
+                      key={h}
+                      className={`h-[40px] px-[8px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase select-none ${
+                        idx === 0 ? "pl-[20px]" : ""
+                      } ${idx === 8 ? "pr-[20px]" : ""}`}
+                    >
+                      {h}
+                    </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {orders.slice(0, 7).map((o, i) => (
-                  <tr key={i} style={{ borderBottom: "1px solid #1a1a1a" }}>
-                    <td className="py-2 pr-4 text-xs" style={{ color: "#888" }}>{o.id}</td>
-                    <td className="py-2 pr-4 text-xs text-white">{o.company}</td>
-                    <td className="py-2 pr-4 text-xs" style={{ color: "#888" }}>{o.country}</td>
-                    <td className="py-2 pr-4">
-                      <div className="text-xs text-white">{o.bank}</div>
-                      <div className="text-[10px]" style={{ color: "#555" }}>{o.branch}</div>
+                  <tr
+                    key={i}
+                    className="hover:bg-[rgba(255,255,255,0.02)] transition-colors duration-100 border-b border-[#212328] last:border-0"
+                  >
+                    <td className="pl-[20px] pr-[8px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
+                      {o.id}
                     </td>
-                    <td className="py-2 pr-4 text-xs" style={{ color: "#888" }}>{o.requestDate}</td>
-                    <td className="py-2 pr-4 text-xs" style={{ color: "#888" }}>{o.startTime}</td>
-                    <td className="py-2 pr-4 text-xs text-white">{o.assignedTo}</td>
-                    <td className="py-2 pr-4"><StatusBadge status="Complete" /></td>
-                    <td className="py-2">
-                      <button onClick={() => setStep(1.5)} className="text-xs px-3 py-1 rounded-lg text-white" style={{ backgroundColor: "#2563eb" }}>
+                    <td className="px-[8px] py-[12px] h-[60px] text-[12px] text-[#cdd0d6] whitespace-nowrap max-w-[180px] truncate align-middle">
+                      {o.company}
+                    </td>
+                    <td className="px-[8px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
+                      {o.country}
+                    </td>
+                    <td className="px-[8px] py-[12px] h-[60px] whitespace-nowrap align-middle">
+                      <div>
+                        <p className="text-[12px] text-[#cdd0d6] leading-[15px] font-normal">{o.bank}</p>
+                        <p className="text-[10px] text-[#74757b] leading-[13px] mt-[1px] font-normal">{o.branch}</p>
+                      </div>
+                    </td>
+                    <td className="px-[8px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
+                      {o.requestDate}
+                    </td>
+                    <td className="px-[8px] py-[12px] h-[60px] whitespace-nowrap align-middle">
+                      <div>
+                        <p className="text-[12px] text-[#cdd0d6] leading-[15px] font-normal">{o.startTime}</p>
+                        <p className="text-[10px] text-[#74757b] leading-[13px] mt-[1px] font-normal">{o.requestDate}</p>
+                      </div>
+                    </td>
+                    <td className="px-[8px] py-[12px] h-[60px] text-[12px] text-[#cdd0d6] whitespace-nowrap align-middle">
+                      {o.assignedTo}
+                    </td>
+                    <td className="px-[8px] py-[12px] h-[60px] align-middle">
+                      <span className="bg-[rgba(34,197,94,0.08)] text-[#22c55e] border border-[rgba(34,197,94,0.2)] rounded-[4px] px-[8px] py-[3px] text-[10px] font-medium leading-none inline-block">
+                        Complete
+                      </span>
+                    </td>
+                    <td className="pl-[8px] pr-[20px] py-[12px] h-[60px] align-middle">
+                      <button
+                        onClick={() => setStep(1.5)}
+                        className="h-[28px] px-[14px] text-[11px] font-normal rounded-[6px] text-white border border-[#373a42] bg-[#1e2027] hover:border-[#484b54] hover:bg-[#272b34] transition-colors duration-100 cursor-pointer whitespace-nowrap"
+                      >
                         Create Report
                       </button>
                     </td>
@@ -89,34 +138,40 @@ export default function CreateReportModal({ open, onClose }) {
       )}
 
       {step === 1.5 && (
-        <div className="relative rounded-2xl w-[460px] mx-4 p-6" style={{ backgroundColor: "#161616", border: "1px solid #262626" }}>
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#1e1e1e" }}>
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#888" strokeWidth={1.5}>
+        <div className="relative rounded-[12px] w-[95vw] max-w-[460px] bg-[#151619] border border-[#212328] shadow-2xl p-[24px] flex flex-col gap-[16px]">
+          <div className="flex items-center gap-[12px]">
+            <div className="w-[32px] h-[32px] rounded-[6px] border border-[#212328] bg-[#111215] flex items-center justify-center shrink-0">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#74757b" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <span className="font-semibold text-white">Create Report</span>
-            <button onClick={onClose} className="ml-auto text-gray-500 hover:text-white">
+            <span className="text-[16px] font-semibold text-white">Create Report</span>
+            <button onClick={onClose} className="ml-auto text-[#74757b] hover:text-white cursor-pointer transition-colors duration-100">
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
-          <div className="mb-5">
-            <label className="block text-xs mb-1.5" style={{ color: "#888" }}>File Name</label>
+          <div>
+            <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">File Name</label>
             <input
+              type="text"
               value={fileName}
               onChange={e => setFileName(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
-              style={{ backgroundColor: "#1e1e1e", border: "1px solid #2a2a2a", color: "#fff" }}
+              className="w-full h-[34px] px-[12px] rounded-[6px] bg-[#111215] border border-[#24252a] text-white text-[12px] focus:border-[#3e4047] outline-none"
             />
           </div>
-          <div className="flex gap-3">
-            <button onClick={() => setStep(1)} className="flex-1 py-2 rounded-lg text-sm font-medium transition-colors" style={{ backgroundColor: "#1e1e1e", color: "#888", border: "1px solid #2a2a2a" }}>
+          <div className="flex gap-[8px] mt-[8px]">
+            <button
+              onClick={() => setStep(1)}
+              className="flex-1 h-[34px] rounded-[6px] text-[#888] bg-[#1e2027] border border-[#373a42] hover:bg-[#272b34] hover:text-white transition-colors duration-100 text-[12px] font-medium cursor-pointer"
+            >
               Back
             </button>
-            <button onClick={handleCreate} className="flex-1 py-2 rounded-lg text-sm font-medium text-white" style={{ backgroundColor: "#2563eb" }}>
+            <button
+              onClick={handleCreate}
+              className="flex-1 h-[34px] rounded-[6px] text-white bg-[#2563eb] hover:bg-[#1d4ed8] transition-colors duration-100 text-[12px] font-medium cursor-pointer"
+            >
               Create Report
             </button>
           </div>
@@ -124,18 +179,18 @@ export default function CreateReportModal({ open, onClose }) {
       )}
 
       {loading && (
-        <div className="relative rounded-2xl w-[400px] mx-4 p-12 flex flex-col items-center gap-4" style={{ backgroundColor: "#161616" }}>
-          <div className="flex gap-3">
+        <div className="relative rounded-[12px] w-[95vw] max-w-[400px] p-[48px] flex flex-col items-center gap-[16px] bg-[#151619] border border-[#212328] shadow-2xl">
+          <div className="flex gap-[12px]">
             {[0, 1, 2].map(i => (
-              <svg key={i} width="50" height="50" fill="none" viewBox="0 0 24 24">
-                <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke="#ccc" strokeWidth={1.2} />
-                <path d="M12 3v6h6" stroke="#ccc" strokeWidth={1.2} />
-                <line x1="8" y1="13" x2="16" y2="13" stroke="#ccc" strokeWidth={1.2} />
-                <line x1="8" y1="16" x2="14" y2="16" stroke="#ccc" strokeWidth={1.2} />
+              <svg key={i} width="40" height="40" fill="none" viewBox="0 0 24 24">
+                <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke="#74757b" strokeWidth={1.5} />
+                <path d="M12 3v6h6" stroke="#74757b" strokeWidth={1.5} />
+                <line x1="8" y1="13" x2="16" y2="13" stroke="#74757b" strokeWidth={1.5} />
+                <line x1="8" y1="16" x2="14" y2="16" stroke="#74757b" strokeWidth={1.5} />
               </svg>
             ))}
           </div>
-          <span className="text-white text-sm font-medium">Creating Report</span>
+          <span className="text-white text-[13px] font-medium mt-[8px]">Creating Report...</span>
         </div>
       )}
     </div>

@@ -1,142 +1,417 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { orders } from "@/data/mockData";
-import StatusBadge from "@/components/ui/StatusBadge";
-import Pagination from "@/components/ui/Pagination";
-import SearchInput from "@/components/ui/SearchInput";
 import CreateOrderModal from "@/components/modals/CreateOrderModal";
 import OrderDetailPanel from "@/components/OrderDetailPanel";
 
-const tabs = ["All Orders","New Orders","In Verification","Reputation Reports","Flagged","Complete"];
+const PER_PAGE = 7;
 
-const AVL = {
-  Online:  { color: "#22c55e", bg: "rgba(34,197,94,0.1)",  border: "rgba(34,197,94,0.25)" },
-  Start:   { color: "#3b82f6", bg: "rgba(59,130,246,0.1)", border: "rgba(59,130,246,0.25)" },
-  Reuse:   { color: "#a855f7", bg: "rgba(168,85,247,0.1)", border: "rgba(168,85,247,0.25)" },
-  Send:    { color: "#f97316", bg: "rgba(249,115,22,0.1)", border: "rgba(249,115,22,0.25)" },
-  Recall:  { color: "#ef4444", bg: "rgba(239,68,68,0.1)",  border: "rgba(239,68,68,0.25)" },
-  Review:  { color: "#888",    bg: "transparent",           border: "#2a2a2a" },
-};
-const ROW_AVL = ["Online","Online","Online","Start","Review","Recall","Send"];
+const stats = [
+  {
+    label: "New Orders",
+    value: "28",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ea0a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+        <path d="m9 14 2 2 4-4"></path>
+      </svg>
+    )
+  },
+  {
+    label: "In Verification",
+    value: "14",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ea0a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+      </svg>
+    )
+  },
+  {
+    label: "Reusable Reports",
+    value: "9",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ea0a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+      </svg>
+    )
+  },
+  {
+    label: "Flagged",
+    value: "5",
+    isRed: true,
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+    )
+  }
+];
 
-const CARD = { backgroundColor: "#1a1a1a", border: "1px solid #252525", borderRadius: "10px" };
+const TABS = [
+  { label: "All Orders", value: "all" },
+  { label: "New Orders", value: "New" },
+  { label: "In Verification", value: "In Verification" },
+  { label: "Reusable Reports", value: "Reusable" },
+  { label: "Flagged", value: "Flagged" },
+  { label: "Complete", value: "Complete" }
+];
 
 export default function OrdersPage() {
-  const [activeTab, setActiveTab] = useState("All Orders");
-  const [modalOpen, setModalOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [sortKey, setSortKey] = useState(null);
+  const [sortDir, setSortDir] = useState("asc");
 
-  const displayOrders = orders.map((o, i) => ({ ...o, avl: ROW_AVL[i] || "Online" }));
+  // Filtering logic
+  const filtered = useMemo(() => {
+    let result = orders;
+
+    // Filter by tab
+    if (activeTab !== "all") {
+      result = result.filter(o => o.status === activeTab);
+    }
+
+    // Filter by search query
+    const q = search.trim().toLowerCase();
+    if (q) {
+      result = result.filter(r =>
+        ["id", "company", "country", "bank", "branch", "assignedTo", "status"].some(k =>
+          String(r[k] ?? "").toLowerCase().includes(q)
+        )
+      );
+    }
+
+    return result;
+  }, [search, activeTab]);
+
+  // Sorting logic
+  const sorted = useMemo(() => {
+    if (!sortKey) return filtered;
+    return [...filtered].sort((a, b) => {
+      const av = String(a[sortKey] ?? "");
+      const bv = String(b[sortKey] ?? "");
+      return sortDir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
+    });
+  }, [filtered, sortKey, sortDir]);
+
+  // Pagination logic
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const pageRows = sorted.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
+
+  function handleSort(k) {
+    if (sortKey === k) {
+      setSortDir(d => d === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(k);
+      setSortDir("asc");
+    }
+  }
+
+  // Helper to render availability badge
+  function renderAvailability(value) {
+    const isOnline = value === "Online";
+    return (
+      <span
+        className={`inline-block text-[10px] font-medium leading-none py-[4px] px-[8px] rounded-[4px] border ${
+          isOnline
+            ? "bg-[rgba(34,197,94,0.08)] text-[#22c55e] border-[rgba(34,197,94,0.2)]"
+            : "bg-[rgba(239,68,68,0.08)] text-[#ef4444] border-[rgba(239,68,68,0.2)]"
+        }`}
+      >
+        {value}
+      </span>
+    );
+  }
+
+  // Helper to render status badge
+  function renderStatus(value) {
+    let classes = "";
+    switch (value) {
+      case "In Verification":
+        classes = "bg-[rgba(234,179,8,0.08)] text-[#d9a71e] border-[rgba(234,179,8,0.2)]";
+        break;
+      case "New":
+        classes = "bg-[rgba(59,130,246,0.08)] text-[#3b82f6] border-[rgba(59,130,246,0.2)]";
+        break;
+      case "Reusable":
+        classes = "bg-[rgba(168,85,247,0.08)] text-[#a855f7] border-[rgba(168,85,247,0.2)]";
+        break;
+      case "Complete":
+        classes = "bg-[rgba(34,197,94,0.08)] text-[#22c55e] border-[rgba(34,197,94,0.2)]";
+        break;
+      case "Flagged":
+        classes = "bg-[rgba(239,68,68,0.08)] text-[#ef4444] border-[rgba(239,68,68,0.2)]";
+        break;
+      default:
+        classes = "bg-[#1f2025] text-[#9ea0a6] border-[#2e3037]";
+    }
+    return (
+      <span className={`inline-block text-[10px] font-medium leading-none py-[4px] px-[8px] rounded-[4px] border ${classes}`}>
+        {value}
+      </span>
+    );
+  }
 
   return (
-    <>
-      <div style={{ display: "flex", gap: "20px" }}>
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "14px" }}>
+    <div className="space-y-[24px] py-4 px-4 md:py-5 md:px-7">
+      {/* Root Page Title */}
+      <div>
+        <h1 className="text-[22px] font-bold text-white tracking-[-0.019em]">Orders</h1>
+      </div>
 
-          {/* 4 stat boxes */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "10px" }}>
-            {[
-              { label: "New Orders", value: "28" },
-              { label: "In Verification", value: "14" },
-              { label: "Reusable Reports", value: "9" },
-              { label: "Flagged", value: "!", alert: true },
-            ].map((s) => (
-              <div key={s.label} style={{ ...CARD, padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <div>
-                  <p style={{ color: "#555", fontSize: "11px", marginBottom: "7px" }}>{s.label}</p>
-                  <p style={{ color: s.alert ? "#ef4444" : "#fff", fontSize: "24px", fontWeight: 700, letterSpacing: "-0.02em" }}>{s.value}</p>
-                </div>
-                {s.alert && (
-                  <div style={{ width: "32px", height: "32px", borderRadius: "50%", backgroundColor: "rgba(239,68,68,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#ef4444" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-            ))}
+      {/* Grid of Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-[16px]">
+        {stats.map((c) => (
+          <div
+            key={c.label}
+            className="bg-[#151619] border border-[#212328] rounded-[12px] p-[16px_20px] flex items-center justify-between"
+          >
+            <div>
+              <p className="text-[#74757b] text-[11px] font-normal tracking-[0.02em] uppercase mb-[6px]">
+                {c.label}
+              </p>
+              <p className={`text-[26px] font-semibold leading-none tracking-[-0.01em] ${c.isRed ? "text-[#ef4444]" : "text-white"}`}>
+                {c.value}
+              </p>
+            </div>
+            <div className={`w-[36px] h-[36px] rounded-[8px] flex items-center justify-center border ${
+              c.isRed
+                ? "bg-[rgba(239,68,68,0.08)] border-[rgba(239,68,68,0.2)]"
+                : "bg-[rgba(255,255,255,0.03)] border-[#2e3037]"
+            }`}>
+              {c.icon}
+            </div>
           </div>
+        ))}
+      </div>
 
-          {/* Table card */}
-          <div style={{ ...CARD, padding: "20px 22px" }}>
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "4px" }}>
-              <div>
-                <h2 style={{ color: "#fff", fontSize: "13px", fontWeight: 600 }}>Orders</h2>
-                <p style={{ color: "#555", fontSize: "11px", marginTop: "3px" }}>Review, approve and Send order details to clients</p>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <SearchInput placeholder="Find Orders" />
-                <button onClick={() => setModalOpen(true)} style={{ display: "flex", alignItems: "center", gap: "5px", backgroundColor: "#3b82f6", color: "#fff", border: "none", borderRadius: "7px", padding: "7px 14px", fontSize: "12px", fontWeight: 500, cursor: "pointer", whiteSpace: "nowrap" }}>
-                  <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
-                  Create Order
-                </button>
-              </div>
+      {/* Main Table Card Container */}
+      <div className="bg-[#151619] border border-[#212328] rounded-[12px] overflow-hidden">
+        {/* Header section with Actions */}
+        <div className="flex items-center justify-between p-[24px_24px_16px_24px] flex-wrap gap-[16px]">
+          <div>
+            <h2 className="m-0 text-[#dce0e8] text-[16px] font-semibold leading-[22px] tracking-[-0.01em]">
+              Orders
+            </h2>
+            <p className="mt-[4px] mb-0 text-[#74757b] text-[12px] leading-[16px] font-normal">
+              Review, Reuse and Send order details to clients
+            </p>
+          </div>
+          <div className="flex items-center gap-[12px]">
+            <div className="relative">
+              <svg
+                className="absolute left-[12px] top-1/2 -translate-y-1/2 pointer-events-none"
+                width={13}
+                height={13}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="#545659"
+                strokeWidth={2.5}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Find Orders"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+                className="w-full sm:w-[240px] h-[34px] pl-[34px] pr-[12px] rounded-[6px] bg-[#111215] text-[#9ea0a6] text-[12px] leading-none outline-none border border-[#24252a] focus:border-[#3e4047] transition-colors duration-120"
+              />
             </div>
-
-            {/* Tabs */}
-            <div style={{ display: "flex", gap: "2px", margin: "14px 0 16px", overflowX: "auto" }}>
-              {tabs.map(t => (
-                <button key={t} onClick={() => setActiveTab(t)} style={{
-                  padding: "5px 12px", borderRadius: "6px", fontSize: "12px", fontWeight: 400,
-                  whiteSpace: "nowrap", cursor: "pointer", border: "none",
-                  backgroundColor: activeTab === t ? "#3b82f6" : "transparent",
-                  color: activeTab === t ? "#fff" : "#555",
-                }}>{t}</button>
-              ))}
-            </div>
-
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "860px" }}>
-                <thead>
-                  <tr style={{ borderBottom: "1px solid #1e1e1e" }}>
-                    {["Order Number","Company","Country","Bank","Request Date","Start Time","Assigned to","Availability","Actions"].map(h => (
-                      <th key={h} style={{ textAlign: "left", padding: "0 12px 10px 0", color: "#3a3a3a", fontSize: "11px", fontWeight: 500, whiteSpace: "nowrap" }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {displayOrders.map((o, i) => {
-                    const av = AVL[o.avl] || AVL.Review;
-                    return (
-                      <tr key={i} onClick={() => setSelectedOrder(o)} style={{ borderBottom: "1px solid #1d1d1d", cursor: "pointer" }}>
-                        <td style={{ padding: "11px 12px 11px 0", color: "#555", fontSize: "12px" }}>{o.id}</td>
-                        <td style={{ padding: "11px 12px 11px 0", color: "#ddd", fontSize: "12px", maxWidth: "160px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.company}</td>
-                        <td style={{ padding: "11px 12px 11px 0", color: "#666", fontSize: "12px", whiteSpace: "nowrap" }}>{o.country}</td>
-                        <td style={{ padding: "11px 12px 11px 0" }}>
-                          <div style={{ color: "#bbb", fontSize: "12px" }}>{o.bank}</div>
-                          <div style={{ color: "#3a3a3a", fontSize: "10px", marginTop: "1px" }}>{o.branch}</div>
-                        </td>
-                        <td style={{ padding: "11px 12px 11px 0", color: "#666", fontSize: "12px", whiteSpace: "nowrap" }}>{o.requestDate}</td>
-                        <td style={{ padding: "11px 12px 11px 0" }}>
-                          <div style={{ color: "#777", fontSize: "12px" }}>{o.startTime}</div>
-                          <div style={{ color: "#3a3a3a", fontSize: "10px", marginTop: "1px" }}>{o.requestDate}</div>
-                        </td>
-                        <td style={{ padding: "11px 12px 11px 0", color: "#aaa", fontSize: "12px", whiteSpace: "nowrap" }}>{o.assignedTo}</td>
-                        <td style={{ padding: "11px 12px 11px 0" }}>
-                          <span style={{ fontSize: "11px", fontWeight: 500, padding: "3px 9px", borderRadius: "5px", backgroundColor: av.bg, color: av.color, border: `1px solid ${av.border}` }}>
-                            {o.avl}
-                          </span>
-                        </td>
-                        <td style={{ padding: "11px 0" }}>
-                          <button onClick={e => e.stopPropagation()} style={{ fontSize: "11px", padding: "4px 11px", borderRadius: "6px", cursor: "pointer", backgroundColor: "transparent", border: "1px solid #2a2a2a", color: "#777" }}>
-                            Review
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-            <Pagination />
+            <button
+              onClick={() => setModalOpen(true)}
+              className="h-[34px] px-[16px] text-[12px] font-medium rounded-[6px] bg-[#2563eb] hover:bg-[#1d4ed8] text-white cursor-pointer transition-colors duration-120 flex items-center justify-center"
+            >
+              Create Order
+            </button>
           </div>
         </div>
 
-        {selectedOrder && <OrderDetailPanel order={selectedOrder} onClose={() => setSelectedOrder(null)} />}
+        {/* Custom Navigation Tab Bar */}
+        <div className="px-[24px] pb-[16px] overflow-x-auto">
+          <div className="flex items-center gap-[4px] p-[4px] bg-[#111215] rounded-[8px] border border-[#212328] min-w-max">
+            {TABS.map((tab) => {
+              const active = activeTab === tab.value;
+              return (
+                <button
+                  key={tab.value}
+                  onClick={() => {
+                    setActiveTab(tab.value);
+                    setPage(1);
+                  }}
+                  className={`flex-1 py-[8px] text-[12px] leading-none rounded-[6px] cursor-pointer transition-colors duration-120 ${
+                    active
+                      ? "bg-[#22242a] text-white font-medium shadow-[0_2px_4px_rgba(0,0,0,0.12)]"
+                      : "text-[#74757b] hover:text-[#9ea0a6] font-normal"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Orders Table */}
+        <div className="overflow-x-auto scrolling-touch">
+          <table className="w-full border-collapse min-w-[1000px]">
+            <thead className="bg-[#18191d] border-t border-b border-[#212328]">
+              <tr>
+                {[
+                  { label: "Order Number", key: "id" },
+                  { label: "Company", key: "company" },
+                  { label: "Country", key: "country" },
+                  { label: "Bank", key: null },
+                  { label: "Request Date", key: "requestDate" },
+                  { label: "Start Time", key: null },
+                  { label: "Assigned to", key: "assignedTo" },
+                  { label: "Availability", key: "availability" },
+                  { label: "Status", key: "status" },
+                  { label: "Actions", key: null }
+                ].map((col, idx) => (
+                  <th
+                    key={col.label}
+                    onClick={col.key ? () => handleSort(col.key) : undefined}
+                    className={`h-[40px] px-[16px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase select-none ${
+                      col.key ? "cursor-pointer hover:text-white" : "cursor-default"
+                    } ${idx === 0 ? "pl-[24px]" : ""} ${idx === 9 ? "pr-[24px]" : ""}`}
+                  >
+                    <div className="flex items-center gap-[4px]">
+                      {col.label}
+                      {col.key && sortKey === col.key && (
+                        <span className="text-[9px] text-[#9ea0a6]">
+                          {sortDir === "asc" ? "▲" : "▼"}
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {pageRows.length === 0 ? (
+                <tr>
+                  <td colSpan={10} className="p-[40px] text-center text-[#74757b] text-[12px]">
+                    No orders match your search.
+                  </td>
+                </tr>
+              ) : (
+                pageRows.map((row, i) => (
+                  <tr
+                    key={`${row.id}-${i}`}
+                    onClick={() => setSelectedOrder(row)}
+                    className="cursor-pointer hover:bg-[rgba(255,255,255,0.02)] transition-colors duration-100 border-b border-[#212328]"
+                  >
+                    <td className="pl-[24px] pr-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
+                      {row.id}
+                    </td>
+                    <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#cdd0d6] whitespace-nowrap max-w-[200px] truncate align-middle">
+                      {row.company}
+                    </td>
+                    <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
+                      {row.country}
+                    </td>
+                    <td className="px-[16px] py-[12px] h-[60px] whitespace-nowrap align-middle">
+                      <div>
+                        <p className="text-[12px] text-[#cdd0d6] leading-[15px] font-normal">{row.bank}</p>
+                        <p className="text-[10px] text-[#74757b] leading-[13px] mt-[1px] font-normal">{row.branch}</p>
+                      </div>
+                    </td>
+                    <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
+                      {row.requestDate}
+                    </td>
+                    <td className="px-[16px] py-[12px] h-[60px] whitespace-nowrap align-middle">
+                      <div>
+                        <p className="text-[12px] text-[#cdd0d6] leading-[15px] font-normal">{row.startTime}</p>
+                        <p className="text-[10px] text-[#74757b] leading-[13px] mt-[1px] font-normal">{row.requestDate}</p>
+                      </div>
+                    </td>
+                    <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#cdd0d6] whitespace-nowrap align-middle">
+                      {row.assignedTo}
+                    </td>
+                    <td className="px-[16px] py-[12px] h-[60px] align-middle">
+                      {renderAvailability(row.availability ?? "Online")}
+                    </td>
+                    <td className="px-[16px] py-[12px] h-[60px] align-middle">
+                      {renderStatus(row.status ?? "New")}
+                    </td>
+                    <td className="pl-[16px] pr-[24px] py-[12px] h-[60px] align-middle" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        className="inline-flex items-center justify-center min-w-[58px] h-[28px] px-[14px] text-[11px] font-normal leading-none rounded-[6px] cursor-pointer whitespace-nowrap text-[#cdd0d6] border border-[#373a42] bg-[#1e2027] hover:border-[#484b54] hover:bg-[#272b34] transition-colors duration-100"
+                      >
+                        {row.action ?? "Review"}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination Section */}
+        <div className="flex items-center justify-between p-[14px_24px_16px_24px] border-t border-[#212328] flex-wrap gap-[12px]">
+          <span className="text-[#74757b] text-[12px] font-normal">
+            {sorted.length === 0
+              ? "Showing 0 of 0 orders"
+              : `Showing ${pageRows.length} of ${search || activeTab !== "all" ? sorted.length : 62} orders`}
+          </span>
+          <div className="flex items-center gap-[8px]">
+            <button
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={safePage === 1}
+              className={`h-[28px] px-[12px] text-[11px] font-normal rounded-[6px] border border-[#212328] bg-[#111215] transition-colors duration-100 flex items-center gap-[4px] ${
+                safePage === 1
+                  ? "text-[#3e4047] cursor-not-allowed"
+                  : "text-[#888] hover:bg-[#1c1d22] hover:text-white cursor-pointer"
+              }`}
+            >
+              &lt; Prev
+            </button>
+            <button
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              disabled={safePage === totalPages}
+              className={`h-[28px] px-[12px] text-[11px] font-normal rounded-[6px] border border-[#212328] bg-[#111215] transition-colors duration-100 flex items-center gap-[4px] ${
+                safePage === totalPages
+                  ? "text-[#3e4047] cursor-not-allowed"
+                  : "text-[#888] hover:bg-[#1c1d22] hover:text-white cursor-pointer"
+              }`}
+            >
+              Next &gt;
+            </button>
+          </div>
+        </div>
       </div>
 
+      {/* Create Order Modal */}
       <CreateOrderModal open={modalOpen} onClose={() => setModalOpen(false)} />
-    </>
+
+      {/* Right-side drawer overlay */}
+      {selectedOrder && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div
+            className="flex-1 bg-[rgba(0,0,0,.50)]"
+            onClick={() => setSelectedOrder(null)}
+          />
+          <div className="w-full md:w-[760px] shrink-0 h-full">
+            <OrderDetailPanel order={selectedOrder} onClose={() => setSelectedOrder(null)} />
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
