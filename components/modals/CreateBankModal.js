@@ -20,7 +20,12 @@ const DEPARTMENT_OPTIONS = [
 ];
 
 const BANK_OPTIONS = [
-  { value: "Meezan Bank Limited", label: "Meezan Bank Limited" },
+  { value: "Meezan Bank Limited",    label: "Meezan Bank Limited"    },
+  { value: "United Bank Limited",    label: "United Bank Limited"    },
+  { value: "Muslim Commercial Bank", label: "Muslim Commercial Bank" },
+  { value: "Habib Bank Limited",     label: "Habib Bank Limited"     },
+  { value: "Bank Al Habib Limited",  label: "Bank Al Habib Limited"  },
+  { value: "Allied Bank Limited",    label: "Allied Bank Limited"    },
 ];
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,6 +90,7 @@ export default function CreateBankModal({ open, onClose }) {
   const nextId = useRef(2);
 
   const [creationType, setCreationType] = useState({ value: "Bank", label: "Bank" });
+  const [selectedBank, setSelectedBank] = useState(null);
   const [date, setDate] = useState(null);
   const [phone, setPhone] = useState("");
   const [deptRows, setDeptRows] = useState([{ id: 1, department: null, email: "" }]);
@@ -147,6 +153,7 @@ export default function CreateBankModal({ open, onClose }) {
   };
 
   const handleClose = () => {
+    setSelectedBank(null);
     setDate(null);
     setPhone("");
     setDeptRows([{ id: 1, department: null, email: "" }]);
@@ -200,16 +207,26 @@ export default function CreateBankModal({ open, onClose }) {
               <input className="w-full px-3 py-2.5 rounded-lg text-sm outline-none bg-[#1e1e1e] border border-[#2a2a2a] text-white" />
             </div>
           ) : (
-            <div>
-              <label className="block text-xs mb-1.5 text-[#888]">Bank</label>
-              <AppSelect
-                variant="dark"
-                size="lg"
-                value={BANK_OPTIONS[0]}
-                onChange={() => {}}
-                options={BANK_OPTIONS}
-                isDisabled
-              />
+            <div className="flex justify-between gap-4">
+              <div className="w-[50%]">
+                <label className="block text-xs mb-1.5 text-[#888]">Branch Name</label>
+                <input
+                  type="text"
+                  placeholder="Enter branch name"
+                  className="w-full px-3 py-2.5 rounded-lg text-sm outline-none bg-[#1e1e1e] border border-[#2a2a2a] text-white placeholder-[#3a3a3a] focus:border-[#3a3a3a] transition-colors"
+                />
+              </div>
+              <div className="w-[50%]">
+                <label className="block text-xs mb-1.5 text-[#888]">Select Bank</label>
+                <AppSelect
+                  variant="dark"
+                  size="lg"
+                  value={selectedBank}
+                  onChange={setSelectedBank}
+                  options={BANK_OPTIONS}
+                  placeholder="Select bank"
+                />
+              </div>
             </div>
           )}
 

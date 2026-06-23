@@ -388,31 +388,37 @@ export default function BanksPage() {
       {/* Main listing card */}
       <div className="bg-[#151619] border border-[#212328] rounded-[12px] overflow-hidden shadow-2xl">
         <div className="overflow-x-auto scrolling-touch">
-          <table className="w-full border-collapse min-w-[1000px] table-fixed">
+          <table className="w-full border-collapse min-w-[1160px] table-fixed">
             <thead className="bg-[#18191d] border-b border-[#212328]">
               <tr>
-                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[22%] select-none">
+                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[17%] select-none">
                   Bank
                 </th>
-                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[28%] select-none">
+                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[21%] select-none">
                   Address
                 </th>
-                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[10%] select-none">
+                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[8%] select-none">
                   Total Reports
                 </th>
-                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[10%] select-none">
+                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[8%] select-none">
                   Total Requests
                 </th>
-                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[12%] select-none">
-                  Total Revenue
-                </th>
-                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[10%] select-none">
-                  Creation Date
+                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[8%] select-none">
+                  Paid Invoices
                 </th>
                 <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[8%] select-none">
+                  Unpaid Invoices
+                </th>
+                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[10%] select-none">
+                  Total Revenue
+                </th>
+                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[9%] select-none">
+                  Creation Date
+                </th>
+                <th className="h-[40px] px-[20px] text-left text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[7%] select-none">
                   Status
                 </th>
-                <th className="h-[40px] px-[20px] text-right text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[10%] select-none">
+                <th className="h-[40px] px-[20px] text-right text-[#545659] text-[11px] font-normal tracking-[0.03em] uppercase w-[8%] select-none">
                   Actions
                 </th>
               </tr>
@@ -421,7 +427,7 @@ export default function BanksPage() {
               {filteredBanks.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={10}
                     className="p-[40px] text-center text-[#74757b] text-[12px]"
                   >
                     No banks match your search.
@@ -432,7 +438,7 @@ export default function BanksPage() {
                   const isExpanded = expandedId === b.id;
                   return (
                     <tr key={b.id} className="bg-transparent">
-                      <td colSpan={8} className="p-0">
+                      <td colSpan={10} className="p-0">
                         <table className="w-full table-fixed border-collapse">
                           <tbody>
                             {/* Parent Row — expands/collapses only */}
@@ -444,7 +450,7 @@ export default function BanksPage() {
                                 isExpanded ? "bg-[rgba(255,255,255,0.005)]" : ""
                               }`}
                             >
-                              <td className="px-[20px] text-white text-[12px] font-medium w-[22%] truncate">
+                              <td className="px-[20px] text-white text-[12px] font-medium w-[17%] truncate">
                                 <div className="flex items-center gap-[8px]">
                                   <svg
                                     className={`shrink-0 text-[#545659] transition-transform duration-150 ${isExpanded ? "rotate-90" : ""}`}
@@ -460,25 +466,31 @@ export default function BanksPage() {
                                   <span className="truncate">{b.name}</span>
                                 </div>
                               </td>
-                              <td className="px-[20px] text-[#9ea0a6] text-[11px] w-[28%] truncate">
+                              <td className="px-[20px] text-[#9ea0a6] text-[11px] w-[21%] truncate">
                                 {b.address}
                               </td>
-                              <td className="px-[20px] text-[#cdd0d6] text-[12px] w-[10%]">
+                              <td className="px-[20px] text-[#cdd0d6] text-[12px] w-[8%]">
                                 {b.totalReports}
                               </td>
-                              <td className="px-[20px] text-[#cdd0d6] text-[12px] w-[10%]">
+                              <td className="px-[20px] text-[#cdd0d6] text-[12px] w-[8%]">
                                 {b.totalRequests}
                               </td>
-                              <td className="px-[20px] text-[#cdd0d6] text-[12px] w-[12%]">
+                              <td className="px-[20px] text-[12px] w-[8%] text-[#22c55e]">
+                                {b.paidInvoices ?? "—"}
+                              </td>
+                              <td className="px-[20px] text-[12px] w-[8%] text-[#ef4444]">
+                                {b.unpaidInvoices ?? "—"}
+                              </td>
+                              <td className="px-[20px] text-[#cdd0d6] text-[12px] w-[10%]">
                                 {b.totalRevenue}
                               </td>
-                              <td className="px-[20px] text-[#9ea0a6] text-[11px] w-[10%]">
+                              <td className="px-[20px] text-[#9ea0a6] text-[11px] w-[9%]">
                                 {b.creationDate}
                               </td>
-                              <td className="px-[20px] w-[8%]">
+                              <td className="px-[20px] w-[7%]">
                                 <StatusBadge status={b.status} />
                               </td>
-                              <td className="px-[20px] w-[10%] text-right">
+                              <td className="px-[20px] w-[8%] text-right">
                                 <ActionButtons
                                   onEdit={() => alert(`Editing bank ${b.name}`)}
                                   onDelete={() => setDeleteTarget(b.name)}
@@ -489,33 +501,39 @@ export default function BanksPage() {
                             {/* Expanded child rows (branches) */}
                             {isExpanded && b.branches && b.branches.length > 0 && (
                               <tr className="bg-transparent hover:bg-transparent">
-                                <td colSpan={8} className="p-[8px_24px_16px_24px] bg-transparent">
+                                <td colSpan={10} className="p-[8px_24px_16px_24px] bg-transparent">
                                   <div className="bg-[#111215] border border-[#212328] rounded-[8px] overflow-hidden shadow-inner">
                                     <table className="w-full border-collapse table-fixed">
                                       <thead>
                                         <tr className="border-b border-[#212328]/60 bg-[#16171c]/30 h-[36px]">
-                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[22%]">
+                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[17%]">
                                             Branch Name
                                           </th>
-                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[28%]">
+                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[21%]">
                                             Address
                                           </th>
-                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[10%]">
+                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[8%]">
                                             Total Reports
                                           </th>
-                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[10%]">
+                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[8%]">
                                             Total Requests
                                           </th>
-                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[12%]">
-                                            Total Revenue
-                                          </th>
-                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[10%]">
-                                            Creation Date
+                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[8%]">
+                                            Paid Invoices
                                           </th>
                                           <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[8%]">
+                                            Unpaid Invoices
+                                          </th>
+                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[10%]">
+                                            Total Revenue
+                                          </th>
+                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[9%]">
+                                            Creation Date
+                                          </th>
+                                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[7%]">
                                             Status
                                           </th>
-                                          <th className="px-[16px] text-right text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[10%]">
+                                          <th className="px-[16px] text-right text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[8%]">
                                             Actions
                                           </th>
                                         </tr>
@@ -538,6 +556,12 @@ export default function BanksPage() {
                                             </td>
                                             <td className="px-[16px] text-[#cdd0d6] text-[12px]">
                                               {br.totalRequests}
+                                            </td>
+                                            <td className="px-[16px] text-[12px] text-[#22c55e]">
+                                              {br.paidInvoices ?? "—"}
+                                            </td>
+                                            <td className="px-[16px] text-[12px] text-[#ef4444]">
+                                              {br.unpaidInvoices ?? "—"}
                                             </td>
                                             <td className="px-[16px] text-[#cdd0d6] text-[12px]">
                                               {br.totalRevenue}
@@ -690,6 +714,21 @@ export default function BanksPage() {
 
             {/* Drawer scrollable content */}
             <div className="flex-1 overflow-y-auto p-[28px] space-y-[24px]">
+                <div className="bg-[#151619] border border-[#212328] rounded-[12px] p-[20px] flex items-center justify-between">
+                  <h3 className="text-[12px] font-bold text-white uppercase tracking-wider">
+                    Invoices
+                  </h3>
+                  <div className="flex gap-5">
+                  <div className="bg-[#111215] border border-[#212328] p-[12px] rounded-[8px]">
+                      <div className="text-[10px] text-[#545659] font-medium uppercase tracking-wider">Paid Invoices</div>
+                      <div className="text-[15px] font-bold text-[#22c55e] mt-[4px]">{drawerBranch?.paidInvoices ?? "—"}</div>
+                    </div>
+                    <div className="bg-[#111215] border border-[#212328] p-[12px] rounded-[8px]">
+                      <div className="text-[10px] text-[#545659] font-medium uppercase tracking-wider">Unpaid Invoices</div>
+                      <div className="text-[15px] font-bold text-[#ef4444] mt-[4px]">{drawerBranch?.unpaidInvoices ?? "—"}</div>
+                    </div>
+                  </div>
+                </div>
               {/* Card 1: Bank Information */}
               <div className="bg-[#151619] border border-[#212328] rounded-[12px] p-[20px] flex flex-wrap md:flex-nowrap gap-[24px]">
                 <div className="w-full md:w-[50%] space-y-[16px]">
@@ -743,6 +782,7 @@ export default function BanksPage() {
                   </div>
                 </div>
               </div>
+            
 
               {/* Card 2: Related Email Addresses */}
               <div className="bg-[#151619] border border-[#212328] rounded-[12px] p-[20px] space-y-[16px]">
@@ -858,6 +898,8 @@ export default function BanksPage() {
                           <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[38%]">File Name</th>
                           <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[18%]">Branch</th>
                           <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[18%]">Company</th>
+                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[18%]">Paid Invoices</th>
+                          <th className="px-[16px] text-left text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[18%]">Unpaid Invoices</th>
                           <th className="px-[16px] text-right text-[#545659] text-[10px] font-medium uppercase tracking-[0.02em] w-[14%]">Actions</th>
                         </tr>
                       </thead>
@@ -875,6 +917,8 @@ export default function BanksPage() {
                               </td>
                               <td className="px-[16px] text-[#9ea0a6] text-[11px] truncate">{item.branch}</td>
                               <td className="px-[16px] text-[#9ea0a6] text-[11px] truncate">{item.company}</td>
+                              <td className="px-[16px] text-[#9ea0a6] text-[11px] truncate">{item.paidIn}</td>
+                              <td className="px-[16px] text-[#9ea0a6] text-[11px] truncate">{item.unpaidInvoices}</td>
                               <td className="px-[16px] text-right">
                                 <div className="flex gap-[4px] justify-end">
                                   <button className="p-[4px] rounded-[4px] border border-[#212328] bg-[#111215] text-[#9ea0a6] hover:text-white transition-colors cursor-pointer">

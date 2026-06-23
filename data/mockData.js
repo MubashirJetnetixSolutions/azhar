@@ -189,9 +189,11 @@ export const banks = [
     code: "#12341",
     email: "info@meezan.com",
     phone: "0300-09008645",
+    paidInvoices: 32,
+    unpaidInvoices: 45,
     branches: [
-      { name: "Hyderi Branch", address: "Block G, North Nazimabad, Karachi", totalReports: 220, totalRequests: 100, totalRevenue: "PKR 20,000", creationDate: "26 MAR 2026", status: "Active" },
-      { name: "Nagan Chorangi Branch", address: "F-123, karsaz tower, North Karachi.", totalReports: 441, totalRequests: 344, totalRevenue: "PKR 20,000", creationDate: "26 MAR 2026", status: "Active" },
+      { name: "Hyderi Branch", address: "Block G, North Nazimabad, Karachi", totalReports: 220, totalRequests: 100, totalRevenue: "PKR 20,000", creationDate: "26 MAR 2026", status: "Active", paidInvoices: 18, unpaidInvoices: 26 },
+      { name: "Nagan Chorangi Branch", address: "F-123, karsaz tower, North Karachi.", totalReports: 441, totalRequests: 344, totalRevenue: "PKR 20,000", creationDate: "26 MAR 2026", status: "Active", paidInvoices: 14, unpaidInvoices: 19 },
     ]
   },
   {
@@ -207,9 +209,11 @@ export const banks = [
     code: "#12342",
     email: "contact@ubl.com.pk",
     phone: "021-111-825-888",
+    paidInvoices: 87,
+    unpaidInvoices: 345,
     branches: [
-      { name: "Gulshan Branch", address: "Block 3, Gulshan-e-Iqbal, Karachi", totalReports: 280, totalRequests: 400, totalRevenue: "PKR 25,000", creationDate: "15 MAR 2026", status: "Active" },
-      { name: "I.I. Chundrigar Branch", address: "UBL Building, I.I. Chundrigar Road, Karachi", totalReports: 256, totalRequests: 446, totalRevenue: "PKR 15,000", creationDate: "15 MAR 2026", status: "Inactive" }
+      { name: "Gulshan Branch", address: "Block 3, Gulshan-e-Iqbal, Karachi", totalReports: 280, totalRequests: 400, totalRevenue: "PKR 25,000", creationDate: "15 MAR 2026", status: "Active", paidInvoices: 45, unpaidInvoices: 180 },
+      { name: "I.I. Chundrigar Branch", address: "UBL Building, I.I. Chundrigar Road, Karachi", totalReports: 256, totalRequests: 446, totalRevenue: "PKR 15,000", creationDate: "15 MAR 2026", status: "Inactive", paidInvoices: 42, unpaidInvoices: 165 }
     ]
   },
   {
@@ -225,9 +229,11 @@ export const banks = [
     code: "#12343",
     email: "info@mcb.com.pk",
     phone: "042-111-000-622",
+    paidInvoices: 62,
+    unpaidInvoices: 430,
     branches: [
-      { name: "Jail Road Branch", address: "Main Gulberg, Jail Road, Lahore", totalReports: 300, totalRequests: 500, totalRevenue: "PKR 20,000", creationDate: "15 MAR 2026", status: "Inactive" },
-      { name: "Mall Road Branch", address: "Mall Road, Lahore", totalReports: 283, totalRequests: 346, totalRevenue: "PKR 17,000", creationDate: "15 MAR 2026", status: "Active" }
+      { name: "Jail Road Branch", address: "Main Gulberg, Jail Road, Lahore", totalReports: 300, totalRequests: 500, totalRevenue: "PKR 20,000", creationDate: "15 MAR 2026", status: "Inactive", paidInvoices: 31, unpaidInvoices: 220 },
+      { name: "Mall Road Branch", address: "Mall Road, Lahore", totalReports: 283, totalRequests: 346, totalRevenue: "PKR 17,000", creationDate: "15 MAR 2026", status: "Active", paidInvoices: 31, unpaidInvoices: 210 }
     ]
   },
   {
@@ -243,9 +249,11 @@ export const banks = [
     code: "#12344",
     email: "customer.care@hbl.com",
     phone: "021-111-111-425",
+    paidInvoices: 65,
+    unpaidInvoices: 545,
     branches: [
-      { name: "Teen Talwar Branch", address: "Teen Talwar, Clifton, Karachi", totalReports: 383, totalRequests: 300, totalRevenue: "PKR 25,000", creationDate: "24 FEB 2026", status: "Active" },
-      { name: "Karsaz Branch", address: "Shahrah-e-Faisal, Karsaz, Karachi", totalReports: 200, totalRequests: 246, totalRevenue: "PKR 15,000", creationDate: "24 FEB 2026", status: "Active" }
+      { name: "Teen Talwar Branch", address: "Teen Talwar, Clifton, Karachi", totalReports: 383, totalRequests: 300, totalRevenue: "PKR 25,000", creationDate: "24 FEB 2026", status: "Active", paidInvoices: 40, unpaidInvoices: 280 },
+      { name: "Karsaz Branch", address: "Shahrah-e-Faisal, Karsaz, Karachi", totalReports: 200, totalRequests: 246, totalRevenue: "PKR 15,000", creationDate: "24 FEB 2026", status: "Active", paidInvoices: 25, unpaidInvoices: 265 }
     ]
   },
   {
@@ -261,9 +269,11 @@ export const banks = [
     code: "#12345",
     email: "support@bankalhabib.com",
     phone: "021-111-014-014",
+    paidInvoices: 54,
+    unpaidInvoices: 43,
     branches: [
-      { name: "DHA Phase 5 Branch", address: "Khayaban-e-Shamsheer, DHA, Karachi", totalReports: 400, totalRequests: 100, totalRevenue: "PKR 1,200", creationDate: "19 FEB 2026", status: "Active" },
-      { name: "Bahadurabad Branch", address: "Bahadur Yar Jang Society, Karachi", totalReports: 338, totalRequests: 134, totalRevenue: "PKR 800", creationDate: "19 FEB 2026", status: "Active" }
+      { name: "DHA Phase 5 Branch", address: "Khayaban-e-Shamsheer, DHA, Karachi", totalReports: 400, totalRequests: 100, totalRevenue: "PKR 1,200", creationDate: "19 FEB 2026", status: "Active", paidInvoices: 30, unpaidInvoices: 22 },
+      { name: "Bahadurabad Branch", address: "Bahadur Yar Jang Society, Karachi", totalReports: 338, totalRequests: 134, totalRevenue: "PKR 800", creationDate: "19 FEB 2026", status: "Active", paidInvoices: 24, unpaidInvoices: 21 }
     ]
   },
   {
@@ -279,9 +289,11 @@ export const banks = [
     code: "#12346",
     email: "info@abl.com",
     phone: "042-111-225-225",
+    paidInvoices: 21,
+    unpaidInvoices: 54,
     branches: [
-      { name: "Main Boulevard Branch", address: "Tipu Block, Gulberg III, Lahore", totalReports: 500, totalRequests: 120, totalRevenue: "PKR 1,500", creationDate: "19 FEB 2026", status: "Active" },
-      { name: "Model Town Branch", address: "Model Town Circular Road, Lahore", totalReports: 238, totalRequests: 114, totalRevenue: "PKR 500", creationDate: "19 FEB 2026", status: "Active" }
+      { name: "Main Boulevard Branch", address: "Tipu Block, Gulberg III, Lahore", totalReports: 500, totalRequests: 120, totalRevenue: "PKR 1,500", creationDate: "19 FEB 2026", status: "Active", paidInvoices: 12, unpaidInvoices: 30 },
+      { name: "Model Town Branch", address: "Model Town Circular Road, Lahore", totalReports: 238, totalRequests: 114, totalRevenue: "PKR 500", creationDate: "19 FEB 2026", status: "Active", paidInvoices: 9, unpaidInvoices: 24 }
     ]
   },
 ];
