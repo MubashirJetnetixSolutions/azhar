@@ -12,7 +12,7 @@ const STATUS_CONFIG = {
   "New":                { color: "#3b82f6", bg: "rgba(59,130,246,0.08)",  border: "rgba(59,130,246,0.2)"  },
   "Customer Responded": { color: "#d9a71e", bg: "rgba(234,179,8,0.08)",   border: "rgba(234,179,8,0.2)"   },
   "For Reviewal":       { color: "#a855f7", bg: "rgba(168,85,247,0.08)",  border: "rgba(168,85,247,0.2)"  },
-  "Completed":          { color: "#22c55e", bg: "rgba(34,197,94,0.08)",   border: "rgba(34,197,94,0.2)"   },
+  "Ready to send":          { color: "#22c55e", bg: "rgba(34,197,94,0.08)",   border: "rgba(34,197,94,0.2)"   },
 };
 
 const STATUS_KEYS = Object.keys(STATUS_CONFIG);
@@ -187,7 +187,7 @@ const TABS = [
   { label: "New Orders", value: "New" },
   { label: "Customer Responded", value: "Customer Responded" },
   { label: "For Reviewal", value: "For Reviewal" },
-  { label: "Completed", value: "Completed" }
+  { label: "Ready to send", value: "Ready to send" }
 ];
 
 export default function OrdersPage() {
@@ -281,7 +281,7 @@ export default function OrdersPage() {
       case "For Reviewal":
         classes = "bg-[rgba(168,85,247,0.08)] text-[#a855f7] border-[rgba(168,85,247,0.2)]";
         break;
-      case "Completed":
+      case "Ready to send":
         classes = "bg-[rgba(34,197,94,0.08)] text-[#22c55e] border-[rgba(34,197,94,0.2)]";
         break;
     //   case "Flagged":
@@ -411,7 +411,7 @@ export default function OrdersPage() {
                   { label: "Company", key: "company" },
                   { label: "Country", key: "country" },
                   { label: "Bank", key: null },
-                  { label: "Representative", key: 'name' },
+                  { label: "Applicant Name", key: 'name' },
                   { label: "Start Time", key: null },
                   { label: "End Time", key: null },
                   { label: "Report Date", key: "report_date" },
