@@ -1,9 +1,137 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { orders } from "@/data/mockData";
 import CreateOrderModal from "@/components/modals/CreateOrderModal";
 import OrderDetailPanel from "@/components/OrderDetailPanel";
+
+// ── Order Status Select ──────────────────────────────────────────────────────
+
+const STATUS_CONFIG = {
+  "New":                { color: "#3b82f6", bg: "rgba(59,130,246,0.08)",  border: "rgba(59,130,246,0.2)"  },
+  "Customer Responded": { color: "#d9a71e", bg: "rgba(234,179,8,0.08)",   border: "rgba(234,179,8,0.2)"   },
+  "For Reviewal":       { color: "#a855f7", bg: "rgba(168,85,247,0.08)",  border: "rgba(168,85,247,0.2)"  },
+  "Completed":          { color: "#22c55e", bg: "rgba(34,197,94,0.08)",   border: "rgba(34,197,94,0.2)"   },
+};
+
+const STATUS_KEYS = Object.keys(STATUS_CONFIG);
+
+// Custom portal-based dropdown — bypasses all table overflow/z-index/event
+// propagation issues without relying on react-select's internal event handling.
+function OrderStatusSelect({ value, onChange }) {
+  const [open, setOpen]   = useState(false);
+  const [pos, setPos]     = useState({ top: 0, left: 0 });
+  const triggerRef        = useRef(null);
+  const menuRef           = useRef(null);
+
+  const cfg = STATUS_CONFIG[value] ?? { color: "#9ea0a6", bg: "#1f2025", border: "#2e3037" };
+
+  const toggle = (e) => {
+    e.stopPropagation(); // prevent the table-row onClick from firing
+    if (open) { setOpen(false); return; }
+    const rect = triggerRef.current.getBoundingClientRect();
+    setPos({ top: rect.bottom + 4, left: rect.left });
+    setOpen(true);
+  };
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => {
+      if (
+        !triggerRef.current?.contains(e.target) &&
+        !menuRef.current?.contains(e.target)
+      ) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  // Close on Escape
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [open]);
+
+  return (
+    <>
+      {/* Badge trigger */}
+      <div
+        ref={triggerRef}
+        onClick={toggle}
+        style={{
+          display: "inline-flex", alignItems: "center", gap: 4,
+          fontSize: 10, fontWeight: 500, lineHeight: 1,
+          borderRadius: 4, padding: "4px 6px 4px 8px",
+          border: `1px solid ${cfg.border}`, background: cfg.bg, color: cfg.color,
+          cursor: "pointer", userSelect: "none", whiteSpace: "nowrap",
+          transition: "opacity 100ms",
+        }}
+      >
+        {value}
+        <svg width="8" height="8" fill="none" viewBox="0 0 24 24" stroke={cfg.color} strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
+      </div>
+
+      {/* Options menu — portalled to document.body at computed fixed position */}
+      {open && typeof document !== "undefined" && createPortal(
+        <div
+          ref={menuRef}
+          onMouseDown={(e) => e.stopPropagation()}
+          style={{
+            position: "fixed",
+            top: pos.top,
+            left: pos.left,
+            zIndex: 9999,
+            background: "#111215",
+            border: "1px solid #212328",
+            borderRadius: 8,
+            boxShadow: "0 8px 24px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.03)",
+            minWidth: 170,
+            padding: "4px",
+            overflow: "hidden",
+          }}
+        >
+          {STATUS_KEYS.map((status) => {
+            const isSelected = status === value;
+            return (
+              <div
+                key={status}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange(status);
+                  setOpen(false);
+                }}
+                style={{
+                  padding: "7px 10px",
+                  fontSize: 11,
+                  borderRadius: 6,
+                  cursor: "pointer",
+                  color: "#cdd0d6",
+                  background: isSelected ? "rgba(37,99,235,0.12)" : "transparent",
+                  transition: "background 80ms",
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSelected) e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSelected) e.currentTarget.style.background = "transparent";
+                }}
+              >
+                {status}
+              </div>
+            );
+          })}
+        </div>,
+        document.body
+      )}
+    </>
+  );
+}
 
 const PER_PAGE = 7;
 
@@ -57,10 +185,9 @@ const stats = [
 const TABS = [
   { label: "All Orders", value: "all" },
   { label: "New Orders", value: "New" },
-  { label: "In Verification", value: "In Verification" },
-  { label: "Reusable Reports", value: "Reusable" },
-  { label: "Flagged", value: "Flagged" },
-  { label: "Complete", value: "Complete" }
+  { label: "Customer Responded", value: "Customer Responded" },
+  { label: "For Reviewal", value: "For Reviewal" },
+  { label: "Completed", value: "Completed" }
 ];
 
 export default function OrdersPage() {
@@ -71,6 +198,13 @@ export default function OrdersPage() {
   const [page, setPage] = useState(1);
   const [sortKey, setSortKey] = useState(null);
   const [sortDir, setSortDir] = useState("asc");
+  // Per-row status overrides keyed by composite id|company|date
+  const [statusOverrides, setStatusOverrides] = useState({});
+
+  const rowKey  = (row) => `${row.id}|${row.company}|${row.requestDate}`;
+  const getStatus = (row) => statusOverrides[rowKey(row)] ?? row.status ?? "New";
+  const setStatus = (row, val) =>
+    setStatusOverrides((prev) => ({ ...prev, [rowKey(row)]: val }));
 
   // Filtering logic
   const filtered = useMemo(() => {
@@ -138,21 +272,21 @@ export default function OrdersPage() {
   function renderStatus(value) {
     let classes = "";
     switch (value) {
-      case "In Verification":
+      case "Customer Responded":
         classes = "bg-[rgba(234,179,8,0.08)] text-[#d9a71e] border-[rgba(234,179,8,0.2)]";
         break;
       case "New":
         classes = "bg-[rgba(59,130,246,0.08)] text-[#3b82f6] border-[rgba(59,130,246,0.2)]";
         break;
-      case "Reusable":
+      case "For Reviewal":
         classes = "bg-[rgba(168,85,247,0.08)] text-[#a855f7] border-[rgba(168,85,247,0.2)]";
         break;
-      case "Complete":
+      case "Completed":
         classes = "bg-[rgba(34,197,94,0.08)] text-[#22c55e] border-[rgba(34,197,94,0.2)]";
         break;
-      case "Flagged":
-        classes = "bg-[rgba(239,68,68,0.08)] text-[#ef4444] border-[rgba(239,68,68,0.2)]";
-        break;
+    //   case "Flagged":
+    //     classes = "bg-[rgba(239,68,68,0.08)] text-[#ef4444] border-[rgba(239,68,68,0.2)]";
+    //     break;
       default:
         classes = "bg-[#1f2025] text-[#9ea0a6] border-[#2e3037]";
     }
@@ -273,13 +407,15 @@ export default function OrdersPage() {
               <tr>
                 {[
                   { label: "Order Number", key: "id" },
+                  { label: "Request Date", key: "requestDate" },
                   { label: "Company", key: "company" },
                   { label: "Country", key: "country" },
                   { label: "Bank", key: null },
-                  { label: "Type", key: 'type' },
-                  { label: "Request Date", key: "requestDate" },
+                  { label: "Representative", key: 'name' },
                   { label: "Start Time", key: null },
-                  { label: "Assigned to", key: "assignedTo" },
+                  { label: "End Time", key: null },
+                  { label: "Report Date", key: "report_date" },
+                //   { label: "Assigned to", key: "assignedTo" },
                   { label: "Availability", key: "availability" },
                   { label: "Status", key: "status" },
                   { label: "Actions", key: null }
@@ -320,6 +456,9 @@ export default function OrdersPage() {
                     <td className="pl-[24px] pr-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
                       {row.id}
                     </td>
+                    <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
+                      {row.requestDate}
+                    </td>
                     <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#cdd0d6] whitespace-nowrap max-w-[200px] truncate align-middle">
                       {row.company}
                     </td>
@@ -333,10 +472,7 @@ export default function OrdersPage() {
                       </div>
                     </td>
                     <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
-                      {row.type}
-                    </td>
-                    <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
-                      {row.requestDate}
+                      {row.name}
                     </td>
                     <td className="px-[16px] py-[12px] h-[60px] whitespace-nowrap align-middle">
                       <div>
@@ -344,14 +480,26 @@ export default function OrdersPage() {
                         <p className="text-[10px] text-[#74757b] leading-[13px] mt-[1px] font-normal">{row.requestDate}</p>
                       </div>
                     </td>
-                    <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#cdd0d6] whitespace-nowrap align-middle">
-                      {row.assignedTo}
+                    <td className="px-[16px] py-[12px] h-[60px] whitespace-nowrap align-middle">
+                      <div>
+                        <p className="text-[12px] text-[#cdd0d6] leading-[15px] font-normal">{row.endTime}</p>
+                        <p className="text-[10px] text-[#74757b] leading-[13px] mt-[1px] font-normal">{row.requestDate}</p>
+                      </div>
                     </td>
+                    <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#9ea0a6] whitespace-nowrap align-middle">
+                      {row.report_date}
+                    </td>
+                    {/* <td className="px-[16px] py-[12px] h-[60px] text-[12px] text-[#cdd0d6] whitespace-nowrap align-middle">
+                      {row.assignedTo}
+                    </td> */}
                     <td className="px-[16px] py-[12px] h-[60px] align-middle">
                       {renderAvailability(row.availability ?? "Online")}
                     </td>
                     <td className="px-[16px] py-[12px] h-[60px] align-middle">
-                      {renderStatus(row.status ?? "New")}
+                      <OrderStatusSelect
+                        value={getStatus(row)}
+                        onChange={(val) => setStatus(row, val)}
+                      />
                     </td>
                     <td className="pl-[16px] pr-[24px] py-[12px] h-[60px] align-middle" onClick={(e) => e.stopPropagation()}>
                       <button

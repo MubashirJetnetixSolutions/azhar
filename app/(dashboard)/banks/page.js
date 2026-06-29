@@ -261,6 +261,7 @@ export default function BanksPage() {
   const [tabSearch, setTabSearch] = useState("");
   const [toast, setToast] = useState(null);
   const [sendTarget, setSendTarget] = useState(null);
+  const [invoiceStatuses, setInvoiceStatuses] = useState({});
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -1006,7 +1007,10 @@ export default function BanksPage() {
                                 <td className="px-[16px] text-[#cdd0d6] text-[12px] align-middle">{item.amount}</td>
                                 <td className="px-[16px] text-[#9ea0a6] text-[11px] align-middle">{item.dueDate}</td>
                                 <td className="px-[16px] align-middle">
-                                  <StatusBadgeSelect value={item.status ?? "Paid"} onChange={() => {}} />
+                                  <StatusBadgeSelect
+                                    value={invoiceStatuses[`${item.id}-${item.company}`] ?? item.status ?? "Paid"}
+                                    onChange={(val) => setInvoiceStatuses((prev) => ({ ...prev, [`${item.id}-${item.company}`]: val }))}
+                                  />
                                 </td>
                                 <td className="px-[16px] text-right align-middle">
                                   <button

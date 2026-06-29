@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { invoices } from "@/data/mockData";
 import CreateInvoiceModal from "@/components/modals/CreateInvoiceModal";
 import DeleteConfirmModal from "@/components/modals/DeleteConfirmModal";
@@ -48,6 +49,7 @@ const summaryCards = [
 ];
 
 export default function InvoicesPage() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [sortKey, setSortKey] = useState(null);
@@ -233,16 +235,17 @@ export default function InvoicesPage() {
                 className="w-full sm:w-[240px] h-[34px] pl-[34px] pr-[12px] rounded-[6px] bg-[#111215] text-[#9ea0a6] text-[12px] leading-none outline-none border border-[#24252a] focus:border-[#3e4047] transition-colors duration-120"
               />
             </div>
-            {/* Create Invoice Button */}
+            {/* Submit Receipt Button */}
             <button
-              onClick={() => setCreateInvoiceOpen(true)}
+              onClick={() => router.push("/invoices/submit-receipt")}
               className="h-[34px] px-[16px] rounded-[6px] text-[12px] font-medium text-white bg-[#2563eb] hover:bg-[#1d4ed8] active:bg-[#1e40af] cursor-pointer transition-colors duration-100 whitespace-nowrap flex items-center gap-[6px]"
             >
               <svg width={13} height={13} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
               </svg>
-              Create Invoice
+              Submit Receipt
             </button>
+
           </div>
         </div>
 

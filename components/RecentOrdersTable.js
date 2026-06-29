@@ -9,10 +9,11 @@ const COLS = [
   "Company",
   "Country",
   "Bank",
-  "Type",
+  "Representative",
   "Request Date",
   "Start Time",
-  "Assigned to",
+  "End Time",
+//   "Assigned to",
   "Availability",
   "Actions",
 ];
@@ -104,6 +105,11 @@ function OrderRow({ row, action }) {
         {row.id}
       </div>
 
+{/* Request Date */}
+      <div className="flex items-center py-[14px] text-[#727479] text-[12px] font-normal leading-[16px] whitespace-nowrap">
+        {row.requestDate}
+      </div>
+
       {/* Company */}
       <div className="flex items-center py-[14px] min-w-0">
         <span className="text-[#cdd0d6] text-[12px] font-normal leading-[16px] truncate">
@@ -121,25 +127,31 @@ function OrderRow({ row, action }) {
         <TwoLineCell primary={row.bank} secondary={row.branch} />
       </div>
 
-      {/* Type */}
+      {/* Name */}
       <div className="flex items-center py-[14px] text-[#727479] text-[12px] font-normal leading-[16px]">
-        {row.type}
+        {row.name}
       </div>
 
-      {/* Request Date */}
-      <div className="flex items-center py-[14px] text-[#727479] text-[12px] font-normal leading-[16px] whitespace-nowrap">
-        {row.requestDate}
-      </div>
 
       {/* Start Time */}
       <div className="flex items-center py-[14px]">
         <TwoLineCell primary={row.startTime} secondary={row.requestDate} />
       </div>
+    
+    {/* End Time */}
+      <div className="flex items-center py-[14px]">
+        <TwoLineCell primary={row.endTime} secondary={row.requestDate} />
+      </div>
 
-      {/* Assigned to */}
+{/* Report Date */}
+      <div className="flex items-center py-[14px] text-[#727479] text-[12px] font-normal leading-[16px] whitespace-nowrap">
+        {row.report_date}
+      </div>
+
+      {/* Assigned to
       <div className="flex items-center py-[14px] text-[#9ea0a6] text-[12px] font-normal leading-[16px]">
         {row.assignedTo}
-      </div>
+      </div> */}
 
       {/* Availability */}
       <div className="flex items-center py-[14px]">
