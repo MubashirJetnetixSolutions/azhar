@@ -183,7 +183,7 @@ function ContentPanel({ title, subtitle, onSave, children }) {
 // ── Tab: General ──────────────────────────────────────────
 function GeneralTab({ profileImg, onImageChange, onImageDelete, onInvalidFile, form, onFormChange }) {
   return (
-    <div className="space-y-[28px] py-4 px-4 md:py-5 md:px-7">
+    <div className="space-y-[28px] py-4 px-[78px] md:py-4 md:px-[78px]">
       <div>
         <SectionDivider title="Profile Picture" />
         <ProfileImageItem
@@ -231,7 +231,7 @@ function GeneralTab({ profileImg, onImageChange, onImageDelete, onInvalidFile, f
 // ── Tab: Security ─────────────────────────────────────────
 function SecurityTab() {
   return (
-    <div className="space-y-[28px]">
+    <div className="space-y-[28px] py-4 px-[78px] md:py-4 md:px-[78px]">
       <div>
         <SectionDivider title="Password" />
         <div className="space-y-[16px]">
@@ -374,7 +374,7 @@ function UsersTab({ onCreateUser }) {
 // ── Tab: Ai Integration ───────────────────────────────────
 function AiIntegrationTab() {
   return (
-    <div className="space-y-[20px]">
+    <div className="space-y-[20px] py-4 px-[78px] md:py-4 md:px-[78px]">
       <PasswordField label="Secret Key" />
       <PasswordField label="Api Key" />
     </div>
@@ -401,7 +401,7 @@ const INVOICE_SECTIONS = [
 
 function InvoiceTemplatesTab() {
   return (
-    <div className="space-y-[28px]">
+    <div className="space-y-[28px] py-4 px-[78px] md:py-4 md:px-[78px]">
       {INVOICE_SECTIONS.map(({ title, items }) => (
         <div key={title}>
           <SectionDivider title={title} />

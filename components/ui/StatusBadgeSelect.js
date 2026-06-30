@@ -16,17 +16,32 @@ const OPTIONS = ["Paid", "Unpaid"];
 
 export default function StatusBadgeSelect({ value, onChange }) {
   const [open, setOpen] = useState(false);
-  const [pos, setPos]   = useState({ top: 0, left: 0 });
+  // pos uses `top` when opening below, `bottom` when opening above (fixed coords)
+  const [pos, setPos]   = useState({ top: 0, bottom: undefined, left: 0 });
   const triggerRef      = useRef(null);
   const menuRef         = useRef(null);
 
   const cfg = STATUS_CONFIG[value] ?? STATUS_CONFIG.Paid;
 
+  // ~29px per option × 2 options + 8px padding
+  const MENU_H = 66;
+
+  const computePos = () => {
+    if (!triggerRef.current) return;
+    const rect       = triggerRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const openAbove  = spaceBelow < MENU_H && spaceAbove > spaceBelow;
+    setPos(openAbove
+      ? { top: undefined, bottom: window.innerHeight - rect.top + 4, left: rect.left }
+      : { top: rect.bottom + 4, bottom: undefined,                   left: rect.left }
+    );
+  };
+
   const toggle = (e) => {
-    e.stopPropagation(); // prevent any parent row click from firing
+    e.stopPropagation();
     if (open) { setOpen(false); return; }
-    const rect = triggerRef.current.getBoundingClientRect();
-    setPos({ top: rect.bottom + 4, left: rect.left });
+    computePos();
     setOpen(true);
   };
 
@@ -50,6 +65,17 @@ export default function StatusBadgeSelect({ value, onChange }) {
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [open]);
+
+  // Recompute position on scroll or resize (handles zoom changes too)
+  useEffect(() => {
+    if (!open) return;
+    window.addEventListener("scroll", computePos, true);
+    window.addEventListener("resize", computePos);
+    return () => {
+      window.removeEventListener("scroll", computePos, true);
+      window.removeEventListener("resize", computePos);
+    };
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -80,6 +106,7 @@ export default function StatusBadgeSelect({ value, onChange }) {
           style={{
             position: "fixed",
             top: pos.top,
+            bottom: pos.bottom,
             left: pos.left,
             zIndex: 9999,
             background: "#111215",

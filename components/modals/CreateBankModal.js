@@ -55,7 +55,7 @@ function DeptEmailRow({ index, row, onChange, onRemove, canRemove, error }) {
         <div>
           <label className="block text-xs mb-1.5 text-[#888]">Department</label>
           <AppSelect
-            variant="dark"
+            variant="default"
             size="lg"
             value={row.department}
             onChange={(opt) => onChange({ ...row, department: opt })}
@@ -73,7 +73,7 @@ function DeptEmailRow({ index, row, onChange, onRemove, canRemove, error }) {
             placeholder="email@example.com"
             value={row.email}
             onChange={(e) => onChange({ ...row, email: e.target.value })}
-            className={`w-full px-3 py-2.5 rounded-lg text-sm outline-none bg-[#1e1e1e] border text-white placeholder-[#3a3a3a] transition-colors ${
+            className={`className="w-full h-[42px] px-[12px] rounded-[6px] text-[13px] text-white bg-[#111215] border border-[#212328] outline-none focus:border-[#3e4047] transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" ${
               error?.email ? "border-red-500/50" : "border-[#2a2a2a]"
             }`}
           />
@@ -166,12 +166,12 @@ export default function CreateBankModal({ open, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/60" onClick={handleClose} />
-      <div className="relative rounded-2xl w-[500px] max-w-full mx-4 bg-[#161616] border border-[#262626] max-h-[90vh] flex flex-col">
+      <div className="relative w-[480px] max-w-[calc(100vw-32px)] mx-4 bg-[#1c1d22] border border-[#28292f] rounded-[14px] shadow-2xl">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#1e1e1e] shrink-0">
+        <div className="flex items-center justify-between px-[24px] py-[18px] border-b border-[#212328]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#1e1e1e]">
+            <div className="w-[36px] h-[36px] rounded-[8px] bg-[#111215] border border-[#212328] flex items-center justify-center shrink-0">
               <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#888" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
               </svg>
@@ -192,7 +192,7 @@ export default function CreateBankModal({ open, onClose }) {
           <div>
             <label className="block text-xs mb-1.5 text-[#888]">Select Creation</label>
             <AppSelect
-              variant="dark"
+              variant="default"
               size="lg"
               value={creationType}
               onChange={(opt) => { setCreationType(opt); setDate(null); }}
@@ -204,7 +204,7 @@ export default function CreateBankModal({ open, onClose }) {
           {creationType?.value === "Bank" ? (
             <div>
               <label className="block text-xs mb-1.5 text-[#888]">Bank Name</label>
-              <input className="w-full px-3 py-2.5 rounded-lg text-sm outline-none bg-[#1e1e1e] border border-[#2a2a2a] text-white" />
+              <input className="w-full h-[42px] px-[12px] rounded-[6px] text-[13px] text-white bg-[#111215] border border-[#212328] outline-none focus:border-[#3e4047] transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
             </div>
           ) : (
             <div className="flex justify-between gap-4">
@@ -213,13 +213,13 @@ export default function CreateBankModal({ open, onClose }) {
                 <input
                   type="text"
                   placeholder="Enter branch name"
-                  className="w-full px-3 py-2.5 rounded-lg text-sm outline-none bg-[#1e1e1e] border border-[#2a2a2a] text-white placeholder-[#3a3a3a] focus:border-[#3a3a3a] transition-colors"
+                  className="w-full h-[42px] px-[12px] rounded-[6px] text-[13px] text-white bg-[#111215] border border-[#212328] outline-none focus:border-[#3e4047] transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
               </div>
               <div className="w-[50%]">
                 <label className="block text-xs mb-1.5 text-[#888]">Select Bank</label>
                 <AppSelect
-                  variant="dark"
+                  variant="default"
                   size="lg"
                   value={selectedBank}
                   onChange={setSelectedBank}
@@ -233,7 +233,7 @@ export default function CreateBankModal({ open, onClose }) {
           {/* Address */}
           <div>
             <label className="block text-xs mb-1.5 text-[#888]">Address</label>
-            <input className="w-full px-3 py-2.5 rounded-lg text-sm outline-none bg-[#1e1e1e] border border-[#2a2a2a] text-white" />
+            <input className="w-full h-[42px] px-[12px] rounded-[6px] text-[13px] text-white bg-[#111215] border border-[#212328] outline-none focus:border-[#3e4047] transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
           </div>
 
           {/* Date + Phone on the same row */}
@@ -241,7 +241,7 @@ export default function CreateBankModal({ open, onClose }) {
             <div>
               <label className="block text-xs mb-1.5 text-[#888]">Date</label>
               <AppDatePicker
-                variant="dark"
+                variant="default"
                 size="lg"
                 selected={date}
                 onChange={setDate}
@@ -255,7 +255,7 @@ export default function CreateBankModal({ open, onClose }) {
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg text-sm outline-none bg-[#1e1e1e] border border-[#2a2a2a] text-white"
+                className="w-full h-[42px] px-[12px] rounded-[6px] text-[13px] text-white bg-[#111215] border border-[#212328] outline-none focus:border-[#3e4047] transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
           </div>
@@ -278,7 +278,7 @@ export default function CreateBankModal({ open, onClose }) {
             <button
               type="button"
               onClick={addRow}
-              className="flex items-center gap-[6px] text-xs text-[#555] hover:text-[#888] transition-colors cursor-pointer"
+              className="flex items-center gap-[6px] text-xs text-[#999999] hover:text-[#888] transition-colors cursor-pointer"
             >
               <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -306,7 +306,7 @@ export default function CreateBankModal({ open, onClose }) {
         <div className="flex justify-end gap-3 px-6 py-4 border-t border-[#1e1e1e] shrink-0">
           <button
             onClick={handleClose}
-            className="px-5 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1e1e1e] text-[#888] border border-[#2a2a2a] hover:text-white cursor-pointer"
+            className="h-[38px] px-[20px] rounded-[8px] text-[13px] font-medium text-[#9ea0a6] bg-[#111215] border border-[#212328] hover:text-white hover:border-[#3e4047] cursor-pointer transition-colors"
           >
             Cancel
           </button>

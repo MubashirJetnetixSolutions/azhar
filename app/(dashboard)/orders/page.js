@@ -13,6 +13,7 @@ const STATUS_CONFIG = {
   "Customer Responded": { color: "#d9a71e", bg: "rgba(234,179,8,0.08)",   border: "rgba(234,179,8,0.2)"   },
   "For Reviewal":       { color: "#a855f7", bg: "rgba(168,85,247,0.08)",  border: "rgba(168,85,247,0.2)"  },
   "Ready to send":          { color: "#22c55e", bg: "rgba(34,197,94,0.08)",   border: "rgba(34,197,94,0.2)"   },
+  "Flagged":          { color: "#c5222aff", bg: "rgba(197, 59, 34, 0.08)",   border:"rgba(239,68,68,0.2)"   },
 };
 
 const STATUS_KEYS = Object.keys(STATUS_CONFIG);
@@ -20,18 +21,33 @@ const STATUS_KEYS = Object.keys(STATUS_CONFIG);
 // Custom portal-based dropdown — bypasses all table overflow/z-index/event
 // propagation issues without relying on react-select's internal event handling.
 function OrderStatusSelect({ value, onChange }) {
-  const [open, setOpen]   = useState(false);
-  const [pos, setPos]     = useState({ top: 0, left: 0 });
-  const triggerRef        = useRef(null);
-  const menuRef           = useRef(null);
+  const [open, setOpen] = useState(false);
+  // pos uses `top` when opening below, `bottom` when opening above (fixed coords)
+  const [pos, setPos]   = useState({ top: 0, bottom: undefined, left: 0 });
+  const triggerRef      = useRef(null);
+  const menuRef         = useRef(null);
 
   const cfg = STATUS_CONFIG[value] ?? { color: "#9ea0a6", bg: "#1f2025", border: "#2e3037" };
 
+  // ~29px per option × 4 options + 8px padding
+  const MENU_H = 124;
+
+  const computePos = () => {
+    if (!triggerRef.current) return;
+    const rect       = triggerRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const openAbove  = spaceBelow < MENU_H && spaceAbove > spaceBelow;
+    setPos(openAbove
+      ? { top: undefined, bottom: window.innerHeight - rect.top + 4, left: rect.left }
+      : { top: rect.bottom + 4, bottom: undefined,                   left: rect.left }
+    );
+  };
+
   const toggle = (e) => {
-    e.stopPropagation(); // prevent the table-row onClick from firing
+    e.stopPropagation();
     if (open) { setOpen(false); return; }
-    const rect = triggerRef.current.getBoundingClientRect();
-    setPos({ top: rect.bottom + 4, left: rect.left });
+    computePos();
     setOpen(true);
   };
 
@@ -55,6 +71,17 @@ function OrderStatusSelect({ value, onChange }) {
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [open]);
+
+  // Recompute position on scroll or resize (handles zoom changes too)
+  useEffect(() => {
+    if (!open) return;
+    window.addEventListener("scroll", computePos, true);
+    window.addEventListener("resize", computePos);
+    return () => {
+      window.removeEventListener("scroll", computePos, true);
+      window.removeEventListener("resize", computePos);
+    };
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -85,6 +112,7 @@ function OrderStatusSelect({ value, onChange }) {
           style={{
             position: "fixed",
             top: pos.top,
+            bottom: pos.bottom,
             left: pos.left,
             zIndex: 9999,
             background: "#111215",
@@ -140,7 +168,19 @@ const stats = [
     label: "New Orders",
     value: "28",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ea0a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ea0a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+      </svg>
+    )
+  },
+  {
+    label: "For Reviewal",
+    value: "14",
+    icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ea0a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
         <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
         <path d="m9 14 2 2 4-4"></path>
@@ -148,23 +188,11 @@ const stats = [
     )
   },
   {
-    label: "In Verification",
-    value: "14",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ea0a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
-      </svg>
-    )
-  },
-  {
     label: "Reusable Reports",
     value: "9",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ea0a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-        <polyline points="14 2 14 8 20 8"></polyline>
-        <line x1="16" y1="13" x2="8" y2="13"></line>
-        <line x1="16" y1="17" x2="8" y2="17"></line>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ea0a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
       </svg>
     )
   },
@@ -187,7 +215,8 @@ const TABS = [
   { label: "New Orders", value: "New" },
   { label: "Customer Responded", value: "Customer Responded" },
   { label: "For Reviewal", value: "For Reviewal" },
-  { label: "Ready to send", value: "Ready to send" }
+  { label: "Ready to send", value: "Ready to send" },
+  { label: "Flagged", value: "Flaged" }
 ];
 
 export default function OrdersPage() {
@@ -284,9 +313,9 @@ export default function OrdersPage() {
       case "Ready to send":
         classes = "bg-[rgba(34,197,94,0.08)] text-[#22c55e] border-[rgba(34,197,94,0.2)]";
         break;
-    //   case "Flagged":
-    //     classes = "bg-[rgba(239,68,68,0.08)] text-[#ef4444] border-[rgba(239,68,68,0.2)]";
-    //     break;
+      case "Flagged":
+        classes = "bg-[rgba(239,68,68,0.08)] text-[#ef4444] border-[rgba(239,68,68,0.2)]";
+        break;
       default:
         classes = "bg-[#1f2025] text-[#9ea0a6] border-[#2e3037]";
     }

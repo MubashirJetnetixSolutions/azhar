@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 
-const ROW_ACTIONS = ["Review", "Review", "Review", "Start", "Reuse", "Send"];
+const ROW_ACTIONS = ["Review", "Review", "Review", "Send", "Reuse", "Send"];
 
 const COLS = [
-  { label: "Order Number",  key: "id"          },
+  { label: "Order Number",  key: "id"           },
+  { label: "Request Date",  key: "requestDate"  },
   { label: "Company",       key: "company"      },
   { label: "Country",       key: "country"      },
   { label: "Bank",          key: "bank"         },
-  { label: "Representative",key: "name"         },
-  { label: "Request Date",  key: "requestDate"  },
+  { label: "Applicant Name",key: "name"         },
   { label: "Start Time",    key: "startTime"    },
   { label: "End Time",      key: "endTime"      },
   { label: "Availability",  key: "availability" },
@@ -143,6 +143,11 @@ export default function RecentOrdersTable({ data = [], searchTerm, onSearchChang
                     {row.id}
                   </td>
 
+                  {/* Request Date */}
+                  <td className="px-[16px] py-[12px] h-[60px] align-middle text-[#727479] text-[12px] font-normal whitespace-nowrap">
+                    {row.requestDate}
+                  </td>
+
                   {/* Company */}
                   <td className="px-[16px] py-[12px] h-[60px] align-middle max-w-[200px]">
                     <span className="block text-[#cdd0d6] text-[12px] font-normal truncate">
@@ -163,11 +168,6 @@ export default function RecentOrdersTable({ data = [], searchTerm, onSearchChang
                   {/* Representative */}
                   <td className="px-[16px] py-[12px] h-[60px] align-middle text-[#727479] text-[12px] font-normal whitespace-nowrap">
                     {row.name}
-                  </td>
-
-                  {/* Request Date */}
-                  <td className="px-[16px] py-[12px] h-[60px] align-middle text-[#727479] text-[12px] font-normal whitespace-nowrap">
-                    {row.requestDate}
                   </td>
 
                   {/* Start Time */}

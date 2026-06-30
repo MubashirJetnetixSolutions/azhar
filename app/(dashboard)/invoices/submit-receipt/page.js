@@ -186,14 +186,14 @@ export default function SubmitReceiptPage() {
       .filter((opt) => !seen.has(opt.value) && seen.add(opt.value));
   }, [selected]);
 
-  const [selectedAmount, setSelectedAmount] = useState(null);
+  const [amount, setAmount] = useState("");
 
-  // Auto-select when only one option; clear when nothing is selected
+  // Auto-fill from selected invoices when there is exactly one distinct amount
   useEffect(() => {
     if (amountOptions.length === 1) {
-      setSelectedAmount(amountOptions[0]);
+      setAmount(amountOptions[0].label);
     } else if (amountOptions.length === 0) {
-      setSelectedAmount(null);
+      setAmount("");
     }
   }, [amountOptions]);
 
@@ -317,15 +317,13 @@ export default function SubmitReceiptPage() {
               <label className="block text-[10px] text-[#545659] uppercase tracking-[0.06em] font-medium mb-[6px]">
                 Amount <span className="text-[#ef4444]">*</span>
               </label>
-              <AppSelect
-                variant="default"
-                size="lg"
-                value={selectedAmount}
-                onChange={setSelectedAmount}
-                options={amountOptions}
-                placeholder={selected.size === 0 ? "Select invoices below" : "Select amount"}
-                isDisabled={amountOptions.length === 0}
-                noOptionsMessage={() => "Select invoices from the table"}
+              <input
+                type="text"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder={selected.size === 0 ? "00.0" : `$${selectedTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                readOnly
+                className={`w-full h-[40px] px-[12px] rounded-[6px] text-right outline-none bg-[#111215] border border-[#212328] text-[#ffffff] focus:border-[#3e4047] transition-colors ${selected.size === 0 ? "text-[12px] placeholder-[#545659]" : "text-[16px] placeholder-[#ffffff]"}`}
               />
             </div>
             <div>
@@ -379,7 +377,12 @@ export default function SubmitReceiptPage() {
 
         {/* Section header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-[#212328]">
-          <h2 className="text-[14px] font-bold text-white">Outstanding Invoices</h2>
+          <h2 className="text-[14px] font-bold text-white flex items-center gap-[8px]">
+            Outstanding Invoices
+            {customer?.label && (
+              <span className="text-[#545659] font-normal text-[13px]">— {customer.label}</span>
+            )}
+          </h2>
           <div className="relative flex-none">
             <svg
               className="absolute left-[10px] top-1/2 -translate-y-1/2 pointer-events-none"

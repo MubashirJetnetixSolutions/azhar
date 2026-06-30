@@ -61,18 +61,28 @@ export default function AppDatePicker({
   popperModifiers,
   ...props
 }) {
-  const [open, setOpen]     = useState(false);
-  const [pos, setPos]       = useState({ top: 0, left: 0 });
-  const triggerRef          = useRef(null);
-  const calendarRef         = useRef(null);
+  const [open, setOpen]  = useState(false);
+  // pos uses `top` when opening below, `bottom` when opening above (fixed coords)
+  const [pos, setPos]    = useState({ top: 0, bottom: undefined, left: 0 });
+  const triggerRef       = useRef(null);
+  const calendarRef      = useRef(null);
 
   const s = SIZES[size]    ?? SIZES.sm;
   const v = VARIANTS[variant] ?? VARIANTS.default;
 
+  // Inline react-datepicker calendar: ~35px header + ~30px day-of-week + 6×30px rows = ~275px
+  const CAL_H = 300;
+
   const computePos = () => {
     if (!triggerRef.current) return;
-    const rect = triggerRef.current.getBoundingClientRect();
-    setPos({ top: rect.bottom + 4, left: rect.left });
+    const rect       = triggerRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const openAbove  = spaceBelow < CAL_H && spaceAbove > spaceBelow;
+    setPos(openAbove
+      ? { top: undefined, bottom: window.innerHeight - rect.top + 4, left: rect.left }
+      : { top: rect.bottom + 4, bottom: undefined,                   left: rect.left }
+    );
   };
 
   const openCal = () => {
@@ -201,6 +211,7 @@ export default function AppDatePicker({
           style={{
             position: "fixed",
             top: pos.top,
+            bottom: pos.bottom,
             left: pos.left,
             zIndex: 9999,
           }}

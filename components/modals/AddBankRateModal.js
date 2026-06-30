@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import AppSelect from "@/components/ui/AppSelect";
 
 const COUNTRY_OPTIONS = [
@@ -28,14 +28,14 @@ const BANK_OPTIONS = [
 ];
 
 const BRANCH_OPTIONS = [
-  { value: "Hyderi",         label: "Hyderi"         },
-  { value: "Gulshan-e-iqbal",label: "Gulshan-e-iqbal"},
-  { value: "DHA",            label: "DHA"            },
-  { value: "Clifton",        label: "Clifton"        },
-  { value: "Johar",          label: "Johar"          },
-  { value: "Nazimabad",      label: "Nazimabad"      },
-  { value: "North Nazimabad",label: "North Nazimabad"},
-  { value: "Saddar",         label: "Saddar"         },
+  { value: "Hyderi",          label: "Hyderi"          },
+  { value: "Gulshan-e-iqbal", label: "Gulshan-e-iqbal" },
+  { value: "DHA",             label: "DHA"             },
+  { value: "Clifton",         label: "Clifton"         },
+  { value: "Johar",           label: "Johar"           },
+  { value: "Nazimabad",       label: "Nazimabad"       },
+  { value: "North Nazimabad", label: "North Nazimabad" },
+  { value: "Saddar",          label: "Saddar"          },
 ];
 
 const TYPE_OPTIONS = [
@@ -43,7 +43,112 @@ const TYPE_OPTIONS = [
   { value: "Corporate", label: "Corporate" },
 ];
 
-const EMPTY = { country: null, bank: null, branch: null, type: null, onlineRate: "", offlineRate: "" };
+// ── Branch multi-select helpers ───────────────────────────────────────────────
+
+const SELECT_ALL_OPT = { value: "__all__", label: "Select All" };
+const BRANCH_OPTIONS_MULTI = [SELECT_ALL_OPT, ...BRANCH_OPTIONS];
+
+function BranchOption({ innerRef, innerProps, isSelected, isFocused, data, children }) {
+  const isAll = data.value === "__all__";
+  return (
+    <div
+      ref={innerRef}
+      {...innerProps}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 8,
+        padding: isAll ? "6px 10px 8px" : "6px 10px",
+        fontSize: 11,
+        borderRadius: 6,
+        cursor: "pointer",
+        background: isFocused ? "rgba(255,255,255,0.05)" : "transparent",
+        borderBottom: isAll ? "1px solid #1f2025" : "none",
+        marginBottom: isAll ? 4 : 0,
+        transition: "background 80ms",
+      }}
+    >
+      <span style={{ color: isAll ? "#ffffff" : "#cdd0d6", fontWeight: isAll ? 500 : 400 }}>
+        {children}
+      </span>
+      <div style={{
+        width: 14,
+        height: 14,
+        borderRadius: 3,
+        border: `1px solid ${isSelected ? "#2563eb" : "#3e4047"}`,
+        background: isSelected ? "#2563eb" : "transparent",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+        transition: "border-color 100ms, background 100ms",
+      }}>
+        {isSelected && (
+          <svg width={9} height={7} fill="none" viewBox="0 0 9 7">
+            <path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth={1.6}
+              strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function BranchMultiValue({ index, data, getValue, removeProps }) {
+  if (data.value === "__all__") return null;
+
+  const branches = getValue().filter(v => v.value !== "__all__");
+  const firstBranchIdx = getValue().findIndex(v => v.value !== "__all__");
+
+  if (branches.length > 4) {
+    if (index !== firstBranchIdx) return null;
+    return (
+      <div style={{
+        display: "inline-flex",
+        alignItems: "center",
+        background: "rgba(37,99,235,0.15)",
+        borderRadius: 4,
+        padding: "2px 8px",
+        fontSize: 11,
+        color: "#cdd0d6",
+        margin: "2px",
+      }}>
+        {branches.length === BRANCH_OPTIONS.length
+          ? `All ${BRANCH_OPTIONS.length} branches`
+          : `${branches.length} branches selected`}
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 4,
+      background: "rgba(37,99,235,0.15)",
+      borderRadius: 4,
+      padding: "2px 6px",
+      fontSize: 11,
+      color: "#cdd0d6",
+      margin: "2px",
+    }}>
+      <span>{data.label}</span>
+      <span
+        {...removeProps}
+        style={{ cursor: "pointer", color: "#545659", lineHeight: 1, fontSize: 14 }}
+      >
+        ×
+      </span>
+    </div>
+  );
+}
+
+const BRANCH_COMPONENTS = { Option: BranchOption, MultiValue: BranchMultiValue };
+
+// ── Form ─────────────────────────────────────────────────────────────────────
+
+const EMPTY = { country: null, bank: null, branch: [], type: null, onlineRate: "", offlineRate: "" };
 
 export default function AddBankRateModal({ open, onClose, onAdd }) {
   const [form, setForm] = useState(EMPTY);
@@ -52,12 +157,32 @@ export default function AddBankRateModal({ open, onClose, onAdd }) {
 
   const set = (k, v) => setForm((prev) => ({ ...prev, [k]: v }));
 
+  // Include SELECT_ALL in the displayed value only when every branch is selected —
+  // this makes "Select All" appear checked in the dropdown without storing it in state.
+  const branchDisplayValue = form.branch.length === BRANCH_OPTIONS.length
+    ? [SELECT_ALL_OPT, ...form.branch]
+    : form.branch;
+
+  const handleBranchChange = (opts) => {
+    const options = opts || [];
+    const nextHasAll     = options.some(o => o.value === "__all__");
+    const currAllSelected = form.branch.length === BRANCH_OPTIONS.length;
+
+    if (nextHasAll && !currAllSelected) {
+      set("branch", [...BRANCH_OPTIONS]);
+    } else if (!nextHasAll && currAllSelected) {
+      set("branch", []);
+    } else {
+      set("branch", options.filter(o => o.value !== "__all__"));
+    }
+  };
+
   const handleAdd = () => {
     if (!form.country || !form.bank || !form.type) return;
     onAdd?.({
       country:     form.country.label,
       bank:        form.bank.label,
-      branches:    form.branch ? [form.branch.label, "Hyderi", "DHA", "Clifton", "Johar", "Nazimabad"] : ["Hyderi", "Gulshan-e-iqbal", "DHA", "Clifton"],
+      branches:    form.branch.length > 0 ? form.branch.map(b => b.label) : [],
       type:        form.type.value,
       onlineRate:  Number(form.onlineRate) || 0,
       offlineRate: Number(form.offlineRate) || 0,
@@ -112,8 +237,20 @@ export default function AddBankRateModal({ open, onClose, onAdd }) {
             />
           </div>
 
-          {/* Bank + Branch */}
+          {/* Type + Bank */}
           <div className="grid grid-cols-2 gap-[12px]">
+            <div>
+              <label className="block text-[12px] text-[#74757b] mb-[8px]">Type</label>
+              <AppSelect
+                variant="default"
+                size="lg"
+                value={form.type}
+                onChange={(v) => set("type", v)}
+                options={TYPE_OPTIONS}
+                placeholder=""
+                isSearchable={false}
+              />
+            </div>
             <div>
               <label className="block text-[12px] text-[#74757b] mb-[8px]">Bank</label>
               <AppSelect
@@ -126,31 +263,23 @@ export default function AddBankRateModal({ open, onClose, onAdd }) {
                 isSearchable
               />
             </div>
-            <div>
-              <label className="block text-[12px] text-[#74757b] mb-[8px]">Branch</label>
-              <AppSelect
-                variant="default"
-                size="lg"
-                value={form.branch}
-                onChange={(v) => set("branch", v)}
-                options={BRANCH_OPTIONS}
-                placeholder=""
-                isSearchable
-              />
-            </div>
           </div>
 
-          {/* Type */}
+          {/* Branch — multi-select with Select All */}
           <div>
-            <label className="block text-[12px] text-[#74757b] mb-[8px]">Type</label>
+            <label className="block text-[12px] text-[#74757b] mb-[8px]">Branch</label>
             <AppSelect
+              isMulti
               variant="default"
               size="lg"
-              value={form.type}
-              onChange={(v) => set("type", v)}
-              options={TYPE_OPTIONS}
-              placeholder=""
+              value={branchDisplayValue}
+              onChange={handleBranchChange}
+              options={BRANCH_OPTIONS_MULTI}
+              placeholder="Select branches"
               isSearchable={false}
+              closeMenuOnSelect={false}
+              hideSelectedOptions={false}
+              components={BRANCH_COMPONENTS}
             />
           </div>
 

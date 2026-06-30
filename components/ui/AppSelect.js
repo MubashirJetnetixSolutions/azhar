@@ -53,12 +53,12 @@ const SIZES = {
   lg: { minHeight: 40, fontSize: 13, padX: 12, iconSize: 14 },
 };
 
-function buildStyles(v, s) {
+function buildStyles(v, s, isMulti = false) {
   return {
     control: (base, state) => ({
       ...base,
       minHeight: s.minHeight,
-      height: s.minHeight,
+      height: isMulti ? "auto" : s.minHeight,
       background: v.bg,
       border: `1px solid ${state.isFocused ? v.borderFocus : v.border}`,
       borderRadius: v.radius,
@@ -69,9 +69,11 @@ function buildStyles(v, s) {
     }),
     valueContainer: (base) => ({
       ...base,
-      height: s.minHeight,
-      padding: `0 ${s.padX}px`,
-      flexWrap: "nowrap",
+      minHeight: s.minHeight,
+      height: isMulti ? "auto" : s.minHeight,
+      padding: isMulti ? `4px ${s.padX}px` : `0 ${s.padX}px`,
+      flexWrap: isMulti ? "wrap" : "nowrap",
+      gap: isMulti ? "2px" : 0,
     }),
     singleValue: (base) => ({
       ...base,
@@ -97,6 +99,7 @@ function buildStyles(v, s) {
     indicatorsContainer: (base) => ({
       ...base,
       height: s.minHeight,
+      alignSelf: isMulti ? "flex-start" : "auto",
     }),
     dropdownIndicator: (base) => ({
       ...base,
@@ -190,7 +193,12 @@ export default function AppSelect({
   size = "md",
   isSearchable = false,
   isClearable = false,
+  isMulti = false,
   menuPlacement = "auto",
+  // Sync with maxHeight in menuList styles — react-select's auto-flip calculation
+  // uses maxMenuHeight to decide if there's enough space, so this must match the
+  // actual rendered CSS limit (220px) rather than react-select's 300px default.
+  maxMenuHeight = 220,
   ...props
 }) {
   const v = VARIANTS[variant] ?? VARIANTS.default;
@@ -198,10 +206,12 @@ export default function AppSelect({
 
   return (
     <Select
-      styles={buildStyles(v, s)}
+      styles={buildStyles(v, s, isMulti)}
       isSearchable={isSearchable}
       isClearable={isClearable}
+      isMulti={isMulti}
       menuPlacement={menuPlacement}
+      maxMenuHeight={maxMenuHeight}
       menuPortalTarget={typeof document !== "undefined" ? document.body : null}
       classNamePrefix="appsel"
       {...props}
