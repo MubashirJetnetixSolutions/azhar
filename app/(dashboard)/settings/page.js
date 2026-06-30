@@ -444,7 +444,7 @@ function TypeBadge({ type }) {
   );
 }
 
-function AppliedBranches({ branches }) {
+function AppliedBranches({ branches, onExpand }) {
   const visible = branches.slice(0, 2);
   const overflow = branches.length - 2;
   return (
@@ -458,7 +458,10 @@ function AppliedBranches({ branches }) {
         </span>
       ))}
       {overflow > 0 && (
-        <span className="text-[11px] text-[#9ea0a6] bg-[#1a1b1f] border border-[#2e3037] rounded-[4px] px-[6px] py-[2px] whitespace-nowrap">
+        <span
+          onClick={(e) => { e.stopPropagation(); onExpand?.(); }}
+          className="text-[11px] text-[#9ea0a6] bg-[#1a1b1f] border border-[#2e3037] rounded-[4px] px-[6px] py-[2px] whitespace-nowrap cursor-pointer hover:bg-[rgba(255,255,255,0.06)] hover:text-white transition-colors"
+        >
           +{overflow}
         </span>
       )}
@@ -469,11 +472,20 @@ function AppliedBranches({ branches }) {
 const RATE_TABLE_COLS = ["Country Name", "Type", "Online Rate", "Offline Rate", "Bank", "Applied Branches", "Actions"];
 
 function BankRatesTab() {
-  const [rates, setRates]           = useState(INITIAL_BANK_RATES);
-  const [search, setSearch]         = useState("");
-  const [page, setPage]             = useState(1);
-  const [addOpen, setAddOpen]       = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState(null); // id of row pending deletion
+  const [rates, setRates]               = useState(INITIAL_BANK_RATES);
+  const [search, setSearch]             = useState("");
+  const [page, setPage]                 = useState(1);
+  const [addOpen, setAddOpen]           = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [drawerRow, setDrawerRow]       = useState(null);
+
+  // Close drawer on Escape
+  useEffect(() => {
+    if (!drawerRow) return;
+    const handler = (e) => { if (e.key === "Escape") setDrawerRow(null); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [drawerRow]);
 
   const filtered = search.trim()
     ? rates.filter((r) =>
@@ -574,7 +586,7 @@ function BankRatesTab() {
                     {row.bank}
                   </td>
                   <td className="px-[16px] py-[14px] h-[56px] align-middle">
-                    <AppliedBranches branches={row.branches} />
+                    <AppliedBranches branches={row.branches} onExpand={() => setDrawerRow(row)} />
                   </td>
                   <td className="pl-[16px] pr-[28px] py-[14px] h-[56px] align-middle">
                     <div className="flex gap-[6px] justify-end">
@@ -637,6 +649,85 @@ function BankRatesTab() {
         onClose={() => setDeleteTarget(null)}
         onConfirm={confirmDelete}
       />
+
+      {/* ── Branch detail drawer ── */}
+      {drawerRow && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-40 bg-black/50"
+            onClick={() => setDrawerRow(null)}
+          />
+
+          {/* Slide-over panel — same animation/styling as Banks drawer */}
+          <div className="fixed top-0 right-0 h-screen w-full max-w-[440px] bg-[#121112] border-l border-[#212328] shadow-2xl z-50 flex flex-col overflow-hidden animate-[slideInRate_0.25s_ease-out_forwards]">
+            <style>{`@keyframes slideInRate{from{transform:translateX(100%)}to{transform:translateX(0%)}}`}</style>
+
+            {/* Header */}
+            <div className="flex items-center justify-between px-[24px] py-[18px] border-b border-[#1e2025] shrink-0">
+              <div className="min-w-0">
+                <p className="text-[11px] text-[#545659] leading-none mb-[6px] uppercase tracking-[0.04em]">Bank Rate Details</p>
+                <h2 className="text-[16px] font-semibold text-white leading-none truncate">{drawerRow.country}</h2>
+              </div>
+              <button
+                onClick={() => setDrawerRow(null)}
+                className="shrink-0 ml-[16px] w-[30px] h-[30px] rounded-[6px] bg-[#1a1b1f] border border-[#212328] flex items-center justify-center text-[#545659] hover:text-white hover:bg-[rgba(255,255,255,0.06)] transition-colors cursor-pointer"
+                aria-label="Close"
+              >
+                <svg width={14} height={14} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Scrollable body */}
+            <div className="flex-1 overflow-y-auto p-[20px] space-y-[16px]">
+
+              {/* ── Rate Details card ── */}
+              <div className="bg-[#151619] border border-[#212328] rounded-[12px] p-[20px]">
+                <h3 className="text-[13px] font-semibold text-white leading-none mb-[16px]">Rate Details</h3>
+                {[
+                  { label: "Country / Customer", value: drawerRow.country },
+                  { label: "Bank",               value: drawerRow.bank    },
+                  { label: "Type",               value: drawerRow.type,   isType: true },
+                  { label: "Online Rate",         value: drawerRow.onlineRate  },
+                  { label: "Offline Rate",        value: drawerRow.offlineRate },
+                ].map(({ label, value, isType }) => (
+                  <div key={label} className="flex items-center justify-between py-[10px] border-b border-[#212328] last:border-0">
+                    <span className="text-[12px] text-[#74757b]">{label}</span>
+                    {isType ? (
+                      <TypeBadge type={value} />
+                    ) : (
+                      <span className="text-[12px] text-white font-medium">{value}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* ── All Branches card ── */}
+              <div className="bg-[#151619] border border-[#212328] rounded-[12px] p-[20px]">
+                <div className="flex items-center justify-between mb-[16px]">
+                  <h3 className="text-[13px] font-semibold text-white leading-none">Applied Branches</h3>
+                  <span className="text-[11px] text-[#545659] bg-[#111215] border border-[#212328] rounded-[4px] px-[8px] py-[3px]">
+                    {drawerRow.branches.length} total
+                  </span>
+                </div>
+                <div className="flex flex-col gap-[8px]">
+                  {drawerRow.branches.map((branch) => (
+                    <span
+                      key={branch}
+                      className="text-[12px] text-[#ffffff] bg-[transparent] border-b border-[rgba(77,77,77,0.2)] py-[6px] whitespace-nowrap"
+                    >
+                      {branch}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }
