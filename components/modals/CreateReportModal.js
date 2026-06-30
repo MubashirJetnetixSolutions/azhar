@@ -138,39 +138,39 @@ export default function CreateReportModal({ open, onClose }) {
       )}
 
       {step === 1.5 && (
-        <div className="relative rounded-[12px] w-[95vw] max-w-[460px] bg-[#151619] border border-[#212328] shadow-2xl p-[24px] flex flex-col gap-[16px]">
+        <div className="relative rounded-[14px] w-[95vw] max-w-[460px] bg-[#1c1d22] border border-[#28292f] shadow-2xl p-[24px] flex flex-col gap-[16px]">
           <div className="flex items-center gap-[12px]">
-            <div className="w-[32px] h-[32px] rounded-[6px] border border-[#212328] bg-[#111215] flex items-center justify-center shrink-0">
-              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#74757b" strokeWidth={2}>
+            <div className="w-[36px] h-[36px] rounded-[8px] border border-[#212328] bg-[#111215] flex items-center justify-center shrink-0">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#74757b" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <span className="text-[16px] font-semibold text-white">Create Report</span>
-            <button onClick={onClose} className="ml-auto text-[#74757b] hover:text-white cursor-pointer transition-colors duration-100">
+            <span className="text-[15px] font-semibold text-white">Create Report</span>
+            <button onClick={onClose} className="ml-auto text-[#545659] hover:text-white cursor-pointer transition-colors">
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
           <div>
-            <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">File Name</label>
+            <label className="block text-[12px] text-[#74757b] mb-[8px]">File Name</label>
             <input
               type="text"
               value={fileName}
               onChange={e => setFileName(e.target.value)}
-              className="w-full h-[34px] px-[12px] rounded-[6px] bg-[#111215] border border-[#24252a] text-white text-[12px] focus:border-[#3e4047] outline-none"
+              className="w-full h-[42px] px-[12px] rounded-[6px] bg-[#111215] border border-[#212328] text-[13px] text-white focus:border-[#3e4047] outline-none transition-colors"
             />
           </div>
           <div className="flex gap-[8px] mt-[8px]">
             <button
               onClick={() => setStep(1)}
-              className="flex-1 h-[34px] rounded-[6px] text-[#888] bg-[#1e2027] border border-[#373a42] hover:bg-[#272b34] hover:text-white transition-colors duration-100 text-[12px] font-medium cursor-pointer"
+              className="flex-1 h-[38px] rounded-[8px] text-[13px] font-medium text-[#9ea0a6] bg-[#111215] border border-[#212328] hover:text-white hover:border-[#3e4047] transition-colors cursor-pointer"
             >
               Back
             </button>
             <button
               onClick={handleCreate}
-              className="flex-1 h-[34px] rounded-[6px] text-white bg-[#2563eb] hover:bg-[#1d4ed8] transition-colors duration-100 text-[12px] font-medium cursor-pointer"
+              className="flex-1 h-[38px] rounded-[8px] text-[13px] font-medium text-white bg-[#2563eb] hover:bg-[#1d4ed8] transition-colors cursor-pointer"
             >
               Create Report
             </button>
@@ -179,7 +179,7 @@ export default function CreateReportModal({ open, onClose }) {
       )}
 
       {loading && (
-        <div className="relative rounded-[12px] w-[95vw] max-w-[400px] p-[48px] flex flex-col items-center gap-[16px] bg-[#151619] border border-[#212328] shadow-2xl">
+        <div className="relative rounded-[14px] w-[95vw] max-w-[400px] p-[48px] flex flex-col items-center gap-[16px] bg-[#1c1d22] border border-[#28292f] shadow-2xl">
           <div className="flex gap-[12px]">
             {[0, 1, 2].map(i => (
               <svg key={i} width="40" height="40" fill="none" viewBox="0 0 24 24">

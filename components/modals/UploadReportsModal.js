@@ -116,7 +116,6 @@ export default function UploadReportsModal({ open, onClose, onUpload }) {
         date: formatDateStr(date),
       });
     }
-    // Reset state and close
     setSelectedFile(null);
     setCompanyName("");
     setBank(null);
@@ -133,19 +132,21 @@ export default function UploadReportsModal({ open, onClose, onUpload }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative rounded-[12px] w-[500px] max-w-full mx-4 bg-[#151619] border border-[#212328] shadow-2xl flex flex-col overflow-hidden">
+      <div className="relative rounded-[14px] w-[500px] max-w-[calc(100vw-32px)] mx-4 bg-[#1c1d22] border border-[#28292f] shadow-2xl flex flex-col overflow-hidden">
+
         {/* Header */}
-        <div className="flex items-center gap-[12px] p-[20px_24px] border-b border-[#212328]">
-          <div className="w-[32px] h-[32px] rounded-[6px] border border-[#212328] bg-[#111215] flex items-center justify-center shrink-0">
-            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#74757b" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-            </svg>
+        <div className="flex items-center justify-between px-[24px] py-[18px] border-b border-[#212328]">
+          <div className="flex items-center gap-[12px]">
+            <div className="w-[36px] h-[36px] rounded-[8px] bg-[#111215] border border-[#212328] flex items-center justify-center shrink-0">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#74757b" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+            </div>
+            <span className="text-[15px] font-semibold text-white">Upload Reports</span>
           </div>
-          <span className="text-[16px] font-semibold text-white">Upload Reports</span>
-          <button onClick={onClose} className="ml-auto text-[#74757b] hover:text-white cursor-pointer transition-colors duration-100">
+          <button onClick={onClose} className="text-[#545659] hover:text-white transition-colors cursor-pointer">
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -153,10 +154,10 @@ export default function UploadReportsModal({ open, onClose, onUpload }) {
         </div>
 
         {/* Form Content */}
-        <div className="p-[20px_24px_24px_24px] space-y-[16px]">
+        <div className="px-[24px] py-[20px] space-y-[16px]">
           {/* File Upload Box */}
           <div>
-            <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Upload File</label>
+            <label className="block text-[12px] text-[#74757b] mb-[8px]">Upload File</label>
             <input
               type="file"
               ref={fileInputRef}
@@ -171,14 +172,14 @@ export default function UploadReportsModal({ open, onClose, onUpload }) {
               onClick={handleContainerClick}
               className={`rounded-[8px] p-[24px] flex flex-col items-center gap-[12px] border-[1.5px] border-dashed transition-colors duration-150 cursor-pointer ${
                 isDragging
-                  ? "border-[#2563eb] bg-[#1c1e24]"
+                  ? "border-[#2563eb] bg-[rgba(37,99,235,0.05)]"
                   : "border-[#24252a] hover:border-[#373a42] bg-[#111215]"
               }`}
             >
               {selectedFile ? (
                 <div className="flex flex-col items-center gap-[8px]">
-                  <div className="w-[32px] h-[32px] rounded-[6px] border border-[#212328] bg-[#111215] flex items-center justify-center shrink-0">
-                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#74757b" strokeWidth={2}>
+                  <div className="w-[36px] h-[36px] rounded-[8px] border border-[#212328] bg-[#111215] flex items-center justify-center shrink-0">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#74757b" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </div>
@@ -215,7 +216,7 @@ export default function UploadReportsModal({ open, onClose, onUpload }) {
                       e.stopPropagation();
                       fileInputRef.current?.click();
                     }}
-                    className="h-[30px] px-[16px] rounded-[6px] text-[12px] font-medium text-white transition-colors bg-[#1e2027] border border-[#373a42] hover:bg-[#272b34] cursor-pointer"
+                    className="h-[30px] px-[16px] rounded-[6px] text-[12px] font-medium text-[#9ea0a6] bg-[#111215] border border-[#212328] hover:text-white hover:border-[#3e4047] transition-colors cursor-pointer"
                   >
                     Select File
                   </button>
@@ -226,21 +227,20 @@ export default function UploadReportsModal({ open, onClose, onUpload }) {
 
           {/* Company Name */}
           <div>
-            <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Company Name</label>
+            <label className="block text-[12px] text-[#74757b] mb-[8px]">Company Name</label>
             <input
               type="text"
               placeholder="Enter Company Name"
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
-              className="w-full h-[34px] px-[12px] rounded-[6px] bg-[#111215] border border-[#24252a] text-white text-[12px] focus:border-[#3e4047] outline-none placeholder-[#545659]"
+              className="w-full h-[42px] px-[12px] rounded-[6px] text-[13px] text-white bg-[#111215] border border-[#212328] outline-none focus:border-[#3e4047] transition-colors placeholder-[#545659]"
             />
           </div>
 
           {/* Grid fields */}
           <div className="grid grid-cols-2 gap-[16px]">
-            {/* Bank */}
             <div>
-              <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Bank</label>
+              <label className="block text-[12px] text-[#74757b] mb-[8px]">Bank</label>
               <AppSelect
                 variant="default"
                 size="md"
@@ -252,10 +252,8 @@ export default function UploadReportsModal({ open, onClose, onUpload }) {
                 isClearable
               />
             </div>
-
-            {/* Branch */}
             <div>
-              <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Branch</label>
+              <label className="block text-[12px] text-[#74757b] mb-[8px]">Branch</label>
               <AppSelect
                 variant="default"
                 size="md"
@@ -267,10 +265,8 @@ export default function UploadReportsModal({ open, onClose, onUpload }) {
                 isSearchable
               />
             </div>
-
-            {/* Country */}
             <div>
-              <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Country</label>
+              <label className="block text-[12px] text-[#74757b] mb-[8px]">Country</label>
               <AppSelect
                 variant="default"
                 size="md"
@@ -281,10 +277,8 @@ export default function UploadReportsModal({ open, onClose, onUpload }) {
                 isSearchable
               />
             </div>
-
-            {/* Date */}
             <div>
-              <label className="block text-[11px] text-[#74757b] font-normal mb-[6px]">Date</label>
+              <label className="block text-[12px] text-[#74757b] mb-[8px]">Date</label>
               <AppDatePicker
                 variant="default"
                 size="md"
@@ -298,17 +292,17 @@ export default function UploadReportsModal({ open, onClose, onUpload }) {
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end gap-[10px] px-[24px] py-[16px] border-t border-[#212328]">
+        <div className="flex items-center justify-between px-[24px] py-[16px] border-t border-[#212328]">
           <button
             onClick={onClose}
-            className="h-[34px] px-[16px] rounded-[6px] text-[12px] font-medium transition-colors bg-[#1e2027] text-[#888] border border-[#373a42] hover:bg-[#272b34] hover:text-white cursor-pointer"
+            className="h-[38px] px-[20px] rounded-[8px] text-[13px] font-medium text-[#9ea0a6] bg-[#111215] border border-[#212328] hover:text-white hover:border-[#3e4047] cursor-pointer transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
             disabled={!selectedFile || !companyName || !bank || !branch || !country || !date}
-            className="h-[34px] px-[16px] rounded-[6px] text-[12px] font-medium text-white transition-colors bg-[#2563eb] hover:bg-[#1d4ed8] disabled:bg-[#2563eb]/40 disabled:text-white/40 disabled:cursor-not-allowed cursor-pointer"
+            className="h-[38px] px-[20px] rounded-[8px] text-[13px] font-medium text-white bg-[#2563eb] hover:bg-[#1d4ed8] disabled:bg-[#2563eb]/40 disabled:text-white/40 disabled:cursor-not-allowed cursor-pointer transition-colors"
           >
             Upload
           </button>
