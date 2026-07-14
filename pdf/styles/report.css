@@ -1,0 +1,349 @@
+/* Print stylesheet for the credit-report PDF. Loaded only by the
+   /print/report/[reportId] route, which is opened headlessly by Playwright
+   and printed with `preferCSSPageSize` — so the geometry below IS the PDF. */
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+.rpt-root {
+  font-family: "Segoe UI", Calibri, Arial, sans-serif;
+  font-size: 10px;
+  line-height: 1.35;
+  color: #000;
+  background: #fff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.rpt-page {
+  width: 210mm;
+  height: 297mm;
+  padding: 7mm 15mm 5mm;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  break-after: page;
+  page-break-after: always;
+}
+
+/* No forced break after the final page — it would emit a trailing blank page. */
+.rpt-page:last-child {
+  break-after: auto;
+  page-break-after: auto;
+}
+
+.rpt-body {
+  flex: 1 1 auto;
+  padding-top: 16px;
+  min-height: 0;
+}
+
+/* ── Screen preview niceties (ignored in print) ───────────────── */
+@media screen {
+  body:has(.rpt-root) {
+    background: #4a4d52;
+  }
+  .rpt-page {
+    margin: 16px auto;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* ── Header ───────────────────────────────────────────────────── */
+.rpt-header {
+  text-align: center;
+  flex: 0 0 auto;
+}
+.rpt-header-inner {
+  display: inline-block;
+}
+.rpt-wordmark {
+  font-family: "Times New Roman", Cambria, Georgia, serif;
+  font-weight: bold;
+  font-size: 37px;
+  line-height: 1;
+  letter-spacing: 0;
+  color: #00a551;
+}
+.rpt-wordmark-rule {
+  height: 0;
+  border-top: 3px solid #00a551;
+  margin-top: 3px;
+}
+.rpt-wordmark-sub {
+  font-family: "Times New Roman", Cambria, Georgia, serif;
+  font-size: 24.5px;
+  line-height: 1.15;
+  color: #00a551;
+  margin-top: 2px;
+}
+
+/* ── Footer ───────────────────────────────────────────────────── */
+.rpt-footer {
+  flex: 0 0 auto;
+  text-align: center;
+}
+.rpt-footer-logos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 34px 6px;
+}
+.rpt-footer-bar {
+  background: #2e74b5;
+  color: #fff;
+  font-weight: bold;
+  font-size: 10.5px;
+  padding: 2px 0;
+}
+.rpt-footer-legal {
+  border: 1px solid #2e74b5;
+  border-top: none;
+  color: #ff0000;
+  font-size: 6.6px;
+  font-weight: 600;
+  line-height: 1.35;
+  padding: 2px 0 1px;
+}
+.rpt-footer-contact {
+  color: #ed7d31;
+  font-size: 8.5px;
+  padding-top: 2px;
+}
+
+/* ── Section bars ─────────────────────────────────────────────── */
+.rpt-section-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #1f4e9c;
+  color: #fff;
+  font-weight: bold;
+  font-size: 13.5px;
+  padding: 5px 9px;
+  margin: 14px 0 0;
+}
+.rpt-section-bar + .rpt-table,
+.rpt-section-bar + .rpt-boxed,
+.rpt-section-bar + .rpt-paragraph {
+  margin-top: 0;
+}
+.rpt-section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 2px;
+}
+
+/* ── Tables ───────────────────────────────────────────────────── */
+.rpt-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  font-size: 10px;
+}
+.rpt-table td {
+  border: 0.8px solid #7f7f7f;
+  padding: 4.5px 7px;
+  vertical-align: top;
+}
+.rpt-label {
+  font-weight: bold;
+}
+.rpt-label-inline {
+  font-weight: bold;
+}
+.rpt-mini-head {
+  font-weight: bold;
+  font-size: 9px;
+}
+.rpt-borderless td {
+  border-left: none;
+  border-right: none;
+}
+
+.rpt-cover-table {
+  width: 88%;
+  margin: 26px auto 0;
+}
+.rpt-cover-table td {
+  padding: 6px 8px;
+}
+.rpt-summary-table {
+  margin-top: 24px;
+}
+
+/* Rating strip (page 1 header + page 2 values row) */
+.rpt-rating-strip {
+  margin-top: 26px;
+  table-layout: fixed;
+}
+.rpt-navy-row td {
+  background: #1f3864;
+  color: #fff;
+  font-weight: bold;
+  font-size: 11.5px;
+  border-color: #1f3864;
+  padding: 8px 9px;
+}
+.rpt-navy-right {
+  text-align: right;
+}
+.rpt-cols-head td {
+  font-weight: bold;
+  text-align: center;
+  padding: 6px 4px;
+}
+.rpt-rating-values td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 8px 4px;
+  font-size: 10.5px;
+}
+.rpt-gauge-cell {
+  text-align: center;
+}
+.rpt-gauge-cell svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Grey separator strips (Word paragraph shading in the original) */
+.rpt-strip {
+  height: 7px;
+  background: #ececec;
+  margin: 16px 0 4px;
+}
+
+/* Payment habit grid */
+.rpt-habit-table {
+  table-layout: fixed;
+}
+.rpt-habit-label {
+  width: 22%;
+  font-size: 9px;
+}
+.rpt-habit-box {
+  width: 11%;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+/* ── Credit rating box (page 3) ───────────────────────────────── */
+.rpt-rating-box {
+  width: 62%;
+  margin: 20px auto 0;
+  border: 0.8px solid #7f7f7f;
+}
+.rpt-rating-box-head {
+  display: flex;
+  align-items: center;
+  border-bottom: 0.8px solid #bfbfbf;
+  font-size: 11px;
+  padding: 5px 0 5px 12px;
+  gap: 10px;
+  justify-content: space-between;
+}
+.rpt-rating-head-label {
+  font-weight: bold;
+  font-size: 12.5px;
+}
+.rpt-rating-head-value {
+  font-size: 11px;
+}
+.rpt-score-cell {
+  border: 1px solid #8eaadb;
+  font-weight: bold;
+  font-size: 12.5px;
+  padding: 4px 14px;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+.rpt-rating-box-body {
+  /* Flex centering keeps the gauge in the exact middle of the box in both
+     axes, immune to global svg display rules and to data-driven size changes. */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 18px 0 8px;
+}
+.rpt-rating-box-body svg {
+  display: block;
+  margin: 0 auto;
+}
+.rpt-rating-box-label {
+  font-weight: bold;
+  font-size: 12.5px;
+  margin-top: 8px;
+}
+.rpt-rating-box-limit {
+  border-top: 0.8px solid #bfbfbf;
+  text-align: center;
+  font-size: 11px;
+  padding: 6px 0;
+}
+
+/* Rating explanations */
+.rpt-explain-table td {
+  font-size: 8.6px;
+  padding: 4px 5px;
+}
+.rpt-explain-table .rpt-comments {
+  text-align: left;
+}
+.rpt-explain-table td:first-child,
+.rpt-explain-table td:nth-child(4) {
+  text-align: left;
+}
+
+/* ── Text blocks ──────────────────────────────────────────────── */
+.rpt-paragraph {
+  border: 0.8px solid #7f7f7f;
+  border-top: none;
+  padding: 7px 9px;
+  margin: 0;
+  font-size: 10px;
+}
+.rpt-boxed {
+  border: 0.8px solid #7f7f7f;
+  border-top: none;
+  padding: 7px 9px;
+}
+.rpt-bullets {
+  margin: 0;
+  padding-left: 26px;
+  list-style: disc;
+}
+.rpt-bullets li {
+  margin: 2.5px 0;
+}
+.rpt-trademark {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-variant: small-caps;
+  font-weight: 600;
+  color: #7b3f00;
+  font-size: 10.5px;
+}
+.rpt-overview-text {
+  font-size: 9.5px;
+  text-align: justify;
+  line-height: 1.5;
+}
+.rpt-end {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 34px;
+  letter-spacing: 0.5px;
+}

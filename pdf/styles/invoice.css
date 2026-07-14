@@ -1,0 +1,289 @@
+/* Print styles for both invoice PDF templates. Each template has its own
+   prefixed class set (sinv- for SMEs, cinv- for Corporate); the shared page
+   geometry lives here so the two documents stay independent but consistent. */
+
+.sinv-page,
+.cinv-page {
+  width: 210mm;
+  height: 297mm;
+  padding: 12mm 13mm 10mm;
+  background: #fff;
+  position: relative;
+  font-family: "Segoe UI", Verdana, Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #000;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body:has(.sinv-page),
+body:has(.cinv-page) {
+  background: #fff !important;
+}
+
+@media screen {
+  .sinv-page,
+  .cinv-page {
+    margin: 16px auto;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+  }
+}
+
+.sinv-pageno,
+.cinv-pageno {
+  position: absolute;
+  bottom: 8mm;
+  right: 13mm;
+  font-size: 10.5px;
+}
+
+/* ══ SMEs invoice ═════════════════════════════════════════════ */
+
+.sinv-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-top: 8px;
+}
+.sinv-issuer {
+  width: 46%;
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+.sinv-issuer-name {
+  font-weight: bold;
+  font-size: 13.5px;
+  line-height: 1.25;
+  margin-bottom: 3px;
+}
+.sinv-ntn {
+  text-align: right;
+  font-weight: bold;
+  font-size: 12px;
+  margin-top: 10px;
+}
+.sinv-bold {
+  font-weight: bold;
+}
+
+.sinv-info {
+  display: flex;
+  gap: 18px;
+  margin-top: 34px;
+  font-size: 11px;
+}
+.sinv-info-bank {
+  width: 34%;
+}
+.sinv-info-bank > .sinv-bold {
+  font-size: 11.5px;
+}
+.sinv-info-applicant {
+  width: 34%;
+}
+.sinv-info-applicant div {
+  margin-bottom: 2px;
+}
+.sinv-info-meta {
+  flex: 1;
+}
+.sinv-info-meta div {
+  margin-bottom: 2px;
+}
+
+.sinv-items {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 26px;
+  font-size: 10.5px;
+}
+.sinv-items th {
+  background: #4472c4;
+  color: #fff;
+  font-weight: bold;
+  border: 1px solid #000;
+  padding: 5px 6px;
+  text-align: right;
+  vertical-align: middle;
+  line-height: 1.25;
+}
+.sinv-items th.sinv-th-left {
+  text-align: left;
+}
+.sinv-items td {
+  border: 1px solid #000;
+  padding: 5px 6px;
+  text-align: right;
+}
+.sinv-items td.sinv-td-left {
+  text-align: left;
+}
+
+.sinv-totals {
+  width: 58%;
+  margin-left: auto;
+  margin-top: 30px;
+  background: #ebebeb;
+  padding: 10px 14px 8px;
+  font-size: 11.5px;
+}
+.sinv-totals-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 4px;
+  border-top: 1px solid #c9c9c9;
+}
+.sinv-totals-row:first-child {
+  border-top: none;
+}
+.sinv-totals-row span:first-child {
+  margin-left: auto;
+  padding-right: 60px;
+}
+.sinv-totals-total {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.sinv-paybar {
+  margin-top: 26px;
+  background: #4472c4;
+  color: #fff;
+  font-size: 11px;
+  padding: 7px 10px;
+  border-radius: 3px;
+}
+
+/* ══ Corporate invoice ════════════════════════════════════════ */
+
+.cinv-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-top: 4px;
+}
+.cinv-issuer-name {
+  font-size: 21px;
+  line-height: 1.2;
+  padding-top: 6px;
+}
+.cinv-top-right {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 18px;
+}
+.cinv-issuer-contact {
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.cinv-bold {
+  font-weight: bold;
+}
+
+.cinv-heading {
+  font-size: 24px;
+  font-weight: normal;
+  margin: 26px 0 10px;
+}
+
+.cinv-info {
+  display: flex;
+  gap: 18px;
+  font-size: 11px;
+}
+.cinv-info-bank {
+  width: 34%;
+}
+.cinv-info-bank > .cinv-bold:first-child {
+  font-size: 11.5px;
+}
+.cinv-stn {
+  margin-top: 8px;
+}
+.cinv-info-applicant {
+  width: 34%;
+}
+.cinv-info-applicant div {
+  margin-bottom: 2px;
+}
+.cinv-info-meta {
+  flex: 1;
+}
+.cinv-info-meta div {
+  margin-bottom: 2px;
+}
+
+.cinv-items {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 18px;
+  font-size: 10.5px;
+}
+.cinv-items th {
+  background: #1e88d2;
+  color: #fff;
+  font-weight: bold;
+  border: 1px solid #000;
+  padding: 4px 6px;
+  text-align: right;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+.cinv-items th.cinv-th-left {
+  text-align: left;
+}
+.cinv-items td {
+  border: 1px solid #000;
+  padding: 5px 6px;
+  text-align: right;
+}
+.cinv-items td.cinv-td-left {
+  text-align: left;
+}
+
+.cinv-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 34px;
+}
+.cinv-notes {
+  font-weight: bold;
+  font-size: 12px;
+  padding-top: 8px;
+}
+.cinv-totals {
+  width: 58%;
+  background: #ebebeb;
+  padding: 8px 14px 8px;
+  font-size: 11.5px;
+}
+.cinv-totals-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 4px;
+  border-top: 1px solid #c9c9c9;
+}
+.cinv-totals-row:first-child {
+  border-top: none;
+}
+.cinv-totals-row span:first-child {
+  margin-left: auto;
+  padding-right: 60px;
+}
+.cinv-totals-total {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.cinv-paybar {
+  margin-top: 24px;
+  background: #1e88d2;
+  color: #fff;
+  font-size: 11px;
+  padding: 7px 10px;
+  border-radius: 3px;
+}

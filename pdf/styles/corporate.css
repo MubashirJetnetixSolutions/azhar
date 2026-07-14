@@ -1,0 +1,331 @@
+/* Print stylesheet for the Corporate credit-report PDF. The document flows
+   across pages; .crp-header/.crp-footer are position:fixed so Chromium
+   repeats them on every printed page, while the .crp-layout table's
+   thead/tfoot reserve the matching space in the content flow. */
+
+/* The app's global stylesheet paints body dark; on the print route that would
+   bleed through as black below the flowing content on the final page. */
+body:has(.crp-root) {
+  background: #fff !important;
+}
+
+.crp-root {
+  font-family: "Segoe UI", Calibri, Arial, sans-serif;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: #000;
+  background: #fff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.crp-layout {
+  width: 100%;
+  border-collapse: collapse;
+}
+.crp-header-space {
+  height: 122px;
+}
+.crp-footer-space {
+  height: 118px;
+}
+.crp-content {
+  padding: 8px 14mm 0;
+}
+
+/* ── Header (repeats each page) ───────────────────────────────── */
+.crp-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-top: 5mm;
+  background: #fff;
+  text-align: center;
+}
+.crp-wordmark {
+  font-family: "Times New Roman", Cambria, Georgia, serif;
+  font-weight: bold;
+  font-size: 46px;
+  line-height: 1;
+  letter-spacing: 1px;
+  color: #00a551;
+  white-space: nowrap;
+}
+.crp-wordmark-rule {
+  height: 0;
+  border-top: 3px solid #00a551;
+  border-bottom: 1.5px solid #00a551;
+  padding-top: 2px;
+  margin-top: 2px;
+}
+.crp-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 8mm 0;
+}
+.crp-header-services {
+  font-family: "Times New Roman", Cambria, Georgia, serif;
+  font-size: 40px;
+  line-height: 1.05;
+  color: #00a551;
+}
+
+/* ── Footer (repeats each page) ───────────────────────────────── */
+.crp-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 8mm 4mm;
+  background: #fff;
+  text-align: center;
+}
+.crp-footer-logos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 4px;
+}
+.crp-footer-bar {
+  color: #00a551;
+  font-weight: bold;
+  font-size: 11px;
+}
+.crp-footer-legal {
+  color: #ff0000;
+  font-size: 6.8px;
+  font-weight: 600;
+  line-height: 1.35;
+  padding-top: 2px;
+}
+.crp-footer-contact {
+  color: #ed7d31;
+  font-size: 9px;
+  padding-top: 2px;
+}
+
+/* ── Screen preview niceties (ignored in print) ───────────────── */
+@media screen {
+  body:has(.crp-root) {
+    background: #fff;
+  }
+  .crp-root {
+    max-width: 210mm;
+    margin: 0 auto;
+  }
+}
+
+/* ── Tables ───────────────────────────────────────────────────── */
+.crp-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  break-inside: auto;
+}
+.crp-table td {
+  border: 0.8px solid #404040;
+  padding: 6px 9px;
+  vertical-align: top;
+}
+.crp-table tr {
+  break-inside: avoid;
+}
+.crp-label {
+  font-weight: bold;
+}
+.crp-cover-table {
+  width: 92%;
+  margin: 4px auto 0;
+}
+.crp-summary-table {
+  width: 92%;
+  margin: 22px auto 0;
+}
+
+/* Owner / shareholder bullet lists inside table cells */
+.crp-bullets {
+  margin: 0;
+  padding-left: 22px;
+  list-style: disc;
+}
+.crp-bullets li {
+  margin: 3px 0;
+}
+.crp-owner-name {
+  display: inline-block;
+  min-width: 110px;
+}
+.crp-owner-pct {
+  display: inline-block;
+  padding-left: 18px;
+}
+.crp-bullets-loose {
+  padding-left: 34px;
+}
+.crp-bullets-loose li {
+  margin: 5px 0;
+}
+.crp-bullets-red {
+  list-style: none;
+  padding-left: 26px;
+}
+.crp-bullets-red li::before {
+  content: "\2022";
+  color: #ff0000;
+  display: inline-block;
+  width: 12px;
+  margin-left: -12px;
+}
+
+/* ── Boxed centered headings ──────────────────────────────────── */
+.crp-boxed-heading {
+  border: 1.2px solid #000;
+  padding: 3px 4px;
+  margin-top: 22px;
+  text-align: center;
+  break-after: avoid;
+  break-inside: avoid;
+}
+.crp-boxed-heading span {
+  font-weight: bold;
+  font-size: 12.5px;
+  text-decoration: underline;
+  letter-spacing: 0.3px;
+}
+
+/* Plain underlined headings */
+.crp-heading {
+  font-size: 11px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin: 22px 0 8px;
+  break-after: avoid;
+}
+.crp-subheading {
+  font-weight: bold;
+  text-decoration: underline;
+  margin: 12px 0 6px;
+}
+
+/* ── Identification table (spaced rows) ───────────────────────── */
+.crp-ident-table {
+  margin-top: 14px;
+}
+.crp-ident-table td {
+  border-color: #404040;
+}
+.crp-ident-gap td {
+  border-top: none;
+}
+.crp-ident-table tr td {
+  padding: 6px 9px 10px;
+}
+
+/* ── Rating & comments ────────────────────────────────────────── */
+.crp-rating-bar {
+  margin-top: 14px;
+}
+.crp-rating-bar-value {
+  background: #00b0f0;
+  font-weight: bold;
+}
+.crp-risk-grid {
+  width: 62%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  break-inside: avoid;
+}
+.crp-risk-grid td {
+  border: 0.8px solid #fff;
+  padding: 3.5px 8px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 10px;
+}
+.crp-navy-head td {
+  background: #002060;
+  color: #fff;
+  font-weight: bold;
+}
+.crp-rating-table {
+  break-inside: avoid;
+}
+.crp-rating-table td,
+.crp-explain-table td {
+  border-color: #fff;
+  border-width: 1.4px;
+}
+.crp-rating-table {
+  background: #f7f7f7;
+}
+.crp-status-table {
+  margin-top: 14px;
+}
+
+/* ── Executive summary (colon-aligned) ────────────────────────── */
+.crp-exec-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4px;
+}
+.crp-exec-table td {
+  padding: 3.5px 2px;
+  vertical-align: top;
+  text-transform: none;
+}
+.crp-exec-table tr {
+  break-inside: avoid;
+}
+.crp-person {
+  margin: 10px 0 18px;
+  break-inside: avoid;
+}
+
+/* ── Paragraphs ───────────────────────────────────────────────── */
+.crp-paragraph {
+  margin: 8px 0 0;
+  text-align: justify;
+  line-height: 1.7;
+}
+.crp-indent {
+  text-indent: 90px;
+}
+.crp-indent::first-line {
+  text-indent: 90px;
+}
+.crp-justify {
+  text-align: justify;
+}
+
+/* ── Change log ───────────────────────────────────────────────── */
+.crp-changelog {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+.crp-changelog td {
+  padding: 4px 6px;
+  vertical-align: top;
+  line-height: 1.55;
+}
+.crp-changelog-head td {
+  font-weight: bold;
+  text-align: center;
+}
+.crp-changelog-date {
+  text-align: center;
+}
+
+/* ── Explanations + closing ───────────────────────────────────── */
+.crp-explain-table {
+  break-inside: avoid;
+}
+.crp-end {
+  font-family: "Times New Roman", Cambria, Georgia, serif;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin: 34px 0 24px;
+}
